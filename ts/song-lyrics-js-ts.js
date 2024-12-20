@@ -104,9 +104,6 @@ class Lyrics {
             let displayPointer = this.lyricsIndex;
             // Loop as many times as the number of lines to display, typically 2 at a time.
             for (let i = 0; i < this.linesToDisplay; i++) {
-                // console.info("displayLyrics loop " + i); // testing only
-                // console.info("displayPointer: " + displayPointer); // testing only
-                // console.info("displayLinesCount: " + displayLinesCount); // testing only
                 // If display pointer is not beyond the last line of lyrics, append newline.
                 if (displayPointer < this.lyricsArrayLen) {
                     lyricsToDisplay = lyricsToDisplay + this.lyricsArray[this.lyricsIndex + i] + "<br>";
@@ -115,7 +112,6 @@ class Lyrics {
                 else {
                     lyricsToDisplay = lyricsToDisplay + "<br>";
                 }
-                console.info("lyricsToDisplay: " + lyricsToDisplay); // testing only
                 displayPointer++;
             }
             const lyricsDisplay = document.getElementById("lyricsDisplay");

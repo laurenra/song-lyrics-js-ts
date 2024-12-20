@@ -9,6 +9,18 @@ Broadcast Studio (OBS) to overlay on a video or image.
 Open **index.html** in a browser. Copy lyrics into the **Song Lyrics** text area. 
 Click on **Next Line** button to advance to the next lines of lyrics to display.
 
+You only need these files to run this:
+
+```shell
+index.html
+css/style.css
+ts/song-lyrics-js-ts.js
+favicon.ico
+icon.png
+icon.svg
+site.webmanifest
+```
+
 ### In OBS
 #### Add Browser source
 1. Add a **Browser** source to your scene and name it
