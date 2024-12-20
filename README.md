@@ -90,7 +90,9 @@ the blank lines.
 
 If you make changes to the **song-lyrics-js-ts.ts** TypeScript file, they need 
 to be compiled into the **song-lyrics-js-ts.js** JavaScript file. To be able 
-to compile, install the dependencies. 
+to compile, you'll need [Node.js and NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 
+installed first to be able to run the following in the project root directory 
+to install the dependencies. 
 
 ```sh
 npm install
