@@ -14,7 +14,7 @@ You only need these files to run this:
 ```shell
 index.html
 css/style.css
-ts/song-lyrics-js-ts.js
+js/song-lyrics-js-ts.js
 favicon.ico
 icon.png
 icon.svg
@@ -88,11 +88,12 @@ the blank lines.
 
 ## Customize and Build project
 
-If you make changes to the **song-lyrics-js-ts.ts** TypeScript file, they need 
-to be compiled into the **song-lyrics-js-ts.js** JavaScript file. To be able 
-to compile, you'll need [Node.js and NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 
-installed first to be able to run the following in the project root directory 
-to install the dependencies. 
+If you make changes to the **src/ts/song-lyrics-js-ts.ts** TypeScript file, 
+they must be compiled into the **js/song-lyrics-js-ts.js** JavaScript file, 
+which is the code that **index.html** uses. To be able to compile, you'll need 
+[Node.js and NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 
+installed first to run the following in the project root directory to install 
+the dependencies.
 
 ```sh
 npm install

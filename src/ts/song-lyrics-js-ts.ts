@@ -28,24 +28,32 @@ export class Lyrics {
     this.fileLocation = filePath;
   }
 
-  // File input handler stuff
-  // handleInputFile() {
-  //   const fileStuff = this.files;
-  // }
-
-  // readLyricsFile
-  getSelectedFile() {
-    const selectedFile = document.getElementById("fileIn");
-    if (selectedFile) {
-      const fileNameDisplay = document.getElementById("fileNameChosen");
-      if (fileNameDisplay) {
-        fileNameDisplay.innerHTML = "/my/new/filepath";
+  /**
+   * File input handler and stuff
+   */
+  handleSelectedFile(event: Event) {
+    // const selectedFile = event.target.files[0];
+    const selectedFileList = (event.target as HTMLInputElement).files;
+    if (selectedFileList) {
+      const selectedFile = selectedFileList.item(0);
+      if (selectedFile) {
+        const fileNameDisplay = document.getElementById("fileNameChosen");
+        if (fileNameDisplay) {
+          fileNameDisplay.innerHTML = selectedFile.name;
+        }
+        console.info("Got file");
       }
-      console.info("Got file");
     }
+    // console.info("Got file");
+  }
+
+  handleTest() {
+    console.info("handle file");
   }
 
   /**
+   * When lyrics are added or edited and the user leaves the textarea or
+   * changes focus to another widget:
    * 1. Reset the array and index.
    * 2. Split inputText (multiple lines of lyrics)
    *    into a string array, with each line as an element in the array.
@@ -136,6 +144,9 @@ export class Lyrics {
     }
   }
 
+  /**
+   * Test changing text in the "lyricsDisplay" element.
+   */
   testChange() {
     const lyricsDisplay = document.getElementById("lyricsDisplay");
     if (lyricsDisplay) {
@@ -145,36 +156,57 @@ export class Lyrics {
 
 }
 
-// function testDisplayTextIn() {
-//   const lyricsDisplay = document.getElementById("lyricsDisplay");
-//   if (lyricsDisplay) {
-//     lyricsDisplay.innerHTML = "Counting: " + countit;
+/**
+ * Begin Program
+ */
+
+// function handleSelectedFile(e) {
+//   const selectedFile = e.target.files[0];
+//   if (selectedFile) {
+//     const fileNameDisplay = document.getElementById("fileNameChosen");
+//     if (fileNameDisplay) {
+//       fileNameDisplay.innerHTML = "file: " + selectedFile.name;
+//     }
+//     console.info("Got file");
 //   }
 // }
 
+// Add event listener to handle lyrics added or edited in text area.
 const myLyrics = new Lyrics();
 const defaultLyrics = document.getElementById("lyricsTextIn");
 if (defaultLyrics) {
   myLyrics.lyricsOnChange(defaultLyrics);
 }
 
-// const fileInputElement = document.getElementById("fileIn");
+
+/**
+ * File input handler
+ */
+// Add event listener to handle file input from "fileSelected" input element.
+const fileInputElement = document.getElementById("fileSelected");
+if (fileInputElement) {
+  // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
+  fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
+}
+
+// const fileInputElement = document.getElementById("fileSelected");
 // if (fileInputElement) {
 //   const lyricsTextArea = document.getElementById("lyricsTextIn");
-//   if (lyricsTextArea) {
-//     fileInputElement.addEventListener("change", (event) => {
-//       if (event) {
-//         const file = event.target?.files[0];
-//         const reader = new FileReader();
+//   fileInputElement.addEventListener("change", (event) => {
+//     if (event) {
+//       const file = event.target?.files[0];
+//       const reader = new FileReader();
 //
-//         reader.onload = (e) => {
-//           lyricsTextArea.textContent = e.target.result;
-//         }
+//       reader.onload = (e) => {
+//         lyricsTextArea.textContent = e.target.result;
 //       }
-//     })
+//     }
+//   })
+//   if (lyricsTextArea) {
 //   }
 // }
 
+// Test getting file name from URL search params. Currently does nothing.
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const fileToRead = urlParams.get('file');
@@ -182,9 +214,4 @@ if (fileToRead) {
   // const file
   myLyrics.setFileToRead(fileToRead);
 }
-
-// let countit = 2;
-// testDisplayTextIn();
-// countit = 3;
-// setTimeout(testDisplayTextIn, 3000);
 

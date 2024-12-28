@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "./js",
     "target": "es2016",
     "module": "commonjs",
     "esModuleInterop": true,
@@ -8,6 +9,6 @@
     "skipLibCheck": true
   },
   "include": [
-    "ts/**/*"
+    "src/ts/**/*"
   ]
 }
