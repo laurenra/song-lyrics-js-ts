@@ -33,13 +33,24 @@ class Lyrics {
                     fileNameDisplay.innerHTML = selectedFile.name;
                     console.info(`Got ${selectedFile.name}`);
                 }
+                // const lyricsArea = document.getElementById("lyricsTextIn");
                 // Read file into lyrics text area
                 const reader = new FileReader();
-                reader.onload = () => {
+                // reader.onload = () => {
+                //   const fileContent = reader.result as string;
+                //   // console.info(`Read file ${selectedFile.name}`);
+                //   console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
+                //   this.lyricsOnChange(fileContent);
+                // }
+                reader.onload = function () {
                     const fileContent = reader.result;
                     // console.info(`Read file ${selectedFile.name}`);
-                    // console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
-                    this.lyricsOnChange(fileContent);
+                    console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
+                    const lyricsInArea = document.getElementById("lyricsTextIn");
+                    if (lyricsInArea) {
+                        // lyricsInArea.innerHTML = "";
+                        lyricsInArea.innerHTML = fileContent;
+                    }
                 };
                 reader.readAsText(selectedFile, 'UTF-8');
             }
