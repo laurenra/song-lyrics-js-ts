@@ -1,4 +1,4 @@
-export class Lyrics {
+class Lyrics {
 
   private lyricsText: string;
   private lyricsArray: string[];
