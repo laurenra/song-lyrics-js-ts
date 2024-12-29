@@ -19,26 +19,48 @@ class Lyrics {
         this.fileLocation = filePath;
     }
     /**
-     * File input handler and stuff
+     * File input handler
      */
     handleSelectedFile(event) {
-        // const selectedFile = event.target.files[0];
         const selectedFileList = event.target.files;
         if (selectedFileList) {
+            // Get only one file, the first one.
             const selectedFile = selectedFileList.item(0);
             if (selectedFile) {
+                // Show filename
                 const fileNameDisplay = document.getElementById("fileNameChosen");
                 if (fileNameDisplay) {
                     fileNameDisplay.innerHTML = selectedFile.name;
+                    console.info(`Got ${selectedFile.name}`);
                 }
-                console.info("Got file");
+                // Read file into lyrics text area
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const fileContent = reader.result;
+                    // console.info(`Read file ${selectedFile.name}`);
+                    // console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
+                    this.lyricsOnChange(fileContent);
+                };
+                reader.readAsText(selectedFile, 'UTF-8');
             }
         }
-        // console.info("Got file");
     }
-    handleTest() {
-        console.info("handle file");
-    }
+    // const fileInputElement = document.getElementById("fileSelected");
+    // if (fileInputElement) {
+    //   const lyricsTextArea = document.getElementById("lyricsTextIn");
+    //   fileInputElement.addEventListener("change", (event) => {
+    //     if (event) {
+    //       const file = event.target?.files[0];
+    //       const reader = new FileReader();
+    //
+    //       reader.onload = (e) => {
+    //         lyricsTextArea.textContent = e.target.result;
+    //       }
+    //     }
+    //   })
+    //   if (lyricsTextArea) {
+    //   }
+    // }
     /**
      * When lyrics are added or edited and the user leaves the textarea or
      * changes focus to another widget:
@@ -140,47 +162,18 @@ class Lyrics {
 /**
  * Begin Program
  */
-// function handleSelectedFile(e) {
-//   const selectedFile = e.target.files[0];
-//   if (selectedFile) {
-//     const fileNameDisplay = document.getElementById("fileNameChosen");
-//     if (fileNameDisplay) {
-//       fileNameDisplay.innerHTML = "file: " + selectedFile.name;
-//     }
-//     console.info("Got file");
-//   }
-// }
-// Add event listener to handle lyrics added or edited in text area.
 const myLyrics = new Lyrics();
+// Add event listener to handle lyrics added or edited in text area.
 const defaultLyrics = document.getElementById("lyricsTextIn");
 if (defaultLyrics) {
     myLyrics.lyricsOnChange(defaultLyrics);
 }
-/**
- * File input handler
- */
 // Add event listener to handle file input from "fileSelected" input element.
 const fileInputElement = document.getElementById("fileSelected");
 if (fileInputElement) {
     // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
     fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
 }
-// const fileInputElement = document.getElementById("fileSelected");
-// if (fileInputElement) {
-//   const lyricsTextArea = document.getElementById("lyricsTextIn");
-//   fileInputElement.addEventListener("change", (event) => {
-//     if (event) {
-//       const file = event.target?.files[0];
-//       const reader = new FileReader();
-//
-//       reader.onload = (e) => {
-//         lyricsTextArea.textContent = e.target.result;
-//       }
-//     }
-//   })
-//   if (lyricsTextArea) {
-//   }
-// }
 // Test getting file name from URL search params. Currently does nothing.
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
