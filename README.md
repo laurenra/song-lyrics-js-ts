@@ -99,36 +99,11 @@ the dependencies.
 npm install
 ```
 
-Then compile the modified song-lyrics-js-ts.ts TypeScript file into JavaScript.
+Then compile the modified **song-lyrics-js-ts.ts** TypeScript file into the 
+JavaScript file, **js/song-lyrics-js-ts.ts** that's used by index.html.
 
 ```sh
 npm run build
-```
-
-You will have to comment out the first 3 lines in the compiled 
-song-lyrics-js-ts.js JavaScript file and the `exports.Lyrics = Lyrics;` line 
-near the bottom for it to work properly with the index.html web page.
-
-```typescript
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Lyrics = void 0;
-
-...lots of code
-
-exports.Lyrics = Lyrics;
-```
-
-Comment out to look like:
-
-```typescript
-// "use strict";
-// Object.defineProperty(exports, "__esModule", { value: true });
-// exports.Lyrics = void 0;
-
-...lots of code
-
-// exports.Lyrics = Lyrics;
 ```
 
 Changes to **index.html** and **css/style.css** take effect immediately. You don't 
