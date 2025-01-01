@@ -30,8 +30,19 @@ class Lyrics {
 
   /**
    * File input handler
+   * Default event handler when addEventListener is used to add a newly created
+   * Lyrics object; for example:
+   *
+   *   const myLyrics = new Lyrics();
+   *   const fileInputElement = document.getElementById("fileSelected");
+   *   fileInputElement.addEventListener("change", myLyrics, false);
+   *
+   * The context (this) is the same as the value of the
+   * currentTarget property of the calling element, as well as the Event it
+   * passes in; in this case the <input> element in the HTML.
    */
-  handleSelectedFile(event: Event) {
+  handleEvent(event: Event) {
+    let testVar = "test";
     const selectedFileList = (event.target as HTMLInputElement).files;
     if (selectedFileList) {
       // Get only one file, the first one.
@@ -41,7 +52,7 @@ class Lyrics {
         const fileNameDisplay = document.getElementById("fileNameChosen");
         if (fileNameDisplay) {
           fileNameDisplay.innerHTML = selectedFile.name;
-          console.info(`Got ${selectedFile.name}`);
+          console.info(`Got ${selectedFile.name}`); // testing only
         }
         // const lyricsArea = document.getElementById("lyricsTextIn");
         // Read file into lyrics text area
@@ -55,11 +66,16 @@ class Lyrics {
         reader.onload = function() {
           const fileContent = reader.result as string;
           // console.info(`Read file ${selectedFile.name}`);
-          console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
+          // console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
           const lyricsInArea = document.getElementById("lyricsTextIn");
           if (lyricsInArea) {
             // lyricsInArea.innerHTML = "";
             lyricsInArea.innerHTML = fileContent;
+            testVar = "did it";
+          }
+          const lyricsOutArea = document.getElementById("lyricsTextOut");
+          if (lyricsOutArea) {
+            lyricsOutArea.innerHTML = fileContent;
           }
         }
         reader.readAsText(selectedFile, 'UTF-8');
@@ -196,18 +212,19 @@ class Lyrics {
 
 const myLyrics = new Lyrics();
 
-// Add event listener to handle lyrics added or edited in text area.
 const defaultLyrics = document.getElementById("lyricsTextIn");
 if (defaultLyrics) {
   myLyrics.lyricsOnChange(defaultLyrics);
+  const fileInputElement = document.getElementById("fileSelected");
+  if (fileInputElement) {
+    // Add event listener to handle lyrics added or edited in text area.
+    // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
+    // fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
+    fileInputElement.addEventListener("change", myLyrics, false);
+  }
 }
 
 // Add event listener to handle file input from "fileSelected" input element.
-const fileInputElement = document.getElementById("fileSelected");
-if (fileInputElement) {
-  // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
-  fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
-}
 
 // Test getting file name from URL search params. Currently does nothing.
 const queryString = window.location.search;
