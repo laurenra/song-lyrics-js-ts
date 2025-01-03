@@ -5,6 +5,7 @@ class Lyrics {
   private lyricsArrayLen: number;
   private lyricsIndex: number;
   private linesToDisplay: number;
+  private lyricsToDisplay: string;
   private fileLocation: string;
 
   constructor() {
@@ -13,6 +14,7 @@ class Lyrics {
     this.lyricsArrayLen = 0;
     this.lyricsIndex = 0;
     this.linesToDisplay = 2;
+    this.lyricsToDisplay = "";
     this.fileLocation = "";
   }
 
@@ -22,6 +24,7 @@ class Lyrics {
     this.lyricsArrayLen = 0;
     this.lyricsIndex = 0;
     this.linesToDisplay = 2;
+    this.lyricsToDisplay = "";
   }
 
   setFileToRead(filePath: string) {
@@ -109,14 +112,35 @@ class Lyrics {
    *    into a string array, with each line as an element in the array.
    * 3. Display the first line(s) of lyrics in the display area.
    * 4. Copy the inputText to a read-only <textarea>.
+   *
+   * Note: you cannot copy and paste into the textarea when index.html is a
+   * Browser Source in OBS on Mac OS and you select Interact to see it in an
+   * OBS dialog box. You can press buttons, move the scroll bar, etc., but
+   * can't copy or paste, but there may be a workaround. See here:
+   * https://github.com/obsproject/obs-browser/issues/365
+   * In particular this solution:
+   * https://github.com/obsproject/obs-browser/issues/365#issuecomment-1521406666
+   *
    * @param inputText
    */
+  lyricsOnInput(inputText: any) {
+    this.setDefaults();
+    this.lyricsText = inputText.value;
+    this.lyricsArray = this.lyricsText.split("\n");
+    this.lyricsArrayLen = this.lyricsArray.length;
+    this.setLyricsToDisplay();
+    const lyricsOutDisplay = document.getElementById("lyricsTextOut");
+    if (lyricsOutDisplay) {
+      lyricsOutDisplay.innerHTML = this.lyricsText;
+    }
+  }
+
   lyricsOnChange(inputText: any) {
     this.setDefaults();
     this.lyricsText = inputText.value;
     this.lyricsArray = this.lyricsText.split("\n");
     this.lyricsArrayLen = this.lyricsArray.length;
-    this.displayLyrics();
+    this.setLyricsToDisplay();
     const lyricsOutDisplay = document.getElementById("lyricsTextOut");
     if (lyricsOutDisplay) {
       lyricsOutDisplay.innerHTML = this.lyricsText;
@@ -126,51 +150,38 @@ class Lyrics {
   /**
    * Move the cursor position to the previous line(s) of lyrics and copy them
    * to the display area. Don't go before the first line(s).
+   *
+   * out: this.lyricsIndex, this.lyricsToDisplay
    */
   prevLyrics() {
     if (this.lyricsIndex - this.linesToDisplay >= 0) {
       this.lyricsIndex = this.lyricsIndex - this.linesToDisplay;
-      this.displayLyrics();
+      this.setLyricsToDisplay();
     }
   }
-
-  //
-  // 0 Hope of Israel, Zion’s army,<br>
-  // 1 Children of the promised day,
-  //
-  // 2 See, the Chieftain signals onward,<br>
-  // 3 And the battle’s in array!
-  //
-  // 4 Hope of Israel, rise in might<br>
-  // 5 With the sword of truth and right;
-  //
-  // 6 Sound the war-cry, “Watch and pray!”<br
-  //   <br>
-  //
 
   /**
    * Move the cursor position to the next line(s) of lyrics and copy them
    * to the display area. Don't go beyond the last line(s).
-   * lines = 2
-   * index = 6
-   * arraylast = 6 (0 to 6)
-   * len = 7
+   *
+   * out: this.lyricsIndex, this.lyricsToDisplay
    */
   nextLyrics() {
-    // 6 + 2 <= 7 - 1
-    // 8 <= 6
     if (this.lyricsIndex + this.linesToDisplay < this.lyricsArrayLen) {
       this.lyricsIndex = this.lyricsIndex + this.linesToDisplay;
-      this.displayLyrics();
+      this.setLyricsToDisplay();
     }
   }
 
   /**
-   * Determine how many lines of lyrics can be displayed at the current index
-   * and copy them to the display area. If not enough to fill the display area,
-   * add blank lines <br> so the display area remains the same size.
+   * Determine how many lines of lyrics can be displayed in the display area
+   * at the current index and copy them into lyricsToDisplay. If not enough
+   * to fill the display area, add blank lines <br> so the display area remains
+   * the same size.
+   *
+   * out: this.lyricsToDisplay
    */
-  displayLyrics() {
+  setLyricsToDisplay() {
     let lyricsToDisplay: string = "";
     if (this.lyricsIndex < this.lyricsArrayLen) {
       let displayPointer = this.lyricsIndex;
@@ -186,11 +197,50 @@ class Lyrics {
         }
         displayPointer++;
       }
-      const lyricsDisplay = document.getElementById("lyricsDisplay");
-      if (lyricsDisplay) {
-        lyricsDisplay.innerHTML = "";
-        lyricsDisplay.innerHTML = lyricsToDisplay;
-      }
+      this.lyricsToDisplay = lyricsToDisplay;
+    }
+  }
+
+  /**
+   * Read the lyrics in the textarea and initialize
+   */
+  showLyricsButton() {
+    // Get lyrics in textarea, if any.
+    const lyricsInputText = document.getElementById("lyricsTextIn");
+    if (lyricsInputText) {
+      console.info("Lyrics In: " + lyricsInputText.textContent); // test only
+    }
+
+
+    const lyricsDisplay = document.getElementById("lyricsDisplay");
+    if (lyricsDisplay) {
+      lyricsDisplay.innerHTML = "";
+      lyricsDisplay.innerHTML = this.lyricsToDisplay;
+    }
+    const showLyricsBtn = document.getElementById("showBtn");
+    const hideLyrcsBtn = document.getElementById("hideBtn");
+    if (showLyricsBtn && hideLyrcsBtn) {
+      showLyricsBtn.style.display = "none";
+      hideLyrcsBtn.style.display = "block";
+    }
+  }
+
+  hideLyricsButton() {
+    // don't show the lyrics
+    let blankLines = "";
+    for (let i = 0; i < this.linesToDisplay; i++) {
+      blankLines = blankLines + "<br>";
+    }
+    const lyricsDisplay = document.getElementById("lyricsDisplay");
+    if (lyricsDisplay) {
+      // lyricsDisplay.innerHTML = "";
+      lyricsDisplay.innerHTML = blankLines;
+    }
+    const showLyricsBtn = document.getElementById("showBtn");
+    const hideLyrcsBtn = document.getElementById("hideBtn");
+    if (showLyricsBtn && hideLyrcsBtn) {
+      showLyricsBtn.style.display = "block";
+      hideLyrcsBtn.style.display = "none";
     }
   }
 
@@ -212,16 +262,17 @@ class Lyrics {
 
 const myLyrics = new Lyrics();
 
-const defaultLyrics = document.getElementById("lyricsTextIn");
-if (defaultLyrics) {
-  myLyrics.lyricsOnChange(defaultLyrics);
-  const fileInputElement = document.getElementById("fileSelected");
-  if (fileInputElement) {
-    // Add event listener to handle lyrics added or edited in text area.
-    // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
-    // fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
-    fileInputElement.addEventListener("change", myLyrics, false);
-  }
+// const defaultLyrics = document.getElementById("lyricsTextIn");
+// if (defaultLyrics) {
+//   myLyrics.lyricsOnChange(defaultLyrics);
+// }
+
+const fileInputElement = document.getElementById("fileSelected");
+if (fileInputElement) {
+  // Add event listener to handle lyrics added or edited in text area.
+  // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
+  // fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
+  fileInputElement.addEventListener("change", myLyrics, false);
 }
 
 // Add event listener to handle file input from "fileSelected" input element.

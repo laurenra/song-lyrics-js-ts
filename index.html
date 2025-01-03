@@ -25,37 +25,49 @@
 <body>
   <!-- Add your site or application content here -->
   <div class="container-main">
-    <div class="container-lyrics-display" id="lyricsDisplay">See, the Chieftain signals onward,<br>And the battle’s in array!</div>
-
-    <div class="container-controls">
-      <button class="button-large" onclick="myLyrics.prevLyrics()">Prev Line</button>
-      <button class="button-large" onclick="myLyrics.nextLyrics()">Next Line</button>
-<!--      <button class="button-large" onclick="myLyrics.testChange()">Test Change</button>-->
-
-      <div class="container-file-select">
-        <label class="input-file-large">
-          <input type="file" id="fileSelected"/>
-          Select file
-        </label>
-        <p id="fileNameChosen">No file chosen</p>
+    <div class="container-lyrics-display" id="lyricsDisplay">With the sword of truth and right;<br>Sound the war-cry, “Watch and pray!”<br></div>
+    <div class="container-editor">
+      <div class="lyrics-preview">
+        <div class="lyrics-preview-top">&nbsp;4 Hope of Israel, rise in might<br>&nbsp;5 With the sword of truth and right;</div>
+        <div class="lyrics-preview-showing">&nbsp;6 Sound the war-cry, “Watch and pray!”<br>&nbsp;7 Vanquish ev’ry foe today.</div>
+        <div class="lyrics-preview-bottom">&nbsp;8 See the foe in countless numbers,<br>&nbsp;9 Marshaled in the ranks of sin.<br>10 Hope of Israel, on to battle;<br>11 Now the vict’ry we must win!<br>12 Hope of Israel, rise in might<br>13 With the sword of truth and right;<br>14 Sound the war-cry, “Watch and pray!”</div>
       </div>
 
+      <div class="container-controls">
+        <div class="container-buttons">
+          <button class="button-large" onclick="myLyrics.prevLyrics()">&lt; Prev Line</button>
+          <button class="button-large" onclick="myLyrics.nextLyrics()">Next Line &gt;</button>
+          <button class="button-large" onclick="myLyrics.showLyricsButton()" id="showBtn">Show Lyrics</button>
+          <button class="button-large" onclick="myLyrics.hideLyricsButton()" id="hideBtn" style="display: none">Hide Lyrics</button>
+          <button class="button-large">Lines</button>
+        </div>
+
+        <div class="container-file-select">
+          <label class="button-input-file">
+            <input type="file" id="fileSelected"/>
+            Select File
+          </label>
+          <p id="fileNameChosen">(no file chosen)</p>
+        </div>
+
+        <div class="container-lyrics-input">
+          <form class="form-lyrics-input" onchange="myLyrics.lyricsOnChange(lyricsTextIn)">
+            <textarea class="textarea-large-in" id="lyricsTextIn" rows="12"></textarea>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container-lyrics-output">
+      <form class="form-lyrics-output">
+        <label class="label-large" id="lyricsOutLabel" for="lyricsTextOut">Output:</label>
+        <textarea class="textarea-large-out" id="lyricsTextOut" rows="40" disabled="true"></textarea>
+      </form>
     </div>
 
     <div class="container-lyrics">
-      <div class="container-lyrics-input">
-        <form class="form-lyrics-input" onchange="myLyrics.lyricsOnChange(lyricsTextIn)">
-          <label class="label-large" id="lyricsInLabel" for="lyricsTextIn">Song Lyrics:</label>
-          <textarea class="textarea-large-in" id="lyricsTextIn" rows="40"></textarea>
-        </form>
-      </div>
 
-      <div class="container-lyrics-output">
-        <form class="form-lyrics-output">
-          <label class="label-large" id="lyricsOutLabel" for="lyricsTextOut">Output:</label>
-          <textarea class="textarea-large-out" id="lyricsTextOut" rows="40" disabled="true"></textarea>
-        </form>
-      </div>
     </div>
 
   </div>
