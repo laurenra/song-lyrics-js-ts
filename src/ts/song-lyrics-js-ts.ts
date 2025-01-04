@@ -204,10 +204,10 @@ class Lyrics {
     this.lyricsArray = this.lyricsText.split("\n");
     this.lyricsArrayLen = this.lyricsArray.length;
     this.setLyricsToDisplay();
-    const lyricsOutDisplay = document.getElementById("lyricsTextOut");
-    if (lyricsOutDisplay) {
-      lyricsOutDisplay.innerHTML = this.lyricsText;
-    }
+    // const lyricsOutDisplay = document.getElementById("lyricsTextOut");
+    // if (lyricsOutDisplay) {
+    //   lyricsOutDisplay.innerHTML = this.lyricsText;
+    // }
   }
 
   lyricsOnChange(inputText: any) {
@@ -216,10 +216,10 @@ class Lyrics {
     this.lyricsArray = this.lyricsText.split("\n");
     this.lyricsArrayLen = this.lyricsArray.length;
     this.setLyricsToDisplay();
-    const lyricsOutDisplay = document.getElementById("lyricsTextOut");
-    if (lyricsOutDisplay) {
-      lyricsOutDisplay.innerHTML = this.lyricsText;
-    }
+    // const lyricsOutDisplay = document.getElementById("lyricsTextOut");
+    // if (lyricsOutDisplay) {
+    //   lyricsOutDisplay.innerHTML = this.lyricsText;
+    // }
   }
 
   /**

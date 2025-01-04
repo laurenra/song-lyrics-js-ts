@@ -40,9 +40,39 @@
   /*border: 1px solid red;*/
   width: 38%;
   border-left: 2px solid black;
-  /*height: 20em;*/
+  height: 20em;
   padding: 20px 0px;
   font-size: 28pt;
+  background-color: #cccccc;
+}
+
+.preview-table {
+  width: 100%;
+  padding: 0px 20px;
+  overflow-y: auto;
+  border-spacing: 0px;
+  background-color: #cccccc;
+}
+
+/*.preview-table tbody {*/
+/*  width: 100%;*/
+/*}*/
+
+.preview-table tr {
+  /*background-color: white;*/
+}
+
+.preview-table th {
+  /*background-color: white;*/
+  padding: 0px 10px;
+  font-weight: normal;
+  text-align: left;
+}
+
+.th-white {
+  background-color: white;
+}
+.th-grey {
   background-color: #cccccc;
 }
 
@@ -152,13 +182,6 @@ input[type="file"] {
   /*background-color: lightblue;*/
 }
 
-.container-lyrics {
-  /*border: 1px solid green;*/
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-
 .container-lyrics-input {
   /*border: 1px solid blue;*/
   padding: 0px 15px;
@@ -167,20 +190,6 @@ input[type="file"] {
 }
 
 .form-lyrics-input {
-  /*border: 1px solid blue;*/
-  /*padding: 50px;*/
-  display: flex;
-  flex-direction: column;
-}
-
-.container-lyrics-output {
-  /*border: 1px solid orangered;*/
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-lyrics-output {
   /*border: 1px solid blue;*/
   /*padding: 50px;*/
   display: flex;
@@ -226,13 +235,6 @@ input[type="file"] {
   font-size: 24pt;
   width: 26em;
   padding: 10px 20px;
-}
-
-.textarea-large-out {
-  font-size: 36px;
-  width: 24em;
-  padding: 10px 20px;
-  /*background-color: #eeeeee;*/
 }
 
 .text-lyrics {
