@@ -39,22 +39,31 @@
 .lyrics-preview {
   /*border: 1px solid red;*/
   width: 38%;
-  height: 15em;
-  padding: 20px;
+  border-left: 2px solid black;
+  /*height: 20em;*/
+  padding: 20px 0px;
   font-size: 28pt;
   background-color: #cccccc;
 }
 
-.lyrics-preview-top {
-  background-color: #cccccc;
+.lyrics-preview-previous {
+  padding: 0px 20px;
+  height: 2.8em;
+  /*background-color: #cccccc;*/
 }
 
 .lyrics-preview-showing {
+  margin: 0px 10px;
+  padding: 0px 10px;
+  height: 2.8em;
   background-color: #ffffff;
 }
 
-.lyrics-preview-bottom {
-  background-color: #cccccc;
+.lyrics-preview-next {
+  padding: 0px 20px;
+  height: 14em;
+  /*background-color: #cccccc;*/
+  overflow: scroll;
 }
 
 .controls {
