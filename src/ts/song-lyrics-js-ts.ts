@@ -1,3 +1,20 @@
+/**
+ * Event flow:
+ * 1. Select file (<input> id=fileSelected handler method named handleEvent)
+ * dispatches "click" event to trigger <button> id=startBtn onclick method
+ * named initLyricsToPreview. There may be a better way to do this.
+ *
+ * Because the handleEvent context is the calling element's context (the
+ * targetElement of the <input> element), it doesn't have the context of the
+ * Lyrics object, and I don't know any way to get it to access the variables
+ * and methods in it, like this.LyricsText. To use these methods, the text
+ * from the file is copied into <textarea id=lyricsEditor>, then the file
+ * input handler dispatches a "click" event to <button id=startBtn>. The
+ * startBtn onClick event handler does have the context of the Lyrics object
+ * and its methods, because a Lyrics object was created at the beginning of
+ * the page load (see the end of this file), so it reads the lyrics text in
+ * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
+ */
 class Lyrics {
 
   private lyricsText: string;
@@ -25,6 +42,75 @@ class Lyrics {
     this.lyricsIndex = 0;
     this.linesToDisplay = 2;
     this.lyricsToDisplay = "";
+  }
+
+  /**
+   * Read lyrics from <textarea id=lyricsEditor> and initialize variables.
+   */
+  initLyricsToPreview() {
+    const lyrics = document.getElementById("lyricsEditor");
+    if (lyrics) {
+      this.setDefaults(); // this resets
+      const lyricsText = lyrics.textContent;
+      if (lyricsText) {
+        if (lyricsText?.length > 0) {
+          this.lyricsText = lyricsText;
+          this.lyricsArray = this.lyricsText.split("\n");
+          this.lyricsArrayLen = this.lyricsArray.length;
+          this.setLyricsToDisplay();
+          this.copyLyricsToPreview();
+
+        }
+      }
+    }
+  }
+
+  /**
+   * Get lyrics from editor textarea and copy to the preview area.
+   */
+  copyLyricsToPreview() {
+    const lyrics = document.getElementById("lyricsEditor");
+    if (lyrics) {
+
+      // Copy n blank lines to top area
+      this.copyLyricstoPreviewPrevious();
+      // Copy first n lines to showing area
+      this.copyLyricstoPreviewShowing();
+      // Copy remaining lines to bottom area
+      this.copyLyricstoPreviewNext();
+    }
+
+  }
+
+  /**
+   * Copy n lines of lyrics to preview Previous (top) area.
+   * @param lyrics
+   * @param lines
+   */
+  copyLyricstoPreviewPrevious() {
+
+  }
+
+  /**
+   * Copy n lines of lyrics to preview showing (middle) area.
+   * @param lyrics
+   * @param lines
+   */
+  copyLyricstoPreviewShowing() {
+    const lyricsShowing = document.getElementById("lyricsPreviewShowing");
+    if (lyricsShowing) {
+      // lyricsShowing.innerHTML = "";
+      lyricsShowing.innerHTML = this.lyricsToDisplay;
+    }
+  }
+
+  /**
+   * Copy n lines of lyrics to preview next (bottom) area.
+   * @param lyrics
+   * @param lines
+   */
+  copyLyricstoPreviewNext() {
+
   }
 
   setFileToRead(filePath: string) {
@@ -57,28 +143,17 @@ class Lyrics {
           fileNameDisplay.innerHTML = selectedFile.name;
           console.info(`Got ${selectedFile.name}`); // testing only
         }
-        // const lyricsArea = document.getElementById("lyricsTextIn");
-        // Read file into lyrics text area
+        // Read file
         const reader = new FileReader();
-        // reader.onload = () => {
-        //   const fileContent = reader.result as string;
-        //   // console.info(`Read file ${selectedFile.name}`);
-        //   console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
-        //   this.lyricsOnChange(fileContent);
-        // }
         reader.onload = function() {
           const fileContent = reader.result as string;
-          // console.info(`Read file ${selectedFile.name}`);
-          // console.info(`${selectedFile.name}: \n${fileContent}`); // testing only
-          const lyricsInArea = document.getElementById("lyricsTextIn");
+          // Copy file contents to lyrics editor textarea
+          const lyricsInArea = document.getElementById("lyricsEditor");
           if (lyricsInArea) {
-            // lyricsInArea.innerHTML = "";
             lyricsInArea.innerHTML = fileContent;
             testVar = "did it";
-          }
-          const lyricsOutArea = document.getElementById("lyricsTextOut");
-          if (lyricsOutArea) {
-            lyricsOutArea.innerHTML = fileContent;
+            const startBtn = document.getElementById("startBtn");
+            startBtn?.dispatchEvent(new Event('click', {bubbles: true, cancelable: true}));
           }
         }
         reader.readAsText(selectedFile, 'UTF-8');
@@ -88,7 +163,7 @@ class Lyrics {
 
 // const fileInputElement = document.getElementById("fileSelected");
 // if (fileInputElement) {
-//   const lyricsTextArea = document.getElementById("lyricsTextIn");
+//   const lyricsTextArea = document.getElementById("lyricsEditor");
 //   fileInputElement.addEventListener("change", (event) => {
 //     if (event) {
 //       const file = event.target?.files[0];
@@ -149,8 +224,9 @@ class Lyrics {
 
   /**
    * Move the cursor position to the previous line(s) of lyrics and copy them
-   * to the display area. Don't go before the first line(s).
+   * to this.lyricsToDisplay. Don't go before the first line(s).
    *
+   * in:  this.lyricsIndex, this.linesToDisplay
    * out: this.lyricsIndex, this.lyricsToDisplay
    */
   prevLyrics() {
@@ -162,8 +238,9 @@ class Lyrics {
 
   /**
    * Move the cursor position to the next line(s) of lyrics and copy them
-   * to the display area. Don't go beyond the last line(s).
+   * to this.lyricsToDisplay. Don't go beyond the last line(s).
    *
+   * in:  this.lyricsIndex, this.linesToDisplay, this.lyricsArrayLen
    * out: this.lyricsIndex, this.lyricsToDisplay
    */
   nextLyrics() {
@@ -178,6 +255,48 @@ class Lyrics {
    * at the current index and copy them into lyricsToDisplay. If not enough
    * to fill the display area, add blank lines <br> so the display area remains
    * the same size.
+   *
+   * in:  this.lyricsArray
+   *      this.lyricsIndex
+   *      this.lyricsArrayLen
+   *      this.linesToDisplay
+   *
+   * out: this.lyricsToDisplay
+   */
+  getLyricsToDisplay(lyricsArray: string[], lyricsIndex: number, lyricsArrayLen: number, linesToDisplay: number) : string {
+    let lyricsToDisplay: string = "";
+    if (lyricsIndex < lyricsArrayLen) {
+      let displayPointer = lyricsIndex;
+      // Loop as many times as the number of lines to display, typically 2 at a time.
+      for (let i = 0; i < linesToDisplay; i++) {
+        // If display pointer is not beyond the last line of lyrics, append newline.
+        if (displayPointer < lyricsArrayLen) {
+          lyricsToDisplay = lyricsToDisplay + lyricsArray[lyricsIndex + i] + "<br>";
+        }
+        // If display pointer is beyond the last line of lyrics, add empty lines.
+        else {
+          lyricsToDisplay = lyricsToDisplay + "<br>";
+        }
+        displayPointer++;
+      }
+      return lyricsToDisplay;
+    }
+    // I think this should never happen.
+    else {
+      return "Error: index beyond end of array";
+    }
+  }
+
+  /**
+   * Determine how many lines of lyrics can be displayed in the display area
+   * at the current index and copy them into lyricsToDisplay. If not enough
+   * to fill the display area, add blank lines <br> so the display area remains
+   * the same size.
+   *
+   * in:  this.lyricsArray
+   *      this.lyricsIndex
+   *      this.lyricsArrayLen
+   *      this.linesToDisplay
    *
    * out: this.lyricsToDisplay
    */
@@ -206,7 +325,7 @@ class Lyrics {
    */
   showLyricsButton() {
     // Get lyrics in textarea, if any.
-    const lyricsInputText = document.getElementById("lyricsTextIn");
+    const lyricsInputText = document.getElementById("lyricsEditor");
     if (lyricsInputText) {
       console.info("Lyrics In: " + lyricsInputText.textContent); // test only
     }
@@ -262,27 +381,31 @@ class Lyrics {
 
 const myLyrics = new Lyrics();
 
-// const defaultLyrics = document.getElementById("lyricsTextIn");
-// if (defaultLyrics) {
-//   myLyrics.lyricsOnChange(defaultLyrics);
-// }
-
 const fileInputElement = document.getElementById("fileSelected");
-if (fileInputElement) {
-  // Add event listener to handle lyrics added or edited in text area.
-  // fileInputElement.addEventListener("change", myLyrics.handleTest, false);
-  // fileInputElement.addEventListener("change", myLyrics.handleSelectedFile, false);
-  fileInputElement.addEventListener("change", myLyrics, false);
-}
+
+/**
+ * Add event listener to handle lyrics added or edited in the text area. I
+ * think this could also be done by setting the onChange (or onInput) method
+ * in the element itself (in the index.html).
+ * - the change (element onChange) event is triggered when focus leaves the
+ * text area.
+ * - the input (element onInput) event is triggered when the text area gets
+ * input, like when a key is pressed and a character is added. It triggers
+ * on each keystroke.
+ */
+fileInputElement?.addEventListener("change", myLyrics, false);
 
 // Add event listener to handle file input from "fileSelected" input element.
 
-// Test getting file name from URL search params. Currently does nothing.
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const fileToRead = urlParams.get('file');
-if (fileToRead) {
-  // const file
-  myLyrics.setFileToRead(fileToRead);
-}
+/**
+ * Test getting file name from URL search params. It currently does nothing.
+ * There is no way to automatically load a file from a URL search parameter.
+ * For security, the user must interact with the browser to get a file.
+ */
+// const queryString = window.location.search;
+// const urlParams = new URLSearchParams(queryString);
+// const fileToRead = urlParams.get('file');
+// if (fileToRead) {
+//   myLyrics.setFileToRead(fileToRead);
+// }
 

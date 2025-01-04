@@ -19,45 +19,55 @@
   <link rel="apple-touch-icon" href="icon.png">
 
   <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/font-awesome.min.css">
   <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
   <!-- Add your site or application content here -->
   <div class="container-main">
-    <div class="container-lyrics-display" id="lyricsDisplay">With the sword of truth and right;<br>Sound the war-cry, “Watch and pray!”<br></div>
-    <div class="container-editor">
+    <div class="container-lyrics-greenscreen" id="lyricsDisplay">Praise God, from whom all blessings flow;<br>Praise him, all creatures here below;</div>
+    <div class="console">
       <div class="lyrics-preview">
-        <div class="lyrics-preview-top">&nbsp;4 Hope of Israel, rise in might<br>&nbsp;5 With the sword of truth and right;</div>
-        <div class="lyrics-preview-showing">&nbsp;6 Sound the war-cry, “Watch and pray!”<br>&nbsp;7 Vanquish ev’ry foe today.</div>
-        <div class="lyrics-preview-bottom">&nbsp;8 See the foe in countless numbers,<br>&nbsp;9 Marshaled in the ranks of sin.<br>10 Hope of Israel, on to battle;<br>11 Now the vict’ry we must win!<br>12 Hope of Israel, rise in might<br>13 With the sword of truth and right;<br>14 Sound the war-cry, “Watch and pray!”</div>
+        <div class="lyrics-preview-previous" id="lyricsPreviewPrevious">&nbsp;0 Praise God, from whom all blessings flow;<br>&nbsp;1 Praise him, all creatures here below;</div>
+        <div class="lyrics-preview-showing" id="lyricsPreviewShowing">&nbsp;2 Praise him above, ye heav’nly host;<br>&nbsp;3 Praise Father, Son, and Holy Ghost.</div>
+        <div class="lyrics-preview-next" id="lyricsPreviewNext">&nbsp;8 See the foe in countless numbers,<br>&nbsp;9 Marshaled in the ranks of sin.<br>10 Hope of Israel, on to battle;<br>11 Now the vict’ry we must win!<br>12 Hope of Israel, rise in might<br>13 With the sword of truth and right;<br>14 Sound the war-cry, “Watch and pray!”</div>
       </div>
 
-      <div class="container-controls">
-        <div class="container-buttons">
-          <button class="button-large" onclick="myLyrics.prevLyrics()">&lt; Prev Line</button>
-          <button class="button-large" onclick="myLyrics.nextLyrics()">Next Line &gt;</button>
-          <button class="button-large" onclick="myLyrics.showLyricsButton()" id="showBtn">Show Lyrics</button>
-          <button class="button-large" onclick="myLyrics.hideLyricsButton()" id="hideBtn" style="display: none">Hide Lyrics</button>
-          <button class="button-large">Lines</button>
-        </div>
+      <div class="controls">
+        <button class="button-icon" onclick="myLyrics.showLyricsButton()" id="showBtn">
+          <img src="img/see_watch_view_eye_icon-103177.svg" width="120" height="120">
+        </button>
+        <button class="button-icon" onclick="myLyrics.hideLyricsButton()" id="hideBtn" style="display: none">
+          <img src="img/disable_eye_inactive_see_show_icon-3844443.svg" width="120" height="120">
+        </button>
+        <button class="button-icon" onclick="myLyrics.prevLyrics()">
+          <img src="img/arrow_up_icon-186407.svg" width="120" height="120">
+        </button>
+        <button class="button-icon" onclick="myLyrics.nextLyrics()">
+          <img src="img/arrow_down_icon-186411.svg" width="120" height="120">
+        </button>
+        <button class="button-large">Lines</button>
+        <button class="button-large" onclick="myLyrics.initLyricsToPreview()" id="startBtn">Start</button>
+      </div>
 
+      <div class="lyrics-editor">
         <div class="container-file-select">
           <label class="button-input-file">
             <input type="file" id="fileSelected"/>
-            Select File
+            FILE
           </label>
-          <p id="fileNameChosen">(no file chosen)</p>
+          <div class="filename" id="fileNameChosen">(no file chosen)</div>
         </div>
 
         <div class="container-lyrics-input">
-          <form class="form-lyrics-input" onchange="myLyrics.lyricsOnChange(lyricsTextIn)">
-            <textarea class="textarea-large-in" id="lyricsTextIn" rows="12"></textarea>
+          <form class="form-lyrics-input" onchange="myLyrics.lyricsOnChange(lyricsEditor)">
+            <textarea class="textarea-large-in" id="lyricsEditor" rows="16"></textarea>
           </form>
         </div>
-
       </div>
     </div>
+
 
     <div class="container-lyrics-output">
       <form class="form-lyrics-output">
