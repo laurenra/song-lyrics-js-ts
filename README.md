@@ -18,6 +18,10 @@ js/song-lyrics-js-ts.js
 favicon.ico
 icon.png
 icon.svg
+img/arrow_down_icon-186411.svg
+img/arrow_up_icon-186407.svg
+img/disable_eye_inactive_see_show_icon-3844443.svg
+img/see_watch_view_eye_icon-103177.svg
 site.webmanifest
 ```
 
