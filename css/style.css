@@ -19,13 +19,12 @@
 
 .container-lyrics-greenscreen {
   /*border: 1px solid red;*/
-  /*width: 1608px;*/
-  /*padding: 20px 156px;*/
-  width: 1700px;
-  padding: 20px 110px;
+  width: 1780px;
+  /*width: 1880px;*/
+  padding: 20px 70px;
   background-color: green;
   color: white;
-  font-size: 72pt;
+  font-size: 68pt;
   line-height: 90pt;
 }
 

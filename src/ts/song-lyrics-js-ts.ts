@@ -14,6 +14,9 @@
  * and its methods, because a Lyrics object was created at the beginning of
  * the page load (see the end of this file), so it reads the lyrics text in
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
+ *
+ * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
+ * TODO: UI to set number of display lines
  */
 class Lyrics {
 
@@ -55,8 +58,6 @@ class Lyrics {
    * clear the lyrics display green screen, show the Show Lyrics button.
    *
    * out: this.lyricsText, this.lyricsArray, this.lyricsArrayLen
-   *
-   * TODO: hide the Start button (id=startBtn)? Will it still work if hidden?
    */
   initLyricsToPreview() {
     const lyrics = document.getElementById("lyricsEditor");
