@@ -65,52 +65,55 @@ class Lyrics {
     }
   }
 
+
   /**
    * Get lyrics from editor textarea and copy to the preview area.
+   *
+   * in:  this.lyricsArray, this.linesToDisplay
+   *
    */
   copyLyricsToPreview() {
     const lyrics = document.getElementById("lyricsEditor");
     if (lyrics) {
 
-      // Copy n blank lines to top area
-      this.copyLyricstoPreviewPrevious();
-      // Copy first n lines to showing area
-      this.copyLyricstoPreviewShowing();
-      // Copy remaining lines to bottom area
-      this.copyLyricstoPreviewNext();
+      // loop through lyrics array in steps equal to the number of lines to display
+      // get the lyrics to display (pad with trailing blank lines if at the end)
+      // create a row in the previewTable and copy the lyrics to display
+      // set the top row(s) background color to white
+
+      const prvwTable = document.getElementById("previewTable") as HTMLTableElement;
+      if (prvwTable) {
+        // Delete existing rows and cells (doesn't delete <tbody>).
+        while (prvwTable.rows.length > 0) {
+          prvwTable.deleteRow(0);
+        }
+
+        // const prvwTbody = prvwTable.getElementsByTagName("tbody");
+        // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
+
+        // Number of rows to create = quotient (integer) of lyricsArray / linesToDisplay
+        let tblRows = Math.floor(this.lyricsArrayLen / this.linesToDisplay);
+        let lyricsIndex = 0;
+        let lyricsToCopy = "";
+
+        // Loop and create new rows and copy the lyrics into them.
+        for (let i = 0; i < tblRows; i++) {
+          lyricsToCopy = this.getLyricsToDisplay(this.lyricsArray, lyricsIndex, this.lyricsArrayLen, this.linesToDisplay);
+
+          // Create new row <td> with a single cell <td> and copy the lyrics into it.
+          const newtr = document.createElement("tr");
+          const newtd = document.createElement("td");
+          if(i == 0) {
+            newtd.style.backgroundColor = "white"; // initialize the first row with white background
+          }
+          newtd.innerHTML = lyricsToCopy;
+          newtr.appendChild(newtd);
+          prvwTable.tBodies[0].appendChild(newtr);
+
+          lyricsIndex = lyricsIndex + this.linesToDisplay;
+        }
+      }
     }
-
-  }
-
-  /**
-   * Copy n lines of lyrics to preview Previous (top) area.
-   * @param lyrics
-   * @param lines
-   */
-  copyLyricstoPreviewPrevious() {
-
-  }
-
-  /**
-   * Copy n lines of lyrics to preview showing (middle) area.
-   * @param lyrics
-   * @param lines
-   */
-  copyLyricstoPreviewShowing() {
-    const lyricsShowing = document.getElementById("lyricsPreviewShowing");
-    if (lyricsShowing) {
-      // lyricsShowing.innerHTML = "";
-      lyricsShowing.innerHTML = this.lyricsToDisplay;
-    }
-  }
-
-  /**
-   * Copy n lines of lyrics to preview next (bottom) area.
-   * @param lyrics
-   * @param lines
-   */
-  copyLyricstoPreviewNext() {
-
   }
 
   setFileToRead(filePath: string) {
@@ -381,7 +384,11 @@ class Lyrics {
 
 const myLyrics = new Lyrics();
 
-const fileInputElement = document.getElementById("fileSelected");
+const td = document.getElementById("previewTable")?.getElementsByTagName("td");
+if (td) {
+  // td[0].className = "td-white";
+  td[2].style.backgroundColor = "white";
+}
 
 /**
  * Add event listener to handle lyrics added or edited in the text area. I
@@ -393,7 +400,9 @@ const fileInputElement = document.getElementById("fileSelected");
  * input, like when a key is pressed and a character is added. It triggers
  * on each keystroke.
  */
+const fileInputElement = document.getElementById("fileSelected");
 fileInputElement?.addEventListener("change", myLyrics, false);
+
 
 // Add event listener to handle file input from "fileSelected" input element.
 

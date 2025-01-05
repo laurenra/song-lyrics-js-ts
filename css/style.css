@@ -47,39 +47,16 @@
 }
 
 .preview-table {
-  width: 100%;
   padding: 0px 20px;
   border-spacing: 0px;
-  background-color: #cccccc;
   display: block;
   height: 20em;
   overflow-y: scroll;
 }
 
-/*.preview-table tbody {*/
-/*  padding: 0px;*/
-/*  margin: 0px;*/
-/*}*/
-
-.preview-table tr {
-  /*background-color: white;*/
-  padding: 0px;
-  margin: 0px;
-}
-
 .preview-table td {
-  /*background-color: white;*/
   width: 18em;
   padding: 0px 10px;
-  font-weight: normal;
-  text-align: left;
-}
-
-.td-white {
-  background-color: white;
-}
-.td-grey {
-  background-color: #cccccc;
 }
 
 .lyrics-preview-previous {
