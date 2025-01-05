@@ -1,5 +1,4 @@
 "use strict";
-var _a;
 /**
  * Event flow:
  * 1. Select file (<input> id=fileSelected handler method named handleEvent)
@@ -346,11 +345,11 @@ class Lyrics {
  * Begin Program
  */
 const myLyrics = new Lyrics();
-const td = (_a = document.getElementById("previewTable")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("td");
-if (td) {
-    // td[0].className = "td-white";
-    td[2].style.backgroundColor = "white";
-}
+// const td = document.getElementById("previewTable")?.getElementsByTagName("td");
+// if (td) {
+//   // td[0].className = "td-white";
+//   td[2].style.backgroundColor = "white";
+// }
 /**
  * Add event listener to handle lyrics added or edited in the text area. I
  * think this could also be done by setting the onChange (or onInput) method

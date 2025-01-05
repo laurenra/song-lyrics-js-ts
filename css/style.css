@@ -38,11 +38,11 @@
 
 .lyrics-preview {
   /*border: 1px solid red;*/
-  width: 38%;
+  width: 40%;
   border-left: 2px solid black;
-  height: 20em;
+  height: 21em;
   padding: 20px 0px;
-  font-size: 28pt;
+  font-size: 26pt;
   background-color: #cccccc;
 }
 
@@ -50,12 +50,12 @@
   padding: 0px 20px;
   border-spacing: 0px;
   display: block;
-  height: 20em;
+  height: 21em;
   overflow-y: scroll;
 }
 
 .preview-table td {
-  width: 18em;
+  width: 21em;
   padding: 0px 10px;
 }
 
@@ -80,10 +80,10 @@
 }
 
 .controls {
-  width: 12%;
+  width: 9%;
   border-left: 2px solid black;
   /*margin-top: 10px;*/
-  padding: 0px 0px 20px 10px;
+  padding: 0px 0px 20px 0px;
   display: flex;
   flex-flow: column wrap;
   /*justify-content: space-evenly;*/
@@ -103,7 +103,7 @@
 
 .lyrics-editor {
   /*border: 1px solid red;*/
-  width: 47%;
+  width: 51%;
   background-color: #cccccc;
 }
 
@@ -200,8 +200,7 @@ input[type="file"] {
 }
 
 .button-icon {
-  margin: 20px 30px;
-  /*padding: 10px;*/
+  margin: 20px;
   font-size: 32pt;
   border-radius: 20px;
   cursor: pointer;
@@ -215,9 +214,9 @@ input[type="file"] {
 }
 
 .textarea-large-in {
-  font-size: 24pt;
-  width: 26em;
-  padding: 10px 20px;
+  font-size: 22pt;
+  width: 31em;
+  padding: 10px 10px 10px 20px;
 }
 
 .text-lyrics {

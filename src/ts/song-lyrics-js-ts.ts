@@ -384,11 +384,11 @@ class Lyrics {
 
 const myLyrics = new Lyrics();
 
-const td = document.getElementById("previewTable")?.getElementsByTagName("td");
-if (td) {
-  // td[0].className = "td-white";
-  td[2].style.backgroundColor = "white";
-}
+// const td = document.getElementById("previewTable")?.getElementsByTagName("td");
+// if (td) {
+//   // td[0].className = "td-white";
+//   td[2].style.backgroundColor = "white";
+// }
 
 /**
  * Add event listener to handle lyrics added or edited in the text area. I
