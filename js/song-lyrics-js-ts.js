@@ -18,79 +18,88 @@
  */
 class Lyrics {
     constructor() {
+        this.isShowLyrics = false;
         this.lyricsText = "";
         this.lyricsArray = [];
         this.lyricsArrayLen = 0;
         this.lyricsIndex = 0;
-        this.linesToDisplay = 2;
+        this.displayLines = 2;
         this.lyricsToDisplay = "";
+        this.previewRowIndex = 0;
         this.fileLocation = "";
     }
     setDefaults() {
+        this.isShowLyrics = false;
         this.lyricsText = "";
         this.lyricsArray = [];
         this.lyricsArrayLen = 0;
         this.lyricsIndex = 0;
-        this.linesToDisplay = 2;
+        this.displayLines = 2;
         this.lyricsToDisplay = "";
+        this.previewRowIndex = 0;
     }
     /**
-     * Read lyrics from <textarea id=lyricsEditor> and initialize variables.
+     * Read lyrics from <textarea id=lyricsEditor>, initialize variables,
+     * clear the lyrics display green screen, show the Show Lyrics button.
+     *
+     * out: this.lyricsText, this.lyricsArray, this.lyricsArrayLen
+     *
+     * TODO: hide the Start button (id=startBtn)? Will it still work if hidden?
      */
     initLyricsToPreview() {
         const lyrics = document.getElementById("lyricsEditor");
         if (lyrics) {
-            this.setDefaults(); // this resets
+            this.setDefaults();
             const lyricsText = lyrics.textContent;
             if (lyricsText) {
                 if ((lyricsText === null || lyricsText === void 0 ? void 0 : lyricsText.length) > 0) {
                     this.lyricsText = lyricsText;
                     this.lyricsArray = this.lyricsText.split("\n");
                     this.lyricsArrayLen = this.lyricsArray.length;
-                    this.setLyricsToDisplay();
                     this.copyLyricsToPreview();
                 }
             }
+            this.hideLyricsButton();
         }
     }
+    // const prvwTbody = prvwTable.getElementsByTagName("tbody");
+    // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
     /**
      * Get lyrics from editor textarea and copy to the preview area.
+     * 1. Calculate number of table rows = lyrics array length / lines to display at a time.
+     * 2. Delete existing rows in table.
+     * 3. Loop to create rows in the table and copy a chunk of lyrics to display into a row.
+     * 4. Set background color of the top row (chunk of lyrics) to white.
      *
-     * in:  this.lyricsArray, this.linesToDisplay
-     *
+     * in:  this.lyricsArray, this.lyricsArrayLen, this.displayLines
      */
     copyLyricsToPreview() {
         const lyrics = document.getElementById("lyricsEditor");
         if (lyrics) {
-            // loop through lyrics array in steps equal to the number of lines to display
-            // get the lyrics to display (pad with trailing blank lines if at the end)
-            // create a row in the previewTable and copy the lyrics to display
-            // set the top row(s) background color to white
             const prvwTable = document.getElementById("previewTable");
             if (prvwTable) {
                 // Delete existing rows and cells (doesn't delete <tbody>).
                 while (prvwTable.rows.length > 0) {
                     prvwTable.deleteRow(0);
                 }
-                // const prvwTbody = prvwTable.getElementsByTagName("tbody");
-                // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
-                // Number of rows to create = quotient (integer) of lyricsArray / linesToDisplay
-                let tblRows = Math.floor(this.lyricsArrayLen / this.linesToDisplay);
+                // Number of rows to create = quotient (integer) of lyricsArray / displayLines
+                let tblRows = Math.floor(this.lyricsArrayLen / this.displayLines);
                 let lyricsIndex = 0;
                 let lyricsToCopy = "";
                 // Loop and create new rows and copy the lyrics into them.
                 for (let i = 0; i < tblRows; i++) {
-                    lyricsToCopy = this.getLyricsToDisplay(this.lyricsArray, lyricsIndex, this.lyricsArrayLen, this.linesToDisplay);
+                    lyricsToCopy = this.getLyricsToDisplay(this.lyricsArray, lyricsIndex, this.lyricsArrayLen, this.displayLines);
                     // Create new row <td> with a single cell <td> and copy the lyrics into it.
                     const newtr = document.createElement("tr");
                     const newtd = document.createElement("td");
                     if (i == 0) {
-                        newtd.style.backgroundColor = "white"; // initialize the first row with white background
+                        newtd.style.backgroundColor = "white"; // initialize first row with white background
+                        this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
                     }
                     newtd.innerHTML = lyricsToCopy;
                     newtr.appendChild(newtd);
                     prvwTable.tBodies[0].appendChild(newtr);
-                    lyricsIndex = lyricsIndex + this.linesToDisplay;
+                    lyricsIndex = lyricsIndex + this.displayLines;
                 }
             }
         }
@@ -199,29 +208,65 @@ class Lyrics {
         // }
     }
     /**
-     * Move the cursor position to the previous line(s) of lyrics and copy them
-     * to this.lyricsToDisplay. Don't go before the first line(s).
+     * Move down to next lyrics to display and show them if isShowLyrics is true.
      *
-     * in:  this.lyricsIndex, this.linesToDisplay
-     * out: this.lyricsIndex, this.lyricsToDisplay
+     * in:  this.isShowLyrics
      */
-    prevLyrics() {
-        if (this.lyricsIndex - this.linesToDisplay >= 0) {
-            this.lyricsIndex = this.lyricsIndex - this.linesToDisplay;
-            this.setLyricsToDisplay();
+    downButton() {
+        this.nextLyrics();
+        if (this.isShowLyrics) {
+            this.showLyrics();
         }
     }
     /**
-     * Move the cursor position to the next line(s) of lyrics and copy them
-     * to this.lyricsToDisplay. Don't go beyond the last line(s).
+     * Move to next row(s) of lyrics to display.
      *
-     * in:  this.lyricsIndex, this.linesToDisplay, this.lyricsArrayLen
-     * out: this.lyricsIndex, this.lyricsToDisplay
+     * 1. Move index down by this.displayLines
+     * 2. Move preview window down by this.displayLines
+     * 3. Copy row(s) of lyrics into this.lyricsToDisplay
      */
     nextLyrics() {
-        if (this.lyricsIndex + this.linesToDisplay < this.lyricsArrayLen) {
-            this.lyricsIndex = this.lyricsIndex + this.linesToDisplay;
-            this.setLyricsToDisplay();
+        var _a;
+        if (this.lyricsIndex + this.displayLines < this.lyricsArrayLen) {
+            this.lyricsIndex = this.lyricsIndex + this.displayLines;
+            const td = (_a = document.getElementById("previewTable")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("td");
+            if (td) {
+                td[this.previewRowIndex].style.backgroundColor = "#cccccc";
+                this.previewRowIndex = this.previewRowIndex + 1;
+                td[this.previewRowIndex].style.backgroundColor = "white";
+            }
+            this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
+        }
+    }
+    /**
+     * Move up to previous lyrics to display and show them if isShowLyrics is true.
+     *
+     * in:  this.isShowLyrics
+     */
+    upButton() {
+        this.prevLyrics();
+        if (this.isShowLyrics) {
+            this.showLyrics();
+        }
+    }
+    /**
+     * Move to previous row(s) of lyrics to display.
+     *
+     * 1. Move index up by this.displayLines
+     * 2. Move preview window up by this.displayLines
+     * 3. Copy row(s) of lyrics into this.lyricsToDisplay
+     */
+    prevLyrics() {
+        var _a;
+        if (this.lyricsIndex - this.displayLines >= 0) {
+            this.lyricsIndex = this.lyricsIndex - this.displayLines;
+            const td = (_a = document.getElementById("previewTable")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("td");
+            if (td) {
+                td[this.previewRowIndex].style.backgroundColor = "#cccccc";
+                this.previewRowIndex = this.previewRowIndex - 1;
+                td[this.previewRowIndex].style.backgroundColor = "white";
+            }
+            this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
         }
     }
     /**
@@ -233,16 +278,16 @@ class Lyrics {
      * in:  this.lyricsArray
      *      this.lyricsIndex
      *      this.lyricsArrayLen
-     *      this.linesToDisplay
+     *      this.displayLines
      *
      * out: this.lyricsToDisplay
      */
-    getLyricsToDisplay(lyricsArray, lyricsIndex, lyricsArrayLen, linesToDisplay) {
+    getLyricsToDisplay(lyricsArray, lyricsIndex, lyricsArrayLen, displayLines) {
         let lyricsToDisplay = "";
         if (lyricsIndex < lyricsArrayLen) {
             let displayPointer = lyricsIndex;
             // Loop as many times as the number of lines to display, typically 2 at a time.
-            for (let i = 0; i < linesToDisplay; i++) {
+            for (let i = 0; i < displayLines; i++) {
                 // If display pointer is not beyond the last line of lyrics, append newline.
                 if (displayPointer < lyricsArrayLen) {
                     lyricsToDisplay = lyricsToDisplay + lyricsArray[lyricsIndex + i] + "<br>";
@@ -269,7 +314,7 @@ class Lyrics {
      * in:  this.lyricsArray
      *      this.lyricsIndex
      *      this.lyricsArrayLen
-     *      this.linesToDisplay
+     *      this.displayLines
      *
      * out: this.lyricsToDisplay
      */
@@ -278,7 +323,7 @@ class Lyrics {
         if (this.lyricsIndex < this.lyricsArrayLen) {
             let displayPointer = this.lyricsIndex;
             // Loop as many times as the number of lines to display, typically 2 at a time.
-            for (let i = 0; i < this.linesToDisplay; i++) {
+            for (let i = 0; i < this.displayLines; i++) {
                 // If display pointer is not beyond the last line of lyrics, append newline.
                 if (displayPointer < this.lyricsArrayLen) {
                     lyricsToDisplay = lyricsToDisplay + this.lyricsArray[this.lyricsIndex + i] + "<br>";
@@ -293,42 +338,72 @@ class Lyrics {
         }
     }
     /**
-     * Read the lyrics in the textarea and initialize
+     * Show the lyrics in the green screen area
+     *
+     * 1. Show the lyrics.
+     * 2. Hide the Show Lyrics button.
+     * 3. Show the Hide Lyrics button.
+     * 4. Set this.showLyrics to true.
+     *
+     * out: this.isShowLyrics = true
      */
     showLyricsButton() {
-        // Get lyrics in textarea, if any.
-        const lyricsInputText = document.getElementById("lyricsEditor");
-        if (lyricsInputText) {
-            console.info("Lyrics In: " + lyricsInputText.textContent); // test only
-        }
-        const lyricsDisplay = document.getElementById("lyricsDisplay");
-        if (lyricsDisplay) {
-            lyricsDisplay.innerHTML = "";
-            lyricsDisplay.innerHTML = this.lyricsToDisplay;
-        }
+        this.showLyrics();
         const showLyricsBtn = document.getElementById("showBtn");
         const hideLyrcsBtn = document.getElementById("hideBtn");
         if (showLyricsBtn && hideLyrcsBtn) {
             showLyricsBtn.style.display = "none";
             hideLyrcsBtn.style.display = "block";
         }
+        this.isShowLyrics = true;
     }
-    hideLyricsButton() {
-        // don't show the lyrics
-        let blankLines = "";
-        for (let i = 0; i < this.linesToDisplay; i++) {
-            blankLines = blankLines + "<br>";
-        }
+    /**
+     * Show the lyrics in the green screen area by copying from
+     * this.lyricsToDisplay to the lyricsDisplay container.
+     *
+     * in:  this.lyricsToDisplay
+     */
+    showLyrics() {
         const lyricsDisplay = document.getElementById("lyricsDisplay");
         if (lyricsDisplay) {
-            // lyricsDisplay.innerHTML = "";
-            lyricsDisplay.innerHTML = blankLines;
+            lyricsDisplay.innerHTML = this.lyricsToDisplay;
         }
+    }
+    /**
+     * Hide the lyrics in the green screen area
+     *
+     * 1. Hide the lyrics.
+     * 2. Show the Show Lyrics button.
+     * 3. Hide the Hide Lyrics button.
+     * 4. Set this.showLyrics to false.
+     *
+     * in:  this.lyricsToDisplay
+     * out: this.isShowLyrics = false
+     */
+    hideLyricsButton() {
+        this.hideLyrics();
         const showLyricsBtn = document.getElementById("showBtn");
         const hideLyrcsBtn = document.getElementById("hideBtn");
         if (showLyricsBtn && hideLyrcsBtn) {
             showLyricsBtn.style.display = "block";
             hideLyrcsBtn.style.display = "none";
+        }
+        this.isShowLyrics = false;
+    }
+    /**
+     * Hide the lyrics in the green screen area by writing blank lines to the
+     * lyricsDisplay container.
+     *
+     * in:  this.displayLines
+     */
+    hideLyrics() {
+        let blankLines = "";
+        for (let i = 0; i < this.displayLines; i++) {
+            blankLines = blankLines + "<br>";
+        }
+        const lyricsDisplay = document.getElementById("lyricsDisplay");
+        if (lyricsDisplay) {
+            lyricsDisplay.innerHTML = blankLines;
         }
     }
     /**
@@ -345,6 +420,7 @@ class Lyrics {
  * Begin Program
  */
 const myLyrics = new Lyrics();
+myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
 // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
 // if (td) {
 //   // td[0].className = "td-white";
