@@ -49,30 +49,36 @@
 .preview-table {
   width: 100%;
   padding: 0px 20px;
-  overflow-y: auto;
   border-spacing: 0px;
   background-color: #cccccc;
+  display: block;
+  height: 20em;
+  overflow-y: scroll;
 }
 
 /*.preview-table tbody {*/
-/*  width: 100%;*/
+/*  padding: 0px;*/
+/*  margin: 0px;*/
 /*}*/
 
 .preview-table tr {
   /*background-color: white;*/
+  padding: 0px;
+  margin: 0px;
 }
 
-.preview-table th {
+.preview-table td {
   /*background-color: white;*/
+  width: 18em;
   padding: 0px 10px;
   font-weight: normal;
   text-align: left;
 }
 
-.th-white {
+.td-white {
   background-color: white;
 }
-.th-grey {
+.td-grey {
   background-color: #cccccc;
 }
 
