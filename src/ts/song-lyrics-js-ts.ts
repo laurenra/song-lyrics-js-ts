@@ -15,7 +15,6 @@
  * the page load (see the end of this file), so it reads the lyrics text in
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
  *
- * TODO: Finish getting edit text to work properly. (not working)
  * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
  * TODO: UI to set number of display lines
