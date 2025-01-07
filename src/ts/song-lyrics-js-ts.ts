@@ -102,11 +102,12 @@ class Lyrics {
 
         }
         // Number of rows to create = quotient (integer) of lyricsArray / displayLines
-        let tblRows = Math.floor(this.lyricsArrayLen / this.displayLines);
-        if (tblRows == 0 && this.lyricsArrayLen > 0) {
-          // If there are lyrics, and the number of lines < lines in the display area, force to 1.
-          tblRows = 1;
-        }
+        // let tblRows = Math.floor(this.lyricsArrayLen / this.displayLines);
+        let tblRows = Math.ceil(this.lyricsArrayLen / this.displayLines);
+        // if (tblRows == 0 && this.lyricsArrayLen > 0) {
+        //   // If there are lyrics, and the number of lines < lines in the display area, force to 1.
+        //   tblRows = 1;
+        // }
         let lyricsIndex = 0;
         let lyricsToCopy = "";
 
