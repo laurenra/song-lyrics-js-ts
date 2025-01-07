@@ -79,11 +79,9 @@ class Lyrics {
         if (lyrics) {
             const prvwTable = document.getElementById("previewTable");
             if (prvwTable) {
-                // Delete existing rows and cells (doesn't delete <tbody>).
+                // Delete existing rows and cells (does not delete <tbody>).
                 while (prvwTable.rows.length > 0) {
                     prvwTable.deleteRow(0);
-                }
-                if (this.lyricsArrayLen > 0 && this.lyricsArrayLen < this.displayLines) {
                 }
                 // Number of rows to create = next higher integer of (lyricsArray / displayLines)
                 let tblRows = Math.ceil(this.lyricsArrayLen / this.displayLines);
@@ -181,16 +179,9 @@ class Lyrics {
         const rowTr = rowEl.closest("tr");
         const rownum = rowTr === null || rowTr === void 0 ? void 0 : rowTr.rowIndex;
         if (rownum) {
-            // console.info("row.closest('tr').rowIndex: " + rownum); // testing only
             this.goToLyricsRow(rownum);
         }
     }
-    // tableOnClick(event: Event) {
-    //   const table = event.target as HTMLTableElement;
-    //   const rowEl = table.closest("tr");
-    //   const rownum = rowEl?.rowIndex;
-    //   console.info("row " + rownum);
-    // }
     /**
      * Set oninput="lyricsOnInput" to handle changes with each keypress
      *
@@ -203,26 +194,13 @@ class Lyrics {
         this.lyricsArrayLen = this.lyricsArray.length;
         this.setLyricsToDisplay();
     }
-    setLyricsLines() {
-        console.info("Clicked Lines button...");
-    }
-    /**
-     * Move down to next lyrics to display and show them if isShowLyrics is true.
-     *
-     * in:  this.isShowLyrics
-     */
-    downButton() {
-        this.nextLyricsRow();
-        if (this.isShowLyrics) {
-            this.showLyrics();
-        }
-    }
     /**
      * Move to next row(s) of lyrics to display.
      *
      * 1. Move index down by this.displayLines
      * 2. Move preview window down by this.displayLines
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
+     * 4. Show lyrics in green screen if isShowLyrics is true
      */
     nextLyricsRow() {
         var _a;
@@ -236,14 +214,6 @@ class Lyrics {
             }
             this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
         }
-    }
-    /**
-     * Move up to previous lyrics to display and show them if isShowLyrics is true.
-     *
-     * in:  this.isShowLyrics
-     */
-    upButton() {
-        this.prevLyricsRow();
         if (this.isShowLyrics) {
             this.showLyrics();
         }
@@ -255,6 +225,7 @@ class Lyrics {
      * by this.displayLines
      * 2. Move preview window up by this.displayLines
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
+     * 4. Show lyrics in green screen if isShowLyrics is true
      */
     prevLyricsRow() {
         var _a;
@@ -268,6 +239,9 @@ class Lyrics {
             }
             this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
         }
+        if (this.isShowLyrics) {
+            this.showLyrics();
+        }
     }
     /**
      * Move to next row(s) of lyrics to display.
@@ -277,19 +251,23 @@ class Lyrics {
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
      */
     goToLyricsRow(row) {
+        var _a;
         console.info("go to row number " + row);
-        // if (this.lyricsIndex + this.displayLines < this.lyricsArrayLen) {
-        //   this.lyricsIndex = this.lyricsIndex + this.displayLines;
-        //
-        //   const td = document.getElementById("previewTable")?.getElementsByTagName("td");
-        //   if (td) {
-        //     td[this.previewRowIndex].style.backgroundColor = "#cccccc";
-        //     this.previewRowIndex = this.previewRowIndex + 1;
-        //     td[this.previewRowIndex].style.backgroundColor = "white";
-        //   }
-        //
-        //   this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
-        // }
+        const lyricsIndex = row * this.displayLines;
+        console.info("go to lyrics index " + lyricsIndex);
+        if (this.lyricsIndex >= 0 && this.lyricsIndex < this.lyricsArrayLen) {
+            const td = (_a = document.getElementById("previewTable")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("td");
+            if (td) {
+                td[this.previewRowIndex].style.backgroundColor = "#cccccc"; // reset current row (white) back to grey
+                this.previewRowIndex = row;
+                this.lyricsIndex = lyricsIndex;
+                td[this.previewRowIndex].style.backgroundColor = "white"; // set new row to white
+            }
+            this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
+            if (this.isShowLyrics) {
+                this.showLyrics();
+            }
+        }
     }
     /**
      * Determine how many lines of lyrics can be displayed in the display area

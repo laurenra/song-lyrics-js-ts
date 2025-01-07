@@ -30,7 +30,7 @@
       <div class="lyrics-preview">
         <table class="preview-table" id="previewTable">
           <tbody>
-            <tr onclick="myLyrics.tableRowOnClick(this)"><td>one<br>two<br></td></tr>
+            <tr onclick="myLyrics.tableRowOnClick(this)"><td></td></tr>
           </tbody>
         </table>
       </div>
@@ -42,10 +42,10 @@
         <button class="button-icon" onclick="myLyrics.hideLyricsButton()" id="hideBtn" style="display: none">
           <img src="img/disable_eye_inactive_see_show_icon-3844443.svg" width="120" height="120">
         </button>
-        <button class="button-icon" onclick="myLyrics.upButton()">
+        <button class="button-icon" onclick="myLyrics.prevLyricsRow()">
           <img src="img/arrow_up_icon-186407.svg" width="120" height="120">
         </button>
-        <button class="button-icon" onclick="myLyrics.downButton()">
+        <button class="button-icon" onclick="myLyrics.nextLyricsRow()">
           <img src="img/arrow_down_icon-186411.svg" width="120" height="120">
         </button>
         <button class="button-large" onclick="myLyrics.setLyricsLines()">Lines</button>
