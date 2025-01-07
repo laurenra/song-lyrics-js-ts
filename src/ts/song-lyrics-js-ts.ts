@@ -60,10 +60,10 @@ class Lyrics {
    * out: this.lyricsText, this.lyricsArray, this.lyricsArrayLen
    */
   initLyricsToPreview() {
-    const lyrics = document.getElementById("lyricsEditor");
+    const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
     if (lyrics) {
       this.setDefaults();
-      const lyricsText = lyrics.textContent;
+      const lyricsText = lyrics.value;
       if (lyricsText) {
         if (lyricsText?.length > 0) {
           this.lyricsText = lyricsText;
@@ -89,7 +89,7 @@ class Lyrics {
    * in:  this.lyricsArray, this.lyricsArrayLen, this.displayLines
    */
   copyLyricsToPreview() {
-    const lyrics = document.getElementById("lyricsEditor");
+    const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
     if (lyrics) {
       const prvwTable = document.getElementById("previewTable") as HTMLTableElement;
       if (prvwTable) {
@@ -143,7 +143,6 @@ class Lyrics {
    * passes in; in this case the <input> element in the HTML.
    */
   handleEvent(event: Event) {
-    let testVar = "test";
     const selectedFileList = (event.target as HTMLInputElement).files;
     if (selectedFileList) {
       // Get only one file, the first one.
@@ -160,10 +159,9 @@ class Lyrics {
         reader.onload = function() {
           const fileContent = reader.result as string;
           // Copy file contents to lyrics editor textarea
-          const lyricsInArea = document.getElementById("lyricsEditor");
+          const lyricsInArea = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
           if (lyricsInArea) {
-            lyricsInArea.innerHTML = fileContent;
-            testVar = "did it";
+            lyricsInArea.value = fileContent;
             const startBtn = document.getElementById("startBtn");
             startBtn?.dispatchEvent(new Event('click', {bubbles: true, cancelable: true}));
           }
@@ -210,28 +208,32 @@ class Lyrics {
    *
    * @param inputText
    */
+  lyricsOnChange() {
+    this.initLyricsToPreview();
+    console.info("Edited lyrics...");
+
+    // this.setDefaults();
+    // this.lyricsText = inputText.value;
+    // this.lyricsArray = this.lyricsText.split("\n");
+    // this.lyricsArrayLen = this.lyricsArray.length;
+    // this.setLyricsToDisplay();
+  }
+
+  /**
+   * Set oninput="lyricsOnInput" to handle changes with each keypress
+   *
+   * @param inputText
+   */
   lyricsOnInput(inputText: any) {
     this.setDefaults();
     this.lyricsText = inputText.value;
     this.lyricsArray = this.lyricsText.split("\n");
     this.lyricsArrayLen = this.lyricsArray.length;
     this.setLyricsToDisplay();
-    // const lyricsOutDisplay = document.getElementById("lyricsTextOut");
-    // if (lyricsOutDisplay) {
-    //   lyricsOutDisplay.innerHTML = this.lyricsText;
-    // }
   }
 
-  lyricsOnChange(inputText: any) {
-    this.setDefaults();
-    this.lyricsText = inputText.value;
-    this.lyricsArray = this.lyricsText.split("\n");
-    this.lyricsArrayLen = this.lyricsArray.length;
-    this.setLyricsToDisplay();
-    // const lyricsOutDisplay = document.getElementById("lyricsTextOut");
-    // if (lyricsOutDisplay) {
-    //   lyricsOutDisplay.innerHTML = this.lyricsText;
-    // }
+  setLyricsLines() {
+    console.info("Clicked Lines button...");
   }
 
   /**

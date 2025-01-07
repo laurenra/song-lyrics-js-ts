@@ -48,7 +48,7 @@
         <button class="button-icon" onclick="myLyrics.downButton()">
           <img src="img/arrow_down_icon-186411.svg" width="120" height="120">
         </button>
-        <button class="button-large">Lines</button>
+        <button class="button-large" onclick="myLyrics.setLyricsLines()">Lines</button>
         <button class="button-large" onclick="myLyrics.initLyricsToPreview()" id="startBtn" style="display: none">Start</button>
       </div>
 
@@ -62,9 +62,10 @@
         </div>
 
         <div class="container-lyrics-input">
-          <form class="form-lyrics-input" onchange="myLyrics.lyricsOnChange(lyricsEditor)">
-            <textarea class="textarea-large-in" id="lyricsEditor" rows="18"></textarea>
-          </form>
+            <textarea class="textarea-large-in" onchange="myLyrics.lyricsOnChange()" id="lyricsEditor" rows="18"></textarea>
+        </div>
+        <div>
+          <textarea rows="8"></textarea>
         </div>
       </div>
     </div>
