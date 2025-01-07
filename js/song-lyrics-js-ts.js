@@ -99,7 +99,11 @@ class Lyrics {
                         newtd.style.backgroundColor = "white"; // initialize first row with white background
                         this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
                     }
-                    newtr.addEventListener("click", this.tableRowOnClick);
+                    // newtr.addEventListener("click", this.tableRowOnClick);
+                    // Add onclick listener and bind this context to the handler so the click event can access this.* methods.
+                    // TODO Should have done this with the file input handler handleEvent() below instead of having to read the <textarea>
+                    newtr.addEventListener("click", this.tableRowOnClick.bind(this));
+                    console.info("loop " + i + ": this.lyricsArrayLen = " + this.lyricsArrayLen); // testing only
                     newtd.innerHTML = lyricsToCopy;
                     newtr.appendChild(newtd);
                     prvwTable.tBodies[0].appendChild(newtr);
@@ -169,33 +173,17 @@ class Lyrics {
     //   }
     // }
     /**
-     * When lyrics are added or edited and the user leaves the textarea or
-     * changes focus to another widget:
-     * 1. Reset the array and index.
-     * 2. Split inputText (multiple lines of lyrics)
-     *    into a string array, with each line as an element in the array.
-     * 3. Display the first line(s) of lyrics in the display area.
-     * 4. Copy the inputText to a read-only <textarea>.
-     *
-     * Note: you cannot copy and paste into the textarea when index.html is a
-     * Browser Source in OBS on Mac OS and you select Interact to see it in an
-     * OBS dialog box. You can press buttons, move the scroll bar, etc., but
-     * can't copy or paste, but there may be a workaround. See here:
-     * https://github.com/obsproject/obs-browser/issues/365
-     * In particular this solution:
-     * https://github.com/obsproject/obs-browser/issues/365#issuecomment-1521406666
-     *
-     * @param inputText
+     * Click on a row to move the display cursor and show those lyrics
+     * @param event
      */
-    lyricsOnChange() {
-        this.initLyricsToPreview();
-        console.info("Edited lyrics...");
-    }
     tableRowOnClick(event) {
         const rowEl = event.target;
         const rowTr = rowEl.closest("tr");
         const rownum = rowTr === null || rowTr === void 0 ? void 0 : rowTr.rowIndex;
-        console.info("row.closest('tr').rowIndex: " + rownum);
+        if (rownum) {
+            // console.info("row.closest('tr').rowIndex: " + rownum); // testing only
+            this.goToLyricsRow(rownum);
+        }
     }
     // tableOnClick(event: Event) {
     //   const table = event.target as HTMLTableElement;
@@ -224,7 +212,7 @@ class Lyrics {
      * in:  this.isShowLyrics
      */
     downButton() {
-        this.nextLyrics();
+        this.nextLyricsRow();
         if (this.isShowLyrics) {
             this.showLyrics();
         }
@@ -236,7 +224,7 @@ class Lyrics {
      * 2. Move preview window down by this.displayLines
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
      */
-    nextLyrics() {
+    nextLyricsRow() {
         var _a;
         if (this.lyricsIndex + this.displayLines < this.lyricsArrayLen) {
             this.lyricsIndex = this.lyricsIndex + this.displayLines;
@@ -255,7 +243,7 @@ class Lyrics {
      * in:  this.isShowLyrics
      */
     upButton() {
-        this.prevLyrics();
+        this.prevLyricsRow();
         if (this.isShowLyrics) {
             this.showLyrics();
         }
@@ -263,11 +251,12 @@ class Lyrics {
     /**
      * Move to previous row(s) of lyrics to display.
      *
-     * 1. Move index up by this.displayLines
+     * 1. Move index up
+     * by this.displayLines
      * 2. Move preview window up by this.displayLines
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
      */
-    prevLyrics() {
+    prevLyricsRow() {
         var _a;
         if (this.lyricsIndex - this.displayLines >= 0) {
             this.lyricsIndex = this.lyricsIndex - this.displayLines;
@@ -279,6 +268,28 @@ class Lyrics {
             }
             this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
         }
+    }
+    /**
+     * Move to next row(s) of lyrics to display.
+     *
+     * 1. Move index down by this.displayLines
+     * 2. Move preview window down by this.displayLines
+     * 3. Copy row(s) of lyrics into this.lyricsToDisplay
+     */
+    goToLyricsRow(row) {
+        console.info("go to row number " + row);
+        // if (this.lyricsIndex + this.displayLines < this.lyricsArrayLen) {
+        //   this.lyricsIndex = this.lyricsIndex + this.displayLines;
+        //
+        //   const td = document.getElementById("previewTable")?.getElementsByTagName("td");
+        //   if (td) {
+        //     td[this.previewRowIndex].style.backgroundColor = "#cccccc";
+        //     this.previewRowIndex = this.previewRowIndex + 1;
+        //     td[this.previewRowIndex].style.backgroundColor = "white";
+        //   }
+        //
+        //   this.lyricsToDisplay = this.getLyricsToDisplay(this.lyricsArray, this.lyricsIndex, this.lyricsArrayLen, this.displayLines);
+        // }
     }
     /**
      * Determine how many lines of lyrics can be displayed in the display area
