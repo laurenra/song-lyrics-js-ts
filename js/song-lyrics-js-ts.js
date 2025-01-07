@@ -16,6 +16,8 @@
  * the page load (see the end of this file), so it reads the lyrics text in
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
  *
+ * TODO: Finish getting edit text to work properly. (not working)
+ * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
  * TODO: UI to set number of display lines
  */
@@ -182,6 +184,28 @@ class Lyrics {
             this.goToLyricsRow(rownum);
         }
         // this.goToLyricsRow(rownum?);
+    }
+    /**
+     * Set oninput="lyricsOnInput" to handle changes with each keypress
+     *
+     * @param inputText
+     */
+    lyricsOnChange(textarea) {
+        // const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
+        if (textarea.value) {
+            this.setDefaults();
+            const lyricsText = textarea.value;
+            if (lyricsText) {
+                if ((lyricsText === null || lyricsText === void 0 ? void 0 : lyricsText.length) > 0) {
+                    this.lyricsText = lyricsText;
+                    this.lyricsArray = this.lyricsText.split("\n");
+                    this.lyricsArrayLen = this.lyricsArray.length;
+                    this.copyLyricsToPreview();
+                }
+            }
+            this.hideLyricsButton();
+        }
+        console.info("lyrics changed: " + textarea.value); // testing only
     }
     /**
      * Set oninput="lyricsOnInput" to handle changes with each keypress
