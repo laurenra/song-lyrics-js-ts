@@ -101,13 +101,8 @@ class Lyrics {
         if (this.lyricsArrayLen > 0 && this.lyricsArrayLen < this.displayLines) {
 
         }
-        // Number of rows to create = quotient (integer) of lyricsArray / displayLines
-        // let tblRows = Math.floor(this.lyricsArrayLen / this.displayLines);
+        // Number of rows to create = next higher integer of (lyricsArray / displayLines)
         let tblRows = Math.ceil(this.lyricsArrayLen / this.displayLines);
-        // if (tblRows == 0 && this.lyricsArrayLen > 0) {
-        //   // If there are lyrics, and the number of lines < lines in the display area, force to 1.
-        //   tblRows = 1;
-        // }
         let lyricsIndex = 0;
         let lyricsToCopy = "";
 
@@ -123,6 +118,7 @@ class Lyrics {
             this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
           }
 
+          newtr.addEventListener("click", this.tableRowOnClick);
           newtd.innerHTML = lyricsToCopy;
           newtr.appendChild(newtd);
           prvwTable.tBodies[0].appendChild(newtr);
@@ -219,13 +215,21 @@ class Lyrics {
   lyricsOnChange() {
     this.initLyricsToPreview();
     console.info("Edited lyrics...");
-
-    // this.setDefaults();
-    // this.lyricsText = inputText.value;
-    // this.lyricsArray = this.lyricsText.split("\n");
-    // this.lyricsArrayLen = this.lyricsArray.length;
-    // this.setLyricsToDisplay();
   }
+
+  tableRowOnClick(event: Event) {
+    const rowEl = event.target as HTMLTableRowElement;
+    const rowTr = rowEl.closest("tr");
+    const rownum = rowTr?.rowIndex;
+    console.info("row.closest('tr').rowIndex: " + rownum);
+  }
+
+  // tableOnClick(event: Event) {
+  //   const table = event.target as HTMLTableElement;
+  //   const rowEl = table.closest("tr");
+  //   const rownum = rowEl?.rowIndex;
+  //   console.info("row " + rownum);
+  // }
 
   /**
    * Set oninput="lyricsOnInput" to handle changes with each keypress
