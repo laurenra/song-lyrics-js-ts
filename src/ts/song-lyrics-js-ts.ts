@@ -204,9 +204,10 @@ class Lyrics {
     const rowEl = event.target as HTMLTableRowElement;
     const rowTr = rowEl.closest("tr");
     const rownum = rowTr?.rowIndex;
-    if (rownum) {
+    if (rownum || rownum === 0) {
       this.goToLyricsRow(rownum);
     }
+    // this.goToLyricsRow(rownum?);
   }
 
   /**

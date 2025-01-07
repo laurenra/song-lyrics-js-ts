@@ -178,9 +178,10 @@ class Lyrics {
         const rowEl = event.target;
         const rowTr = rowEl.closest("tr");
         const rownum = rowTr === null || rowTr === void 0 ? void 0 : rowTr.rowIndex;
-        if (rownum) {
+        if (rownum || rownum === 0) {
             this.goToLyricsRow(rownum);
         }
+        // this.goToLyricsRow(rownum?);
     }
     /**
      * Set oninput="lyricsOnInput" to handle changes with each keypress
