@@ -116,7 +116,8 @@ need to compile anything.
 For different SVG icons, try [IconFinder.com](https://www.iconfinder.com/); for 
 example [FatIcons](https://www.iconfinder.com/iconsets/faticons) and 
 [Flat UI Icons](https://www.iconfinder.com/iconsets/flat-ui-icons-24-px) and 
-[Jumpicon](https://www.iconfinder.com/search/icons?family=jumpicon-glyph).
+[Jumpicon](https://www.iconfinder.com/search/icons?family=jumpicon-glyph). and 
+[Font Awesome Regular](https://www.iconfinder.com/search/icons?family=font-awesome-regular) icons.
 
 ## Project Setup
 

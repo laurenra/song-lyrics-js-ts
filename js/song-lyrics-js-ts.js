@@ -19,6 +19,7 @@
  * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
  * TODO: UI to set number of display lines
+ * TODO: Up down arrow keys move to previous and next lines
  */
 class Lyrics {
     constructor() {
@@ -430,14 +431,9 @@ class Lyrics {
             lyricsDisplay.innerHTML = blankLines;
         }
     }
-    /**
-     * Test changing text in the "lyricsDisplay" element.
-     */
-    testChange() {
-        const lyricsDisplay = document.getElementById("lyricsDisplay");
-        if (lyricsDisplay) {
-            lyricsDisplay.innerHTML = "Hope of Israel, Zion’s army,<br>Children of the promised day,";
-        }
+    moreLines() {
+    }
+    lessLines() {
     }
 }
 /**

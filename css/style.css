@@ -89,8 +89,18 @@
   background-color: #cccccc;
 }
 
-.controls button {
-  margin-right: 1em;
+/*.controls button {*/
+/*  margin-right: 1em;*/
+/*}*/
+
+.controls-lines {
+  /*border: 1px solid red;*/
+}
+
+.controls-lines-buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 20px 0px 0px 5px;
 }
 
 .container-buttons {
@@ -198,7 +208,7 @@ input[type="file"] {
   /*background-color: lightblue;*/
 }
 
-.button-icon {
+.button-icon-lrg {
   margin: 20px;
   font-size: 32pt;
   border-radius: 20px;
@@ -207,9 +217,38 @@ input[type="file"] {
   /*background-color: lightblue;*/
 }
 
+.button-icon-med {
+  margin: 8px;
+  padding: 0px;
+  font-size: 16pt;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  /*color: red;*/
+  /*background-color: lightblue;*/
+}
+
 .label-large {
   font-family: sans-serif;
-  font-size: 56px;
+  font-size: 48px;
+  margin: 34px;
+}
+
+.input-number-large {
+  font-size: 56pt;
+  width: 100px;
+  margin: 10px 34px;
+  padding: 0px 0px 0px 15px;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
 }
 
 .textarea-large-in {
