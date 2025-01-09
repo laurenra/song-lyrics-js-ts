@@ -100,6 +100,7 @@
 .controls-lines-buttons {
   display: flex;
   flex-flow: row nowrap;
+
   padding: 20px 0px 0px 5px;
 }
 
@@ -238,7 +239,8 @@ input[type="file"] {
   font-size: 56pt;
   width: 100px;
   margin: 10px 34px;
-  padding: 0px 0px 0px 15px;
+  padding: 0px 5px 0px 5px;
+  text-align: right;
 }
 
 input[type="number"] {

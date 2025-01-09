@@ -52,14 +52,14 @@
 
         <div class="controls-lines">
           <div class="controls-lines-buttons">
-            <button class="button-icon-med" id="moreLines()">
+            <button class="button-icon-med" id="lessLines" onclick="myLyrics.lessLines()">
               <img src="img/square_minus_icon_8664827.svg" width="72" height="72">
             </button>
-            <button class="button-icon-med" id="lessLines()">
+            <button class="button-icon-med" id="moreLines" onclick="myLyrics.moreLines()">
               <img src="img/square_plus_icon_8664849.svg" width="72" height="72">
             </button>
           </div>
-          <input class="input-number-large" type="number"/>
+          <input class="input-number-large" id="displayLines" type="number" value="2" min="1" max="20"/>
           <label class="label-large">Lines</label>
         </div>
       </div>

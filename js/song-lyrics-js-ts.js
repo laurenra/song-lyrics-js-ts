@@ -18,7 +18,7 @@
  *
  * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
- * TODO: UI to set number of display lines
+ * TODO: what happens if someone enters number out of range? Does it reset to max or min? Or do I have to do that?
  * TODO: Up down arrow keys move to previous and next lines
  */
 class Lyrics {
@@ -28,10 +28,12 @@ class Lyrics {
         this.lyricsArray = [];
         this.lyricsArrayLen = 0;
         this.lyricsIndex = 0;
-        this.displayLines = 2;
         this.lyricsToDisplay = "";
         this.previewRowIndex = 0;
         this.fileLocation = "";
+        this.displayLines = 2; // must be in constructor
+        this.displayLinesMax = 20; // must be in constructor
+        this.initLinesToDisplay();
     }
     setDefaults() {
         this.isShowLyrics = false;
@@ -39,9 +41,37 @@ class Lyrics {
         this.lyricsArray = [];
         this.lyricsArrayLen = 0;
         this.lyricsIndex = 0;
-        this.displayLines = 2;
         this.lyricsToDisplay = "";
         this.previewRowIndex = 0;
+        this.initLinesToDisplay();
+    }
+    /**
+     * Get min, max, and default value for displayLines from HTML <input> element.
+     * Stay between 1 and 99 regardless of what's set in the element.
+     *
+     * out: this.displayLines, this.displayLinesMax
+     */
+    initLinesToDisplay() {
+        const displayLinesElement = document.getElementById("displayLines");
+        if (displayLinesElement) {
+            const max = parseInt(displayLinesElement.max);
+            if (max > 99) {
+                let max = 99;
+                displayLinesElement.max = max.toString(); // reset to 99
+            }
+            this.displayLinesMax = max;
+            const min = parseInt(displayLinesElement.min);
+            if (min < 1) {
+                let min = 1;
+                displayLinesElement.min = min.toString(); // reset to 1
+            }
+            const val = parseInt(displayLinesElement.value);
+            if (val < 1 || val > 99) {
+                let val = 1;
+                displayLinesElement.value = val.toString();
+            }
+            this.displayLines = val;
+        }
     }
     /**
      * Read lyrics from <textarea id=lyricsEditor>, initialize variables,
@@ -432,8 +462,22 @@ class Lyrics {
         }
     }
     moreLines() {
+        const num = document.getElementById("displayLines");
+        if (num) {
+            if (this.displayLines < this.displayLinesMax) {
+                this.displayLines = this.displayLines + 1;
+                num.value = this.displayLines.toString();
+            }
+        }
     }
     lessLines() {
+        const num = document.getElementById("displayLines");
+        if (num) {
+            if (this.displayLines > 1) {
+                this.displayLines = this.displayLines - 1;
+                num.value = this.displayLines.toString();
+            }
+        }
     }
 }
 /**
@@ -458,6 +502,10 @@ myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
  */
 const fileInputElement = document.getElementById("fileSelected");
 fileInputElement === null || fileInputElement === void 0 ? void 0 : fileInputElement.addEventListener("change", myLyrics, false);
+// Add event listeners for up and down keys to show previous and next lyrics.
+// Doesn't work because it scrolls the page or textarea elements up or down.
+// document.addEventListener('keyup', myLyrics.prevLyricsRow);
+// document.addEventListener('keydown', myLyrics.nextLyricsRow);
 // Add event listener to handle file input from "fileSelected" input element.
 /**
  * Test getting file name from URL search params. It currently does nothing.
