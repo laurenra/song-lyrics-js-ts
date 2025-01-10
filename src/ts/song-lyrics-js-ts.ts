@@ -20,6 +20,12 @@
  * TODO: what happens if someone enters number out of range? Does it reset to max or min? Or do I have to do that?
  * TODO: Up down arrow keys move to previous and next lines
  */
+
+interface verse {
+  verseNum: string,
+  verseText: string
+}
+
 class Lyrics {
 
   private isShowLyrics: boolean;
@@ -32,6 +38,7 @@ class Lyrics {
   private lyricsToDisplay: string;
   private previewRowIndex: number;
   private fileLocation: string;
+  private lyrics: verse[];
 
   constructor() {
     this.isShowLyrics = false;
@@ -44,6 +51,9 @@ class Lyrics {
     this.fileLocation = "";
     this.displayLines = 2; // must be in constructor
     this.displayLinesMax = 20; // must be in constructor
+    // this.lyrics = [{ verseNum: "1", verseText: "blah blah" }];
+    this.lyrics = [];
+
     this.initLinesToDisplay();
   }
 
@@ -56,9 +66,100 @@ class Lyrics {
     this.lyricsToDisplay = "";
     this.previewRowIndex = 0;
     this.initLinesToDisplay();
+    // this.parseLyrics("[ti:Let's Twist]Praise God, from whom all blessing flow"); // testing only
   }
 
   /**
+   * LRC Format Examples:
+   * [ti:Don't Be Cruel] - Title of the song
+   * [ar:Elvis Presley] - Artist performing the song
+   * [al:Elvis Presley's Greatest Hits] - Album
+   * [au:Written by Otis Blackwell, 1961] - Author of the song
+   * [lr:Otis Blackwell] - Lyricist of the song
+   * [length: 2:04] - Length of the song in mm:ss
+   * [by:Lauren Anderson] - Author of the LRC file
+   * [offset:+500] - Global offset in milliseconds, so lyrics appear sooner (+) or later (-) than the time stamps
+   * [#:These are comments] - Comments
+   *
+   * Unofficial LRC tags used only for this web application:
+   * [cl:Hymns of the Church of Jesus Christ of Latter-Day Saints] - Collection or book
+   * [no:25] - Hymn number
+   * [vs:1] - Verse number
+   *
+   * Example:
+   * [ti:Hope of Israel]
+   * [cl:Hymns-For Home and Church]
+   * [no:1010]
+   * [vs:1]
+   * Amazing grace—how sweet the sound—
+   * That saved a wretch like me!
+   * I once was lost, but now am found,
+   * Was blind, but now I see.
+   * [vs:2]
+   * The Lord has promised good to me;
+   * His word my hope secures.
+   * He will my shield and portion be
+   * As long as life endures.
+   *
+   */
+  parseLyrics(lyricsData: string) {
+    // const regex = /\[([a-z]+)\:(.+)\]/; // RegEx for lines with LRC tags like [ti:Song Title]
+    const regex = /\[(?<tag>[a-z]+)\:(?<text>.+)\]/; // RegEx for lines with LRC tags like [ti:Song Title]
+    const regexGlobal = /\[(?<tag>[a-z]+)\:(?<text>.+)\]/g; // RegEx for lines with LRC tags like [ti:Song Title]
+    // const findLrcTags = lyricsData.matchAll(regex);
+
+    let lyrics:verse[] = [];
+    let Text = "";
+
+    // Get all [vs:] tags, if any, and create an array
+    const lrcTags = lyricsData.matchAll(regexGlobal);
+    for (const lrcTag of lrcTags) {
+      if (lrcTag.groups?.tag == "vs") {
+        // const vs:verse = {verseNum: "1", verseText: "two"};
+        lyrics.push(<verse>{verseNum: lrcTag.groups?.text, verseText: ""});
+      }
+      console.log("tag: " + lrcTag.groups?.tag + " text: " + lrcTag.groups?.text);
+      console.log(
+          `Found ${lrcTag[0]} start=${lrcTag.index} end=${
+            lrcTag.index + lrcTag[0].length
+          }.`,
+      );
+    }
+
+    // if (findLrcTags) {
+    //   console.log("number of matches: " + findLrcTags.); // testing only
+    //   // If any LRC tags found (presum
+    //   findLrcTags.forEach({
+    //
+    //   })for (let i = 0; i < findLrcTags.length; i++) {
+    //     console.log('match(' + i + "): " + findLrcTags[i]); // testing only
+    //   }
+    // }
+    // Split into array by newlines in Windows (\r\n), Linux/MacOS (\n), or old MacOS format (\r)
+    const lines = lyricsData.split(/\r\n|\n|\r/);
+    const length = lines.length;
+    if (lines) {
+      let lyrics:verse[] = [];
+      let Text = "";
+      for (let i = 0; i < length; i++) {
+        const line = lines[i].trim();
+        const match = regex.exec(line);
+        if (match) {
+          // Line with LRC tag, get tag and text
+          console.log("full match: " + match[0]);
+          console.log("group tag: " + match.groups?.tag);
+          console.log("group text: " + match.groups?.text);
+          const verseNum = match.groups?.text;
+        } else {
+          const verseText = line;
+          // Just lyrics
+        }
+      }
+    }
+
+  }
+
+/**
    * Get min, max, and default value for displayLines from HTML <input> element.
    * Stay between 1 and 99 regardless of what's set in the element.
    *
@@ -100,6 +201,7 @@ class Lyrics {
     if (lyrics) {
       this.setDefaults();
       const lyricsText = lyrics.value;
+      this.parseLyrics(lyricsText);
       if (lyricsText) {
         if (lyricsText?.length > 0) {
           this.lyricsText = lyricsText;
@@ -134,6 +236,8 @@ class Lyrics {
           prvwTable.deleteRow(0);
         }
 
+        // Initialize header columns (width)
+
         // Number of rows to create = next higher integer of (lyricsArray / displayLines)
         let tblRows = Math.ceil(this.lyricsArrayLen / this.displayLines);
         let lyricsIndex = 0;
@@ -145,10 +249,21 @@ class Lyrics {
 
           // Create new row <td> with a single cell <td> and copy the lyrics into it.
           const newtr = document.createElement("tr");
-          const newtd = document.createElement("td");
+          const versetd = document.createElement("td")
+          const lyrictd = document.createElement("td");
+
+          // For first row of lyrics...
           if (i == 0) {
-            newtd.style.backgroundColor = "white"; // initialize first row with white background
+            lyrictd.style.backgroundColor = "white"; // initialize first row with white background
             this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
+
+            // Initialize column headers to set width (with styles in CSS classes)
+            const verseth = document.createElement("th");
+            verseth.className = "preview-verse-column";
+            const lyricth = document.createElement("th");
+            lyricth.className = "preview-lyric-column";
+            prvwTable.tBodies[0].appendChild(verseth);
+            prvwTable.tBodies[0].appendChild(lyricth);
           }
 
           // newtr.addEventListener("click", this.tableRowOnClick);
@@ -156,10 +271,11 @@ class Lyrics {
           // TODO Should have done this with the file input handler handleEvent() below instead of having to read the <textarea>
           newtr.addEventListener("click", this.tableRowOnClick.bind(this));
 
-          console.info("loop " + i + ": this.lyricsArrayLen = " + this.lyricsArrayLen); // testing only
+          // console.info("loop " + i + ": this.lyricsArrayLen = " + this.lyricsArrayLen); // testing only
 
-          newtd.innerHTML = lyricsToCopy;
-          newtr.appendChild(newtd);
+          lyrictd.innerHTML = lyricsToCopy;
+          newtr.appendChild(versetd);
+          newtr.appendChild(lyrictd);
           prvwTable.tBodies[0].appendChild(newtr);
 
           lyricsIndex = lyricsIndex + this.displayLines;
@@ -174,18 +290,12 @@ class Lyrics {
 
   /**
    * File input handler
-   * Default event handler when addEventListener is used to add a newly created
-   * Lyrics object; for example:
-   *
-   *   const myLyrics = new Lyrics();
-   *   const fileInputElement = document.getElementById("fileSelected");
-   *   fileInputElement.addEventListener("change", myLyrics, false);
    *
    * The context (this) is the same as the value of the
    * currentTarget property of the calling element, as well as the Event it
    * passes in; in this case the <input> element in the HTML.
    */
-  handleEvent(event: Event) {
+  handleInputFile(event: Event) {
     const selectedFileList = (event.target as HTMLInputElement).files;
     if (selectedFileList) {
       // Get only one file, the first one.
@@ -553,7 +663,10 @@ myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
  * on each keystroke.
  */
 const fileInputElement = document.getElementById("fileSelected");
-fileInputElement?.addEventListener("change", myLyrics, false);
+// fileInputElement?.addEventListener("change", myLyrics, false);
+fileInputElement?.addEventListener("change", myLyrics.handleInputFile, false);
+
+// newtr.addEventListener("click", this.tableRowOnClick.bind(this));
 
 // Add event listeners for up and down keys to show previous and next lyrics.
 // Doesn't work because it scrolls the page or textarea elements up or down.

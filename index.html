@@ -25,12 +25,15 @@
 <body>
   <!-- Add your site or application content here -->
   <div class="container-main">
-    <div class="container-lyrics-greenscreen" id="lyricsDisplay">Praise God, from whom all blessings flow;<br>Praise him, all creatures here below;</div>
+    <div class="container-lyrics-greenscreen" id="lyricsDisplay"></div>
     <div class="console">
       <div class="lyrics-preview">
         <table class="preview-table" id="previewTable">
           <tbody>
-            <tr onclick="myLyrics.tableRowOnClick(this)"><td></td></tr>
+            <tr onclick="myLyrics.tableRowOnClick(this)">
+              <th class="preview-verse-column"></th><th class="preview-lyric-column"></th>
+              <td></td><td></td>
+            </tr>
           </tbody>
         </table>
       </div>

@@ -53,6 +53,14 @@
   overflow-y: scroll;
 }
 
+.preview-verse-column {
+  width: 5%;
+}
+
+.preview-lyric-column {
+  width: 95%;
+}
+
 .preview-table td {
   width: 21em;
   padding: 0px 10px;
