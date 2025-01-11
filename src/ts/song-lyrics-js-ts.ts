@@ -104,26 +104,25 @@ class Lyrics {
    */
   parseLyrics(lyricsData: string) {
     // const regex = /\[([a-z]+)\:(.+)\]/; // RegEx for lines with LRC tags like [ti:Song Title]
-    const regex = /\[(?<tag>[a-z]+)\:(?<text>.+)\]/; // RegEx for lines with LRC tags like [ti:Song Title]
-    const regexGlobal = /\[(?<tag>[a-z]+)\:(?<text>.+)\]/g; // RegEx for lines with LRC tags like [ti:Song Title]
+    const regex= /\[(?<tag>[a-z]+)\:(?<text>.+)\]/g; // RegEx for lines with LRC tags like [ti:Song Title]
     // const findLrcTags = lyricsData.matchAll(regex);
 
     let lyrics:verse[] = [];
     let Text = "";
 
-    // Get all [vs:] tags, if any, and create an array
-    const lrcTags = lyricsData.matchAll(regexGlobal);
+    // If any [vs:] tags, populate the lyrics array with the verse numbers.
+    const lrcTags = lyricsData.matchAll(regex);
     for (const lrcTag of lrcTags) {
       if (lrcTag.groups?.tag == "vs") {
         // const vs:verse = {verseNum: "1", verseText: "two"};
         lyrics.push(<verse>{verseNum: lrcTag.groups?.text, verseText: ""});
       }
-      console.log("tag: " + lrcTag.groups?.tag + " text: " + lrcTag.groups?.text);
-      console.log(
-          `Found ${lrcTag[0]} start=${lrcTag.index} end=${
-            lrcTag.index + lrcTag[0].length
-          }.`,
-      );
+      // console.log("tag: " + lrcTag.groups?.tag + " text: " + lrcTag.groups?.text);
+      // console.log(
+      //     `Found ${lrcTag[0]} start=${lrcTag.index} end=${
+      //       lrcTag.index + lrcTag[0].length
+      //     }.`,
+      // );
     }
 
     // if (findLrcTags) {
@@ -135,26 +134,40 @@ class Lyrics {
     //     console.log('match(' + i + "): " + findLrcTags[i]); // testing only
     //   }
     // }
+
     // Split into array by newlines in Windows (\r\n), Linux/MacOS (\n), or old MacOS format (\r)
     const lines = lyricsData.split(/\r\n|\n|\r/);
-    const length = lines.length;
     if (lines) {
-      let lyrics:verse[] = [];
-      let Text = "";
-      for (let i = 0; i < length; i++) {
+      let lyricsIndex = 0;
+      let text = "";
+      for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
         const match = regex.exec(line);
         if (match) {
           // Line with LRC tag, get tag and text
           console.log("full match: " + match[0]);
-          console.log("group tag: " + match.groups?.tag);
-          console.log("group text: " + match.groups?.text);
-          const verseNum = match.groups?.text;
+          // console.log("group tag: " + match.groups?.tag);
+          // console.log("group text: " + match.groups?.text);
+          // const verseNum = match.groups?.text;
+          i++; // Skip LRC tag row and get the next one
+          lyricsIndex = lyricsIndex + 1;
         } else {
           const verseText = line;
-          // Just lyrics
+          console.log("lyrics: " + line);
         }
       }
+
+      // If lyrics array is already created with verse numbers, get lyrics and add them
+      if (lyrics.length > 0) {
+        console.log("verse tags found: " + lyrics.length); // testing only
+      }
+      // No verse numbers found
+      else {
+        console.log("NO verse tags found"); // testing only
+      }
+
+
+
     }
 
   }
