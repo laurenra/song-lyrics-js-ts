@@ -28,6 +28,8 @@ class Lyrics {
         this.lyricsArray = [];
         this.lyricsArrayLen = 0;
         this.lyricsIndex = 0;
+        this.lyricsRowCount = 0;
+        this.verseNumberRowCount = 0;
         this.lyricsToDisplay = "";
         this.previewRowIndex = 0;
         this.fileLocation = "";
@@ -43,102 +45,35 @@ class Lyrics {
         this.lyricsArray = [];
         this.lyricsArrayLen = 0;
         this.lyricsIndex = 0;
+        this.lyricsRowCount = 0;
+        this.verseNumberRowCount = 0;
         this.lyricsToDisplay = "";
         this.previewRowIndex = 0;
         this.initLinesToDisplay();
         // this.parseLyrics("[ti:Let's Twist]Praise God, from whom all blessing flow"); // testing only
     }
     /**
-     * LRC Format Examples:
-     * [ti:Don't Be Cruel] - Title of the song
-     * [ar:Elvis Presley] - Artist performing the song
-     * [al:Elvis Presley's Greatest Hits] - Album
-     * [au:Written by Otis Blackwell, 1961] - Author of the song
-     * [lr:Otis Blackwell] - Lyricist of the song
-     * [length: 2:04] - Length of the song in mm:ss
-     * [by:Lauren Anderson] - Author of the LRC file
-     * [offset:+500] - Global offset in milliseconds, so lyrics appear sooner (+) or later (-) than the time stamps
-     * [#:These are comments] - Comments
+     * 1. Count all rows of lyrics (separated by newlines).
+     * 2. Count any rows that are just a verse number.
+     * - lyricsRowCount is all rows minus any that are just verse numbers.
+     * - verseNumberRowCount is all rows that are just verse numbers.
      *
-     * Unofficial LRC tags used only for this web application:
-     * [cl:Hymns of the Church of Jesus Christ of Latter-Day Saints] - Collection or book
-     * [no:25] - Hymn number
-     * [vs:1] - Verse number
-     *
-     * Example:
-     * [ti:Hope of Israel]
-     * [cl:Hymns-For Home and Church]
-     * [no:1010]
-     * [vs:1]
-     * Amazing grace—how sweet the sound—
-     * That saved a wretch like me!
-     * I once was lost, but now am found,
-     * Was blind, but now I see.
-     * [vs:2]
-     * The Lord has promised good to me;
-     * His word my hope secures.
-     * He will my shield and portion be
-     * As long as life endures.
-     *
+     * @param lyricsData
+     * out:  this.lyricsRowCount, this.verseNumberRowCount
      */
-    parseLyrics(lyricsData) {
-        var _a, _b, _c, _d, _e;
-        // const regex = /\[([a-z]+)\:(.+)\]/; // RegEx for lines with LRC tags like [ti:Song Title]
-        const regex = /\[(?<tag>[a-z]+)\:(?<text>.+)\]/g; // RegEx for lines with LRC tags like [ti:Song Title]
-        // const findLrcTags = lyricsData.matchAll(regex);
-        let lyrics = [];
-        let Text = "";
-        // If any [vs:] tags, populate the lyrics array with the verse numbers.
-        const lrcTags = lyricsData.matchAll(regex);
-        for (const lrcTag of lrcTags) {
-            if (((_a = lrcTag.groups) === null || _a === void 0 ? void 0 : _a.tag) == "vs") {
-                // const vs:verse = {verseNum: "1", verseText: "two"};
-                lyrics.push({ verseNum: (_b = lrcTag.groups) === null || _b === void 0 ? void 0 : _b.text, verseText: "" });
-            }
-            // console.log("tag: " + lrcTag.groups?.tag + " text: " + lrcTag.groups?.text);
-            // console.log(
-            //     `Found ${lrcTag[0]} start=${lrcTag.index} end=${
-            //       lrcTag.index + lrcTag[0].length
-            //     }.`,
-            // );
-        }
-        // if (findLrcTags) {
-        //   console.log("number of matches: " + findLrcTags.); // testing only
-        //   // If any LRC tags found (presum
-        //   findLrcTags.forEach({
-        //
-        //   })for (let i = 0; i < findLrcTags.length; i++) {
-        //     console.log('match(' + i + "): " + findLrcTags[i]); // testing only
-        //   }
-        // }
-        // Split into array by newlines in Windows (\r\n), Linux/MacOS (\n), or old MacOS format (\r)
+    countLyricsRows(lyricsData) {
+        const regex = /^[0-9]+$/; // RegEx for lines with only numbers (verse number)
+        let verseNumLines = 0;
         const lines = lyricsData.split(/\r\n|\n|\r/);
-        if (lines) {
-            let text = "";
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                const match = regex.exec(line);
-                if (match) {
-                    // Line with LRC tag, get tag and text
-                    console.log("full match: " + match[0]);
-                    console.log("group tag: " + ((_c = match.groups) === null || _c === void 0 ? void 0 : _c.tag));
-                    console.log("group text: " + ((_d = match.groups) === null || _d === void 0 ? void 0 : _d.text));
-                    const verseNum = (_e = match.groups) === null || _e === void 0 ? void 0 : _e.text;
+        if (lines.length > 0) {
+            for (const line of lines) {
+                if (line.trim().match(regex)) {
+                    verseNumLines++;
                 }
-                else {
-                    const verseText = line;
-                    console.log("lyrics: " + line);
-                }
-            }
-            // If lyrics array is already created with verse numbers, get lyrics and add them
-            if (lyrics.length > 0) {
-                console.log("verse tags found: " + lyrics.length); // testing only
-            }
-            // No verse numbers found
-            else {
-                console.log("NO verse tags found"); // testing only
             }
         }
+        this.lyricsRowCount = lines.length - verseNumLines;
+        this.verseNumberRowCount = verseNumLines;
     }
     /**
        * Get min, max, and default value for displayLines from HTML <input> element.
@@ -179,28 +114,31 @@ class Lyrics {
         if (lyrics) {
             this.setDefaults();
             const lyricsText = lyrics.value;
-            this.parseLyrics(lyricsText);
+            // this.parseLyrics(lyricsText);
             if (lyricsText) {
                 if ((lyricsText === null || lyricsText === void 0 ? void 0 : lyricsText.length) > 0) {
                     this.lyricsText = lyricsText;
                     this.lyricsArray = this.lyricsText.split("\n");
                     this.lyricsArrayLen = this.lyricsArray.length;
+                    this.countLyricsRows(lyricsText); // set this.lyricsRowCount, this.verseNumberRowCount
                     this.copyLyricsToPreview();
                 }
             }
             this.hideLyricsButton();
         }
     }
-    // const prvwTbody = prvwTable.getElementsByTagName("tbody");
-    // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
     /**
      * Get lyrics from editor textarea and copy to the preview area.
-     * 1. Calculate number of table rows = lyrics array length / lines to display at a time.
+     * 1. Calculate number of table rows =
+     *      next higher integer of (lyricsRowCount / lines to display at a time)
+     *      plus number of rows that are just verse numbers.
      * 2. Delete existing rows in table.
-     * 3. Loop to create rows in the table and copy a chunk of lyrics to display into a row.
+     * 3. Loop to create rows in the table and copy a verse number or a chunk of
+     * lyrics to display into a row.
      * 4. Set background color of the top row (chunk of lyrics) to white.
      *
-     * in:  this.lyricsArray, this.lyricsArrayLen, this.displayLines
+     * in:  this.lyricsArray, this.lyricsArrayLen, this.displayLines,
+     *      this.lyricsRowCount, this,verseNumberCount
      */
     copyLyricsToPreview() {
         const lyrics = document.getElementById("lyricsEditor");
@@ -211,40 +149,37 @@ class Lyrics {
                 while (prvwTable.rows.length > 0) {
                     prvwTable.deleteRow(0);
                 }
-                // Initialize header columns (width)
-                // Number of rows to create = next higher integer of (lyricsArray / displayLines)
-                let tblRows = Math.ceil(this.lyricsArrayLen / this.displayLines);
+                // Number of rows to create =
+                // next higher integer of (lyricsRowCount / displayLines)
+                // + number of rows that are just verse numbers.
+                let tblRows = (Math.ceil(this.lyricsRowCount / this.displayLines)) + this.verseNumberRowCount;
                 let lyricsIndex = 0;
                 let lyricsToCopy = "";
+                const regex = /^[0-9]+$/; // RegEx for lines with only numbers (verse number)
                 // Loop and create new rows and copy the lyrics into them.
                 for (let i = 0; i < tblRows; i++) {
-                    lyricsToCopy = this.getLyricsToDisplay(this.lyricsArray, lyricsIndex, this.lyricsArrayLen, this.displayLines);
-                    // Create new row <td> with a single cell <td> and copy the lyrics into it.
+                    // Create new row <tr> with a single cell <td>.
                     const newtr = document.createElement("tr");
-                    const versetd = document.createElement("td");
+                    // const versetd = document.createElement("td")
                     const lyrictd = document.createElement("td");
-                    // For first row of lyrics...
-                    if (i == 0) {
-                        lyrictd.style.backgroundColor = "white"; // initialize first row with white background
-                        this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
-                        // Initialize column headers to set width (with styles in CSS classes)
-                        const verseth = document.createElement("th");
-                        verseth.className = "preview-verse-column";
-                        const lyricth = document.createElement("th");
-                        lyricth.className = "preview-lyric-column";
-                        prvwTable.tBodies[0].appendChild(verseth);
-                        prvwTable.tBodies[0].appendChild(lyricth);
+                    // Line with verse number only
+                    if (this.lyricsArray[lyricsIndex].trim().match(regex)) {
+                        lyricsToCopy = this.lyricsArray[lyricsIndex].trim();
+                        lyricsIndex = lyricsIndex + 1; // Advance only 1 line to the next row in the array to copy.
                     }
-                    // newtr.addEventListener("click", this.tableRowOnClick);
-                    // Add onclick listener and bind this context to the handler so the click event can access this.* methods.
-                    // TODO Should have done this with the file input handler handleEvent() below instead of having to read the <textarea>
-                    newtr.addEventListener("click", this.tableRowOnClick.bind(this));
-                    // console.info("loop " + i + ": this.lyricsArrayLen = " + this.lyricsArrayLen); // testing only
+                    // Line with lyrics
+                    else {
+                        lyricsToCopy = this.getLyricsToDisplay(this.lyricsArray, lyricsIndex, this.lyricsArrayLen, this.displayLines);
+                        // If first row of lyrics, set background color to white instead of grey.
+                        if (lyricsIndex < this.displayLines) {
+                            lyrictd.style.backgroundColor = "white"; // initialize first row with white background
+                            this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
+                        }
+                        lyricsIndex = lyricsIndex + this.displayLines; // Advance to the next row(s) in the array to copy.
+                    }
                     lyrictd.innerHTML = lyricsToCopy;
-                    newtr.appendChild(versetd);
                     newtr.appendChild(lyrictd);
                     prvwTable.tBodies[0].appendChild(newtr);
-                    lyricsIndex = lyricsIndex + this.displayLines;
                 }
             }
         }
@@ -331,6 +266,7 @@ class Lyrics {
                     this.lyricsText = lyricsText;
                     this.lyricsArray = this.lyricsText.split("\n");
                     this.lyricsArrayLen = this.lyricsArray.length;
+                    this.countLyricsRows(lyricsText); // set this.lyricsRowCount, this.verseNumberRowCount
                     this.copyLyricsToPreview();
                 }
             }
@@ -360,8 +296,15 @@ class Lyrics {
      */
     nextLyricsRow() {
         var _a;
+        // If current line with verse number only, advance to next line in array.
+        const regex = /^[0-9]+$/; // RegEx for lines with only numbers (verse number)
+        if (this.lyricsArray[this.lyricsIndex].trim().match(regex)) {
+            this.lyricsIndex = this.lyricsIndex + 1;
+            this.previewRowIndex = this.previewRowIndex + 1;
+        }
+        // If not at end, move down
         if (this.lyricsIndex + this.displayLines < this.lyricsArrayLen) {
-            this.lyricsIndex = this.lyricsIndex + this.displayLines;
+            this.lyricsIndex = this.lyricsIndex + this.displayLines; // Advance to next lines of lyrics
             const td = (_a = document.getElementById("previewTable")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("td");
             if (td) {
                 td[this.previewRowIndex].style.backgroundColor = "#cccccc";
@@ -427,16 +370,15 @@ class Lyrics {
     }
     /**
      * Determine how many lines of lyrics can be displayed in the display area
-     * at the current index and copy them into lyricsToDisplay. If not enough
-     * to fill the display area, add blank lines <br> so the display area remains
-     * the same size.
+     * at the current index and return them. If not enough to fill the display
+     * area, add blank lines <br> so the display area remains the same size.
      *
      * in:  this.lyricsArray
      *      this.lyricsIndex
      *      this.lyricsArrayLen
      *      this.displayLines
      *
-     * out: this.lyricsToDisplay
+     * out: lyrics to display, each line separated by a newline <br>
      */
     getLyricsToDisplay(lyricsArray, lyricsIndex, lyricsArrayLen, displayLines) {
         let lyricsToDisplay = "";
@@ -446,7 +388,7 @@ class Lyrics {
             for (let i = 0; i < displayLines; i++) {
                 // If display pointer is not beyond the last line of lyrics, append newline.
                 if (displayPointer < lyricsArrayLen) {
-                    lyricsToDisplay = lyricsToDisplay + lyricsArray[lyricsIndex + i] + "<br>";
+                    lyricsToDisplay = lyricsToDisplay + lyricsArray[lyricsIndex + i].trim() + "<br>";
                 }
                 // If display pointer is beyond the last line of lyrics, add empty lines.
                 else {
@@ -577,6 +519,104 @@ class Lyrics {
             if (this.displayLines > 1) {
                 this.displayLines = this.displayLines - 1;
                 num.value = this.displayLines.toString();
+            }
+        }
+    }
+    /**
+     * THIS IS ON HOLD, WORK IN PROGRESS. Only if I decide to also read .LRC files
+     * with a custom tag [vs].
+     *
+     * LRC Format Examples:
+     * [ti:Don't Be Cruel] - Title of the song
+     * [ar:Elvis Presley] - Artist performing the song
+     * [al:Elvis Presley's Greatest Hits] - Album
+     * [au:Written by Otis Blackwell, 1961] - Author of the song
+     * [lr:Otis Blackwell] - Lyricist of the song
+     * [length: 2:04] - Length of the song in mm:ss
+     * [by:Lauren Anderson] - Author of the LRC file
+     * [offset:+500] - Global offset in milliseconds, so lyrics appear sooner (+) or later (-) than the time stamps
+     * [#:These are comments] - Comments
+     *
+     * Unofficial LRC tags used only for this web application:
+     * [cl:Hymns of the Church of Jesus Christ of Latter-Day Saints] - Collection or book
+     * [no:25] - Hymn number
+     * [vs:1] - Verse number
+     *
+     * Example:
+     * [ti:Hope of Israel]
+     * [cl:Hymns-For Home and Church]
+     * [no:1010]
+     * [vs:1]
+     * Amazing grace—how sweet the sound—
+     * That saved a wretch like me!
+     * I once was lost, but now am found,
+     * Was blind, but now I see.
+     * [vs:2]
+     * The Lord has promised good to me;
+     * His word my hope secures.
+     * He will my shield and portion be
+     * As long as life endures.
+     *
+     */
+    parseLyrics(lyricsData) {
+        var _a, _b;
+        // const regex = /\[([a-z]+)\:(.+)\]/; // RegEx for lines with LRC tags like [ti:Song Title]
+        const regex = /\[(?<tag>[a-z]+)\:(?<text>.+)\]/g; // RegEx for lines with LRC tags like [ti:Song Title]
+        // const findLrcTags = lyricsData.matchAll(regex);
+        let lyrics = [];
+        let Text = "";
+        // If any [vs:] tags, populate the lyrics array with the verse numbers.
+        const lrcTags = lyricsData.matchAll(regex);
+        for (const lrcTag of lrcTags) {
+            if (((_a = lrcTag.groups) === null || _a === void 0 ? void 0 : _a.tag) == "vs") {
+                // const vs:verse = {verseNum: "1", verseText: "two"};
+                lyrics.push({ verseNum: (_b = lrcTag.groups) === null || _b === void 0 ? void 0 : _b.text, verseText: "" });
+            }
+            // console.log("tag: " + lrcTag.groups?.tag + " text: " + lrcTag.groups?.text);
+            // console.log(
+            //     `Found ${lrcTag[0]} start=${lrcTag.index} end=${
+            //       lrcTag.index + lrcTag[0].length
+            //     }.`,
+            // );
+        }
+        // if (findLrcTags) {
+        //   console.log("number of matches: " + findLrcTags.); // testing only
+        //   // If any LRC tags found (presum
+        //   findLrcTags.forEach({
+        //
+        //   })for (let i = 0; i < findLrcTags.length; i++) {
+        //     console.log('match(' + i + "): " + findLrcTags[i]); // testing only
+        //   }
+        // }
+        // Split into array by newlines in Windows (\r\n), Linux/MacOS (\n), or old MacOS format (\r)
+        const lines = lyricsData.split(/\r\n|\n|\r/);
+        if (lines) {
+            let lyricsIndex = 0;
+            let text = "";
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                const match = regex.exec(line);
+                if (match) {
+                    // Line with LRC tag, get tag and text
+                    console.log("full match: " + match[0]);
+                    // console.log("group tag: " + match.groups?.tag);
+                    // console.log("group text: " + match.groups?.text);
+                    // const verseNum = match.groups?.text;
+                    i++; // Skip LRC tag row and get the next one
+                    lyricsIndex = lyricsIndex + 1;
+                }
+                else {
+                    const verseText = line;
+                    console.log("lyrics: " + line);
+                }
+            }
+            // If lyrics array is already created with verse numbers, get lyrics and add them
+            if (lyrics.length > 0) {
+                console.log("verse tags found: " + lyrics.length); // testing only
+            }
+            // No verse numbers found
+            else {
+                console.log("NO verse tags found"); // testing only
             }
         }
     }
