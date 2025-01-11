@@ -81,6 +81,8 @@ class Lyrics {
    * - lyricsRowCount is all rows minus any that are just verse numbers.
    * - verseNumberRowCount is all rows that are just verse numbers.
    *
+   * Test regex at https://regex101.com/
+   *
    * @param lyricsData
    * out:  this.lyricsRowCount, this.verseNumberRowCount
    */
