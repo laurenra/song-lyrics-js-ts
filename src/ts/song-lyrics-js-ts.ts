@@ -1,4 +1,23 @@
 /**
+ * Overview:
+ * 1. Text is entered into to the lyrics-editor textarea, or a file is read into it.
+ * 2. The raw text from the lyrics-editor textarea is copied into rows in a table
+ * in the lyrics-preview.
+ *   A. Each row has the amount of text that will fit into the lyricsDisplay
+ *   (greenscreen) at the top that is displayed in OBS; for example 2 lines.
+ *   B. When the number of lines in the lyricsDisplay changes, the rows are
+ *   deleted and rows are added again, with each row containing the same number
+ *   of lines of text that will display in the lyrcisDisplay at the top.
+ * 3. Moving the cursor up or down or using the mouse to select a row:
+ *   A. Changes the background color of that row to white. The rest of the rows
+ *   are gray.
+ *   B. Also copies the text in that row into the lyricsDisplay at the top.
+ * 4. Clicking the eye icon toggles the visibility of the text in lyricsDisplay.
+ *   A. Invisible deletes all the text and replaces with <br> for each row
+ *   of text that would normally display; for example 2 <br> if there are 2
+ *   rows of text.
+ *   B. Visible copies the text at the cursor into lyricsDisplay.
+ *
  * Event flow:
  * 1. Select file (<input> id=fileSelected handler method named handleEvent)
  * dispatches "click" event to trigger <button> id=startBtn onclick method
@@ -312,8 +331,7 @@ class Lyrics {
   /**
    * Move to previous row(s) of lyrics to display.
    *
-   * 1. Move index up
-   * by this.displayLines
+   * 1. Move index up by this.displayLines
    * 2. Move preview window up by this.displayLines
    * 3. Copy row(s) of lyrics into this.lyricsToDisplay
    * 4. Show lyrics in green screen if isShowLyrics is true
