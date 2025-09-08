@@ -1,5 +1,24 @@
 "use strict";
 /**
+ * Overview:
+ * 1. Text is entered into to the lyrics-editor textarea, or a file is read into it.
+ * 2. The raw text from the lyrics-editor textarea is copied into rows in a table
+ * in the lyrics-preview.
+ *   A. Each row has the amount of text that will fit into the lyricsDisplay
+ *   (greenscreen) at the top that is displayed in OBS; for example 2 lines.
+ *   B. When the number of lines in the lyricsDisplay changes, the rows are
+ *   deleted and rows are added again, with each row containing the same number
+ *   of lines of text that will display in the lyrcisDisplay at the top.
+ * 3. Moving the cursor up or down or using the mouse to select a row:
+ *   A. Changes the background color of that row to white. The rest of the rows
+ *   are gray.
+ *   B. Also copies the text in that row into the lyricsDisplay at the top.
+ * 4. Clicking the eye icon toggles the visibility of the text in lyricsDisplay.
+ *   A. Invisible deletes all the text and replaces with <br> for each row
+ *   of text that would normally display; for example 2 <br> if there are 2
+ *   rows of text.
+ *   B. Visible copies the text at the cursor into lyricsDisplay.
+ *
  * Event flow:
  * 1. Select file (<input> id=fileSelected handler method named handleEvent)
  * dispatches "click" event to trigger <button> id=startBtn onclick method
@@ -124,9 +143,12 @@ class Lyrics {
                     lyricsToCopy = this.getLyricsToDisplay(this.lyricsArray, lyricsIndex, this.lyricsArrayLen, this.displayLines);
                     // Create new row <td> with a single cell <td> and copy the lyrics into it.
                     const newtr = document.createElement("tr");
-                    const newtd = document.createElement("td");
+                    const newtdVerse = document.createElement("td");
+                    newtdVerse.classList.add("preview-col-verse");
+                    const newtdLyric = document.createElement("td");
+                    newtdLyric.classList.add("preview-col-lyrics");
                     if (i == 0) {
-                        newtd.style.backgroundColor = "white"; // initialize first row with white background
+                        newtdLyric.style.backgroundColor = "white"; // initialize first row with white background
                         this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
                     }
                     // newtr.addEventListener("click", this.tableRowOnClick);
@@ -134,8 +156,17 @@ class Lyrics {
                     // TODO Should have done this with the file input handler handleEvent() below instead of having to read the <textarea>
                     newtr.addEventListener("click", this.tableRowOnClick.bind(this));
                     console.info("loop " + i + ": this.lyricsArrayLen = " + this.lyricsArrayLen); // testing only
-                    newtd.innerHTML = lyricsToCopy;
-                    newtr.appendChild(newtd);
+                    // If a line with only a number, assume it's a verse number
+                    const isVerseNumRegEx = /^[0-9]*$/;
+                    console.info("Verse? " + isVerseNumRegEx.test(this.lyricsToDisplay) + ", " + lyricsToCopy);
+                    if (isVerseNumRegEx.test(this.lyricsToDisplay)) {
+                        newtdVerse.innerHTML = lyricsToCopy;
+                    }
+                    else {
+                        newtdLyric.innerHTML = lyricsToCopy;
+                    }
+                    newtr.appendChild(newtdVerse);
+                    newtr.appendChild(newtdLyric);
                     prvwTable.tBodies[0].appendChild(newtr);
                     lyricsIndex = lyricsIndex + this.displayLines;
                 }
@@ -276,8 +307,7 @@ class Lyrics {
     /**
      * Move to previous row(s) of lyrics to display.
      *
-     * 1. Move index up
-     * by this.displayLines
+     * 1. Move index up by this.displayLines
      * 2. Move preview window up by this.displayLines
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
      * 4. Show lyrics in green screen if isShowLyrics is true

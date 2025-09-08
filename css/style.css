@@ -46,16 +46,28 @@
 }
 
 .preview-table {
-  padding: 0px 20px;
+  padding: 0px 10px;
   border-spacing: 0px;
   display: block;
   height: 21em;
   overflow-y: scroll;
 }
 
-.preview-table td {
-  width: 21em;
+/*.preview-table td {*/
+/*  width: 21em;*/
+/*  padding: 0px 10px;*/
+/*}*/
+
+.preview-col-verse {
+  /*width: 0.5em;*/
   padding: 0px 10px;
+  vertical-align: top;
+}
+
+.preview-col-lyrics {
+  width: 20em;
+  padding: 0px 10px;
+  vertical-align: top;
 }
 
 .lyrics-preview-previous {

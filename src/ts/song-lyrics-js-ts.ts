@@ -164,9 +164,12 @@ class Lyrics {
 
           // Create new row <td> with a single cell <td> and copy the lyrics into it.
           const newtr = document.createElement("tr");
-          const newtd = document.createElement("td");
+          const newtdVerse = document.createElement("td");
+          newtdVerse.classList.add("preview-col-verse");
+          const newtdLyric = document.createElement("td");
+          newtdLyric.classList.add("preview-col-lyrics");
           if (i == 0) {
-            newtd.style.backgroundColor = "white"; // initialize first row with white background
+            newtdLyric.style.backgroundColor = "white"; // initialize first row with white background
             this.lyricsToDisplay = lyricsToCopy; // initialize lyricsToDisplay with first row(s)
           }
 
@@ -177,8 +180,17 @@ class Lyrics {
 
           console.info("loop " + i + ": this.lyricsArrayLen = " + this.lyricsArrayLen); // testing only
 
-          newtd.innerHTML = lyricsToCopy;
-          newtr.appendChild(newtd);
+          // If a line with only a number, assume it's a verse number
+          const isVerseNumRegEx = /^[0-9]*$/;
+          console.info("Verse? " + isVerseNumRegEx.test(this.lyricsToDisplay) + ", " + lyricsToCopy);
+          if (isVerseNumRegEx.test(this.lyricsToDisplay)) {
+            newtdVerse.innerHTML = lyricsToCopy;
+          }
+          else {
+            newtdLyric.innerHTML = lyricsToCopy;
+          }
+          newtr.appendChild(newtdVerse);
+          newtr.appendChild(newtdLyric);
           prvwTable.tBodies[0].appendChild(newtr);
 
           lyricsIndex = lyricsIndex + this.displayLines;
