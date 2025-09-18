@@ -17,15 +17,19 @@
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.png">
-
   <link rel="manifest" href="site.webmanifest">
+
+  <script src="js/system.min.js"></script>
+
   <meta name="theme-color" content="#fafafa">
+
+<!--  <script src="js/main.js"></script>-->
 </head>
 
 <body>
   <!-- Add your site or application content here -->
   <div class="container-main">
-    <div class="container-lyrics-greenscreen" id="lyricsDisplay"></div>
+    <div class="container-lyrics-greenscreen" id="lyricsDisplay" style="font-size: 88px; line-height: 110px;"></div>
     <div class="console">
       <div class="lyrics-preview">
         <table class="preview-table" id="previewTable">
@@ -61,6 +65,14 @@
           </div>
           <input class="input-number-large" id="displayLines" type="number" value="2" min="1" max="20"/>
           <label class="label-large">Lines</label>
+          <div class="controls-font-size-buttons">
+            <button class="button-icon-med" id="smallerFont" onclick="myLyrics.lessLines()">
+              <img src="img/square_minus_icon_8664827.svg" width="72" height="72">
+            </button>
+            <button class="button-icon-med" id="largerFont" onclick="myLyrics.fontLarger()">
+              <img src="img/square_plus_icon_8664849.svg" width="72" height="72">
+            </button>
+          </div>
         </div>
       </div>
 
@@ -80,6 +92,7 @@
     </div>
 
   </div>
+<!--  <script type="module" src="js/main.js"></script>-->
   <script src="js/song-lyrics-js-ts.js"></script>
 
 </body>

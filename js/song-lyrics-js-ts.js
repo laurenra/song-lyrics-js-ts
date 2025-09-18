@@ -1,5 +1,24 @@
 "use strict";
 /**
+ * Overview:
+ * 1. Text is entered into to the lyrics-editor textarea, or a file is read into it.
+ * 2. The raw text from the lyrics-editor textarea is copied into rows in a table
+ * in the lyrics-preview.
+ *   A. Each row has the amount of text that will fit into the lyricsDisplay
+ *   (greenscreen) at the top that is displayed in OBS; for example 2 lines.
+ *   B. When the number of lines in the lyricsDisplay changes, the rows are
+ *   deleted and rows are added again, with each row containing the same number
+ *   of lines of text that will display in the lyrcisDisplay at the top.
+ * 3. Moving the cursor up or down or using the mouse to select a row:
+ *   A. Changes the background color of that row to white. The rest of the rows
+ *   are gray.
+ *   B. Also copies the text in that row into the lyricsDisplay at the top.
+ * 4. Clicking the eye icon toggles the visibility of the text in lyricsDisplay.
+ *   A. Invisible deletes all the text and replaces with <br> for each row
+ *   of text that would normally display; for example 2 <br> if there are 2
+ *   rows of text.
+ *   B. Visible copies the text at the cursor into lyricsDisplay.
+ *
  * Event flow:
  * 1. Select file (<input> id=fileSelected handler method named handleEvent)
  * dispatches "click" event to trigger <button> id=startBtn onclick method
@@ -33,6 +52,10 @@ class Lyrics {
         this.fileLocation = "";
         this.displayLines = 2; // must be in constructor
         this.displayLinesMax = 20; // must be in constructor
+        this.fontSize = 68;
+        this.fontSizeMin = 16;
+        this.fontSizeMax = 80;
+        this.getUrlQueryParams();
         this.initLinesToDisplay();
     }
     setDefaults() {
@@ -72,6 +95,23 @@ class Lyrics {
             }
             this.displayLines = val;
         }
+    }
+    /**
+     * Get URL query parameters
+     */
+    getUrlQueryParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileParam = urlParams.get('file');
+        console.info("fileParam: " + fileParam); // testing only
+        if (fileParam) {
+            // this.loadFile(fileParam);
+            /**
+             * Test getting file name from URL search params. Does not work.
+             * There is no way to automatically load a file from a URL search parameter.
+             * For security (CORS policy), the user must interact with the browser to get a file.
+             */
+        }
+        console.info("tried to load file from query param");
     }
     /**
      * Read lyrics from <textarea id=lyricsEditor>, initialize variables,
@@ -186,6 +226,31 @@ class Lyrics {
             }
         }
     }
+    /**
+     * Test getting file name from URL search params. Does not work.
+     * There is no way to automatically load a file from a URL search parameter.
+     * For security (CORS policy), the user must interact with the browser to get a file.
+     */
+    loadFile(filePath) {
+        if (filePath) {
+            fetch(filePath)
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error. Status: ${response.status}`);
+                }
+                return response.text();
+            })
+                .then((fileContent => {
+                console.log('File content: ', fileContent);
+                // process the file content here
+            })).catch(error => {
+                console.error("Error fetching file: ", error);
+            });
+        }
+        else {
+            console.log("No file parameter found in the URL");
+        }
+    }
     // const fileInputElement = document.getElementById("fileSelected");
     // if (fileInputElement) {
     //   const lyricsTextArea = document.getElementById("lyricsEditor");
@@ -276,8 +341,7 @@ class Lyrics {
     /**
      * Move to previous row(s) of lyrics to display.
      *
-     * 1. Move index up
-     * by this.displayLines
+     * 1. Move index up by this.displayLines
      * 2. Move preview window up by this.displayLines
      * 3. Copy row(s) of lyrics into this.lyricsToDisplay
      * 4. Show lyrics in green screen if isShowLyrics is true
@@ -479,11 +543,53 @@ class Lyrics {
             }
         }
     }
+    /**
+     * Note: style.fontSize and style.lineHeight retrieve the property from the
+     * element as string values, for example "68pt" or "96px". If the styles are
+     * defined in a .css file instead of directly in the element, they return null
+     * values. Use window.getComputedStyle(element).getPropertyValue('font-size')
+     * to get what the DOM calculates the font size to be even if it's set from
+     * a .css file.
+     *
+     * This means that fontSize and lineHeight must be set in the element,
+     * id=lyricsDisplay.
+     *
+     * The computed style is always in px. If using pt instead of px, the
+     * conversion from pt to px is: px = pt / 72 * 96
+     *
+     * We're setting the fontSize to be 80% of the lineHeight. Conversely,
+     * lineHeight is 125% of fontSize, for example:
+     * line-height: 110px
+     * font-size: 88px
+     *
+     */
+    fontLarger() {
+        const elem = document.getElementById("lyricsDisplay");
+        if (elem) {
+            // const computedStyle = window.getComputedStyle(elem);
+            // const computedFontSize = computedStyle.getPropertyValue('font-size');
+            // console.log("computedFontSize: " + computedFontSize);
+            // const cssFontSize = computedStyle.getPropertyValue('font-size');
+            // console.log("cssFontSize: " + cssFontSize);
+            console.log("style.fontSize: " + elem.style.fontSize);
+            console.log("style.lineHeight: " + elem.style.lineHeight);
+            elem.style.fontSize = "56pt"; // Set CSS font size.
+            // const fontSizeStyle = elem.style.fontSize;
+            // console.log("fontSizeStyle: " + fontSizeStyle);
+            // if (this.fontSize < this.fontSizeMax) {
+            //   this.fontSize = this.fontSize + 1;
+            //   elem.value = this.fontSize.toString();
+            // }
+        }
+    }
 }
 /**
  * Begin Program
  */
+// const myLyrics = new Lyrics();
+// const { newLyrics } = require('./song-lyrics-js-ts');
 const myLyrics = new Lyrics();
+// const myLyrics = new newLyrics;
 myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
 // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
 // if (td) {
@@ -512,9 +618,9 @@ fileInputElement === null || fileInputElement === void 0 ? void 0 : fileInputEle
  * There is no way to automatically load a file from a URL search parameter.
  * For security, the user must interact with the browser to get a file.
  */
-// const queryString = window.location.search;
-// const urlParams = new URLSearchParams(queryString);
-// const fileToRead = urlParams.get('file');
-// if (fileToRead) {
-//   myLyrics.setFileToRead(fileToRead);
-// }
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const fileToRead = urlParams.get('file');
+if (fileToRead) {
+    myLyrics.setFileToRead(fileToRead);
+}

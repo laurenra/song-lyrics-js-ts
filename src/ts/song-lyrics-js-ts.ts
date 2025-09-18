@@ -39,7 +39,7 @@
  * TODO: what happens if someone enters number out of range? Does it reset to max or min? Or do I have to do that?
  * TODO: Up down arrow keys move to previous and next lines
  */
-class Lyrics {
+export class Lyrics {
 
   private isShowLyrics: boolean;
   private lyricsText: string;
@@ -48,6 +48,9 @@ class Lyrics {
   private lyricsIndex: number;
   private displayLines: number;
   private displayLinesMax: number;
+  private fontSize: number;
+  private fontSizeMin: number;
+  private fontSizeMax: number;
   private lyricsToDisplay: string;
   private previewRowIndex: number;
   private fileLocation: string;
@@ -63,6 +66,10 @@ class Lyrics {
     this.fileLocation = "";
     this.displayLines = 2; // must be in constructor
     this.displayLinesMax = 20; // must be in constructor
+    this.fontSize = 68;
+    this.fontSizeMin = 16;
+    this.fontSizeMax = 80;
+    this.getUrlQueryParams();
     this.initLinesToDisplay();
   }
 
@@ -76,6 +83,8 @@ class Lyrics {
     this.previewRowIndex = 0;
     this.initLinesToDisplay();
   }
+
+
 
   /**
    * Get min, max, and default value for displayLines from HTML <input> element.
@@ -106,6 +115,24 @@ class Lyrics {
       }
       this.displayLines = val;
     }
+  }
+
+  /**
+   * Get URL query parameters
+   */
+  getUrlQueryParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileParam = urlParams.get('file');
+    console.info("fileParam: " + fileParam); // testing only
+    if (fileParam) {
+      // this.loadFile(fileParam);
+      /**
+       * Test getting file name from URL search params. Does not work.
+       * There is no way to automatically load a file from a URL search parameter.
+       * For security (CORS policy), the user must interact with the browser to get a file.
+       */
+    }
+    console.info("tried to load file from query param");
   }
 
   /**
@@ -230,6 +257,33 @@ class Lyrics {
         }
         reader.readAsText(selectedFile, 'UTF-8');
       }
+    }
+  }
+
+  /**
+   * Test getting file name from URL search params. Does not work.
+   * There is no way to automatically load a file from a URL search parameter.
+   * For security (CORS policy), the user must interact with the browser to get a file.
+   */
+  loadFile(filePath: string) {
+    if (filePath) {
+      fetch(filePath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error. Status: ${response.status}`)
+            }
+            return response.text();
+          })
+          .then((fileContent => {
+            console.log('File content: ', fileContent);
+            // process the file content here
+          })).catch(error => {
+            console.error("Error fetching file: ", error);
+      });
+
+    }
+    else {
+      console.log("No file parameter found in the URL");
     }
   }
 
@@ -545,52 +599,46 @@ class Lyrics {
       }
     }
   }
+
+  /**
+   * Note: style.fontSize and style.lineHeight retrieve the property from the
+   * element as string values, for example "68pt" or "96px". If the styles are
+   * defined in a .css file instead of directly in the element, they return null
+   * values. Use window.getComputedStyle(element).getPropertyValue('font-size')
+   * to get what the DOM calculates the font size to be even if it's set from
+   * a .css file.
+   *
+   * This means that fontSize and lineHeight must be set in the element,
+   * id=lyricsDisplay.
+   *
+   * The computed style is always in px. If using pt instead of px, the
+   * conversion from pt to px is: px = pt / 72 * 96
+   *
+   * We're setting the fontSize to be 80% of the lineHeight. Conversely,
+   * lineHeight is 125% of fontSize, for example:
+   * line-height: 110px
+   * font-size: 88px
+   *
+   */
+  fontLarger() {
+    const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
+    if (elem) {
+      // const computedStyle = window.getComputedStyle(elem);
+      // const computedFontSize = computedStyle.getPropertyValue('font-size');
+      // console.log("computedFontSize: " + computedFontSize);
+      // const cssFontSize = computedStyle.getPropertyValue('font-size');
+      // console.log("cssFontSize: " + cssFontSize);
+      console.log("style.fontSize: " + elem.style.fontSize);
+      console.log("style.lineHeight: " + elem.style.lineHeight);
+      elem.style.fontSize = "56pt"; // Set CSS font size.
+      // const fontSizeStyle = elem.style.fontSize;
+      // console.log("fontSizeStyle: " + fontSizeStyle);
+      // if (this.fontSize < this.fontSizeMax) {
+      //   this.fontSize = this.fontSize + 1;
+      //   elem.value = this.fontSize.toString();
+      // }
+    }
+  }
+
 }
-
-/**
- * Begin Program
- */
-
-const myLyrics = new Lyrics();
-myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
-
-// const td = document.getElementById("previewTable")?.getElementsByTagName("td");
-// if (td) {
-//   // td[0].className = "td-white";
-//   td[2].style.backgroundColor = "white";
-// }
-
-/**
- * Add event listener to handle lyrics added or edited in the text area. I
- * think this could also be done by setting the onChange (or onInput) method
- * in the element itself (in the index.html).
- * - the change (element onChange) event is triggered when focus leaves the
- * text area.
- * - the input (element onInput) event is triggered when the text area gets
- * input, like when a key is pressed and a character is added. It triggers
- * on each keystroke.
- */
-const fileInputElement = document.getElementById("fileSelected");
-fileInputElement?.addEventListener("change", myLyrics, false);
-
-// Add event listeners for up and down keys to show previous and next lyrics.
-// Doesn't work because it scrolls the page or textarea elements up or down.
-// document.addEventListener('keyup', myLyrics.prevLyricsRow);
-// document.addEventListener('keydown', myLyrics.nextLyricsRow);
-
-
-
-// Add event listener to handle file input from "fileSelected" input element.
-
-/**
- * Test getting file name from URL search params. It currently does nothing.
- * There is no way to automatically load a file from a URL search parameter.
- * For security, the user must interact with the browser to get a file.
- */
-// const queryString = window.location.search;
-// const urlParams = new URLSearchParams(queryString);
-// const fileToRead = urlParams.get('file');
-// if (fileToRead) {
-//   myLyrics.setFileToRead(fileToRead);
-// }
 

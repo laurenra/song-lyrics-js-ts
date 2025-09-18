@@ -24,8 +24,7 @@
   padding: 20px 70px;
   background-color: green;
   color: white;
-  font-size: 68pt;
-  line-height: 90pt;
+  /* default font-size: 68pt; line-height: 85pt; are set directly in the HTML element, id=lyricsDisplay */
 }
 
 .console {

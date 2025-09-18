@@ -22,6 +22,8 @@ img/arrow_down_icon-186411.svg
 img/arrow_up_icon-186407.svg
 img/disable_eye_inactive_see_show_icon-3844443.svg
 img/see_watch_view_eye_icon-103177.svg
+img/square_minus_icon_8664827.svg
+img/square_plus_icon_8664849.svg
 site.webmanifest
 ```
 
