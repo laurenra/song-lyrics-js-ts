@@ -1,6 +1,6 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = merge(common, {
@@ -18,13 +18,13 @@ module.exports = merge(common, {
     extensions: ['.ts', '.js']
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './index.html',
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: './index.html',
+    // }),
     new CopyPlugin({
       patterns: [
-        // { from: 'index.html', to: 'index.html'},
-        { from: 'node_modules/systemjs/dist/system.min.js', to: 'js'},
+        { from: 'index.html', to: 'index.html'},
+        // { from: 'node_modules/systemjs/dist/system.min.js', to: 'js'},
         { from: 'img', to: 'img' },
         { from: 'css', to: 'css' },
         { from: 'favicon.ico', to: 'favicon.ico' },

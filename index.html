@@ -19,11 +19,10 @@
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="manifest" href="site.webmanifest">
 
-  <script src="js/system.min.js"></script>
-
   <meta name="theme-color" content="#fafafa">
 
-<!--  <script src="js/main.js"></script>-->
+  <script src="js/song-lyrics.js"></script>
+
 </head>
 
 <body>
@@ -34,42 +33,52 @@
       <div class="lyrics-preview">
         <table class="preview-table" id="previewTable">
           <tbody>
-            <tr onclick="myLyrics.tableRowOnClick(this)"><td></td></tr>
+<!--            <tr onclick="tableRowOnClick(this)"><td></td></tr>-->
+            <tr><td></td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="controls">
-        <button class="button-icon-lrg" onclick="myLyrics.showLyricsButton()" id="showBtn">
+<!--        <button class="button-icon-lrg" onclick="showLyricsButton()" id="showBtn">-->
+        <button class="button-icon-lrg" id="showBtn">
           <img src="img/see_watch_view_eye_icon-103177.svg" width="100" height="100">
         </button>
-        <button class="button-icon-lrg" onclick="myLyrics.hideLyricsButton()" id="hideBtn" style="display: none">
+<!--        <button class="button-icon-lrg" onclick="hideLyricsButton()" id="hideBtn" style="display: none">-->
+        <button class="button-icon-lrg" id="hideBtn" style="display: none">
           <img src="img/disable_eye_inactive_see_show_icon-3844443.svg" width="100" height="100">
         </button>
-        <button class="button-icon-lrg" onclick="myLyrics.prevLyricsRow()">
+<!--        <button class="button-icon-lrg" id="prevLinesBtn" onclick="prevLyricsLines()">-->
+        <button class="button-icon-lrg" id="prevLinesBtn">
           <img src="img/arrow_up_icon-186407.svg" width="100" height="100">
         </button>
-        <button class="button-icon-lrg" onclick="myLyrics.nextLyricsRow()">
+<!--        <button class="button-icon-lrg" id="nextLinesBtn" onclick="nextLyricsLines()">-->
+        <button class="button-icon-lrg" id="nextLinesBtn">
           <img src="img/arrow_down_icon-186411.svg" width="100" height="100">
         </button>
-        <button class="button-large" onclick="myLyrics.initLyricsToPreview()" id="startBtn" style="display: none">Start</button>
+<!--        <button class="button-large" onclick="initLyricsToPreview()" id="startBtn" style="display: none">Start</button>-->
+        <button class="button-large" id="startBtn" style="display: none">Start</button>
 
         <div class="controls-lines">
           <div class="controls-lines-buttons">
-            <button class="button-icon-med" id="lessLines" onclick="myLyrics.lessLines()">
+<!--            <button class="button-icon-med" id="lessLinesBtn" onclick="lessLinesToDisplay()">-->
+            <button class="button-icon-med" id="lessLinesBtn">
               <img src="img/square_minus_icon_8664827.svg" width="72" height="72">
             </button>
-            <button class="button-icon-med" id="moreLines" onclick="myLyrics.moreLines()">
+<!--            <button class="button-icon-med" id="moreLinesBtn" onclick="moreLinesToDisplay()">-->
+            <button class="button-icon-med" id="moreLinesBtn">
               <img src="img/square_plus_icon_8664849.svg" width="72" height="72">
             </button>
           </div>
           <input class="input-number-large" id="displayLines" type="number" value="2" min="1" max="20"/>
           <label class="label-large">Lines</label>
           <div class="controls-font-size-buttons">
-            <button class="button-icon-med" id="smallerFont" onclick="myLyrics.lessLines()">
+<!--            <button class="button-icon-med" id="smallerFontBtn" onclick="fontSmaller()">-->
+            <button class="button-icon-med" id="smallerFontBtn">
               <img src="img/square_minus_icon_8664827.svg" width="72" height="72">
             </button>
-            <button class="button-icon-med" id="largerFont" onclick="myLyrics.fontLarger()">
+<!--            <button class="button-icon-med" id="largerFontBtn" onclick="fontLarger()">-->
+            <button class="button-icon-med" id="largerFontBtn">
               <img src="img/square_plus_icon_8664849.svg" width="72" height="72">
             </button>
           </div>
@@ -86,14 +95,13 @@
         </div>
 
         <div class="container-lyrics-input">
-            <textarea class="textarea-large-in" onchange="myLyrics.lyricsOnChange(this)" id="lyricsEditor" rows="18"></textarea>
+            <textarea class="textarea-large-in" onchange="lyricsOnChange(this)" id="lyricsEditor" rows="18"></textarea>
         </div>
       </div>
     </div>
 
   </div>
-<!--  <script type="module" src="js/main.js"></script>-->
-  <script src="js/song-lyrics-js-ts.js"></script>
+<!--  <script src="js/song-lyrics.js"></script>-->
 
 </body>
 

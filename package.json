@@ -12,6 +12,8 @@
     "test": "jest",
     "start": "webpack serve --open --config webpack.config.dev.js",
     "build": "webpack --config webpack.config.prod.js",
+    "build-ts": "tsc --build",
+    "build-ts-debug": "tsc --build --verbose",
     "clean": "tsc --build --clean"
   },
   "devDependencies": {
