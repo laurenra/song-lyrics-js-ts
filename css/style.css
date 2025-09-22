@@ -19,9 +19,9 @@
 
 .container-lyrics-greenscreen {
   /*border: 1px solid red;*/
-  width: 1780px;
+  width: 1776px;
   /*width: 1880px;*/
-  padding: 20px 70px;
+  padding: 20px 72px;  /* 4% of parent container width */
   background-color: green;
   color: white;
   /* default font-size: 68pt; line-height: 85pt; are set directly in the HTML element, id=lyricsDisplay */
@@ -36,16 +36,19 @@
 
 .lyrics-preview {
   /*border: 1px solid red;*/
-  width: 40%;
+  /*width: 40%;*/
+  width: 870px;
   border-left: 2px solid black;
   height: 21em;
   padding: 20px 0px;
-  font-size: 26pt;
+  /*font-size: 26pt;*/
+  font-size: 38px; /* When green screen font size is 88px (default) this is 38px to match relative width */
   background-color: #cccccc;
 }
 
 .preview-table {
-  padding: 0px 20px;
+  /*padding: 0px 20px;*/
+  padding: 0px 35px; /* 4% of parent container width */
   border-spacing: 0px;
   display: block;
   height: 21em;
@@ -78,7 +81,8 @@
 }
 
 .controls {
-  width: 9%;
+  /*width: 9%;*/
+  width: 180px;
   border-left: 2px solid black;
   /*margin-top: 10px;*/
   padding: 0px 0px 20px 0px;
@@ -112,7 +116,8 @@
 
 .lyrics-editor {
   /*border: 1px solid red;*/
-  width: 51%;
+  /*width: 51%;*/
+  width: 870px;
   background-color: #cccccc;
 }
 
@@ -176,7 +181,7 @@ input[type="file"] {
 
 .container-lyrics-input {
   /*border: 1px solid blue;*/
-  padding: 0px 15px;
+  /*padding: 0px 15px;*/
   display: flex;
   flex-direction: column;
 }
@@ -254,8 +259,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .textarea-large-in {
   font-size: 22pt;
-  width: 31em;
-  padding: 10px 10px 10px 20px;
+  /*width: 31em;*/
+  padding: 10px 35px; /* 4% of parent container width */
 }
 
 .text-lyrics {
