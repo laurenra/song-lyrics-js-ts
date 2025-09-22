@@ -7,3 +7,6 @@ build/Release
 
 # Dependency directories
 node_modules/
+
+# Dist directory (populated on npm run build)
+dist/

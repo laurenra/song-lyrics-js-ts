@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2016", // target JavaScript version
+//    "module": "system", // use TypeScript import/export but compile to one JavaScript .js file
+//    "module": "amd", // use TypeScript import/export but compile to one JavaScript .js file
+    "module": "none", // use TypeScript import/export but compile to one JavaScript .js file
+    "outFile": "dist/js/song-lyrics.js",
+    "outDir": "dist/js",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": false, // retain class names
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/ts/**/*" // compile all TypeScript files under src/ts
+  ]
+}

@@ -40,6 +40,13 @@
  * TODO: Up down arrow keys move to previous and next lines
  */
 
+/* GLOBAL CONSTANTS */
+/**
+ *  Used to extract (decimal) number and size unit (px, pt, %, em, rem, etc.)
+ *  from a CSS size parameter ("18 px", "25%", "1.5em", etc.)
+ */
+const g_cssSizeRegEx: RegExp = /(\d*\.?\d+)\s*([a-z%]+)/;
+
 /* GLOBAL VARIABLES */
 let g_isShowLyrics: boolean = false;
 let g_lyricsText: string = "";
@@ -49,16 +56,27 @@ let g_lyricsIndex: number = 0;
 let g_displayLines: number = 2;
 let g_displayLinesMax: number = 20;
 let g_fontSize: number = 88;
-let g_fontSizeMin: number = 16;
+let g_fontSizeMin: number = 72;
 let g_fontSizeMax: number = 108;
+let g_fontSizeStep: number = 4;
+let g_lineHeight: number = 110;
+let g_lineHeightMin: number = 90;
+let g_lineHeightMax: number = 135;
+let g_lineHeightStep: number = 5;
 let g_lyricsToDisplay: string = "";
 let g_previewRowIndex: number = 0;
 let g_fileLocation: string = "";
 
+interface SizeParams {
+  sizeNum: number,
+  sizeUnit: string
+}
+
+
 /**
  * After loading a file, initialize values of global state variables.
  */
-function setDefaultsAfterFileLoad() {
+function setDefaultsAfterFileLoad(): void {
   g_isShowLyrics = false;
   g_lyricsText = "";
   g_lyricsArray = [];
@@ -77,7 +95,7 @@ function setDefaultsAfterFileLoad() {
  *
  * out: g_displayLines, g_displayLinesMax
  */
-function initLinesToDisplay() {
+function initLinesToDisplay(): void {
   const displayLinesElement = document.getElementById("displayLines") as HTMLInputElement;
   if (displayLinesElement) {
     const max: number = parseInt(displayLinesElement.max);
@@ -105,7 +123,7 @@ function initLinesToDisplay() {
   /**
    * Get URL query parameters
    */
-function getUrlQueryParams() {
+function getUrlQueryParams(): void {
   const urlParams = new URLSearchParams(window.location.search);
   const fileParam = urlParams.get('file');
   console.info("fileParam: " + fileParam); // testing only
@@ -126,7 +144,7 @@ function getUrlQueryParams() {
  *
  * out: g_lyricsText, g_lyricsArray, g_lyricsArrayLen
  */
-function initLyricsToPreview() {
+function initLyricsToPreview(): void {
   const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
   if (lyrics) {
     setDefaultsAfterFileLoad();
@@ -155,7 +173,7 @@ function initLyricsToPreview() {
  *
  * in:  g_lyricsArray, g_lyricsArrayLen, g_displayLines
  */
-function copyLyricsToPreview() {
+function copyLyricsToPreview(): void {
   const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
   if (lyrics) {
     const prvwTable = document.getElementById("previewTable") as HTMLTableElement;
@@ -200,7 +218,7 @@ function copyLyricsToPreview() {
   }
 }
 
-function setFileToRead(filePath: string) {
+function setFileToRead(filePath: string): void {
   g_fileLocation = filePath;
 }
 
@@ -218,7 +236,7 @@ function setFileToRead(filePath: string) {
  * passes in; in this case the <input> element in the HTML.
  */
 // function handleEvent(event: Event) {
-function handleFileInputEvent(event: Event) {
+function handleFileInputEvent(event: Event): void {
   const selectedFileList = (event.target as HTMLInputElement).files;
   if (selectedFileList) {
     // Get only one file, the first one.
@@ -252,7 +270,7 @@ function handleFileInputEvent(event: Event) {
    * There is no way to automatically load a file from a URL search parameter.
    * For security (CORS policy), the user must interact with the browser to get a file.
    */
-function loadFile(filePath: string) {
+function loadFile(filePath: string): void {
   if (filePath) {
     fetch(filePath)
         .then(response => {
@@ -296,7 +314,7 @@ function loadFile(filePath: string) {
  * Click on a row to move the display cursor and show those lyrics
  * @param event
  */
-function tableRowOnClick(event: Event) {
+function tableRowOnClick(event: Event): void {
   const rowEl = event.target as HTMLTableRowElement;
   const rowTr = rowEl.closest("tr");
   const rownum = rowTr?.rowIndex;
@@ -311,7 +329,7 @@ function tableRowOnClick(event: Event) {
  *
  * @param inputText
  */
-function lyricsOnChange(textarea: HTMLTextAreaElement) {
+function lyricsOnChange(textarea: HTMLTextAreaElement): void {
   // const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
   if (textarea.value) {
     setDefaultsAfterFileLoad();
@@ -334,7 +352,7 @@ function lyricsOnChange(textarea: HTMLTextAreaElement) {
  *
  * @param inputText
  */
-function lyricsOnInput(inputText: any) {
+function lyricsOnInput(inputText: any): void {
   setDefaultsAfterFileLoad();
   g_lyricsText = inputText.value;
   g_lyricsArray = g_lyricsText.split("\n");
@@ -350,7 +368,7 @@ function lyricsOnInput(inputText: any) {
  * 3. Copy row(s) of lyrics into g_lyricsToDisplay
  * 4. Show lyrics in green screen if isShowLyrics is true
  */
-function nextLyricsLines() {
+function nextLyricsLines(): void {
   if (g_lyricsIndex + g_displayLines < g_lyricsArrayLen) {
     g_lyricsIndex = g_lyricsIndex + g_displayLines;
 
@@ -377,7 +395,7 @@ function nextLyricsLines() {
  * 3. Copy row(s) of lyrics into g_lyricsToDisplay
  * 4. Show lyrics in green screen if isShowLyrics is true
  */
-function prevLyricsLines() {
+function prevLyricsLines(): void {
   if (g_lyricsIndex - g_displayLines >= 0) {
     g_lyricsIndex = g_lyricsIndex - g_displayLines;
 
@@ -403,7 +421,7 @@ function prevLyricsLines() {
  * 2. Move preview window down by g_displayLines
  * 3. Copy row(s) of lyrics into g_lyricsToDisplay
  */
-function goToLyricsRow(row: number) {
+function goToLyricsRow(row: number): void {
   console.info("go to row number " + row);
   const lyricsIndex = row * g_displayLines;
   console.info("go to lyrics index " + lyricsIndex);
@@ -474,7 +492,7 @@ function getLyricsToDisplay(lyricsArray: string[], lyricsIndex: number, lyricsAr
  *
  * out: g_lyricsToDisplay
  */
-function setLyricsToDisplay() {
+function setLyricsToDisplay(): void {
   let lyricsToDisplay: string = "";
   if (g_lyricsIndex < g_lyricsArrayLen) {
     let displayPointer = g_lyricsIndex;
@@ -504,7 +522,7 @@ function setLyricsToDisplay() {
  *
  * out: g_isShowLyrics = true
  */
-function showLyricsButton() {
+function showLyricsButton(): void {
   showLyrics();
   const showLyricsBtn = document.getElementById("showBtn");
   const hideLyrcsBtn = document.getElementById("hideBtn");
@@ -521,7 +539,7 @@ function showLyricsButton() {
  *
  * in:  g_lyricsToDisplay
  */
-function showLyrics() {
+function showLyrics(): void {
   const lyricsDisplay = document.getElementById("lyricsDisplay");
   if (lyricsDisplay) {
     lyricsDisplay.innerHTML = g_lyricsToDisplay;
@@ -539,7 +557,7 @@ function showLyrics() {
  * in:  g_lyricsToDisplay
  * out: g_isShowLyrics = false
  */
-function hideLyricsButton() {
+function hideLyricsButton(): void {
   hideLyrics();
   const showLyricsBtn = document.getElementById("showBtn");
   const hideLyrcsBtn = document.getElementById("hideBtn");
@@ -556,7 +574,7 @@ function hideLyricsButton() {
  *
  * in:  g_displayLines
  */
-function hideLyrics() {
+function hideLyrics(): void {
   let blankLines = "";
   for (let i = 0; i < g_displayLines; i++) {
     blankLines = blankLines + "<br>";
@@ -567,7 +585,7 @@ function hideLyrics() {
   }
 }
 
-function moreLinesToDisplay() {
+function moreLinesToDisplay(): void {
   const num = document.getElementById("displayLines") as HTMLInputElement;
   if (num) {
     if (g_displayLines < g_displayLinesMax) {
@@ -577,7 +595,7 @@ function moreLinesToDisplay() {
   }
 }
 
-function lessLinesToDisplay() {
+function lessLinesToDisplay(): void {
   const num = document.getElementById("displayLines") as HTMLInputElement;
   if (num) {
     if (g_displayLines > 1) {
@@ -587,8 +605,56 @@ function lessLinesToDisplay() {
   }
 }
 
-function fontSmaller() {
-  console.log("clicked smaller font button..."); // testing only
+/**
+ * Extract (decimal) number and size unit (px, pt, %, em, rem, etc.)
+ * from a CSS size parameter ("18 px", "25%", "1.5em", etc.)
+ *
+ * regex: (\d*\.?\d+)\s*([a-z%]+)
+ *
+ * @param cssSizeStr
+ * returns: {sizeNum: number, sizeUnit: string}
+ */
+function parseCssSize(cssSizeStr: string) : SizeParams {
+  let sizeNum: number = 0;
+  let sizeUnit: string = "";
+  const match: RegExpMatchArray | null = cssSizeStr.match(g_cssSizeRegEx);
+  if (match) {
+    sizeNum = parseFloat(match[1]);
+    sizeUnit = match[2];
+  }
+  return {
+    sizeNum,
+    sizeUnit
+  }
+}
+
+function fontSmaller(): void {
+  const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
+  if (elem) {
+    /* Get and set the font size and line height if the new font size is larger than the limit. */
+    const fontSize:SizeParams = parseCssSize(elem.style.fontSize);
+    if (fontSize.sizeNum > 0) {
+      console.log("current style.fontSize: " + fontSize.sizeNum) + fontSize.sizeUnit;
+      let newFontSize: number = fontSize.sizeNum - g_fontSizeStep; // Increment font size by step amount.
+      if (newFontSize >= g_fontSizeMin) {
+        g_fontSize = newFontSize; // Store new font size
+        elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
+        console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
+      }
+
+      /* Get and set the line height to be 125% of the font size. */
+      // const lineHeight:SizeParams = parseCssSize(elem.style.lineHeight);
+      // if (lineHeight.sizeNum > 0) {
+      //   console.log("style.lineHeight: " + lineHeight.sizeNum);
+      //   console.log("style.lineHeight unit: " + lineHeight.sizeUnit);
+      //   let newLineHeight: number = lineHeight.sizeNum + g_lineHeightStep; // Increment line height by step amount.
+      //   if (newLineHeight <= g_lineHeightMax) {
+      //     g_lineHeight = newLineHeight; // Store new font size
+      //     elem.style.lineHeight = newLineHeight + lineHeight.sizeUnit; // Set CSS font size.
+      //   }
+      // }
+    }
+  }
 }
 
 /**
@@ -610,25 +676,41 @@ function fontSmaller() {
  * line-height: 110px
  * font-size: 88px
  *
+ * To keep the line height and font size ratio, the line height increases
+ * by 5px for every 4px the font size increases (5/4 = 125%).
  */
-function fontLarger() {
+function fontBigger(): void {
   const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
   if (elem) {
-    // const computedStyle = window.getComputedStyle(elem);
-    // const computedFontSize = computedStyle.getPropertyValue('font-size');
-    // console.log("computedFontSize: " + computedFontSize);
-    // const cssFontSize = computedStyle.getPropertyValue('font-size');
-    // console.log("cssFontSize: " + cssFontSize);
-    console.log("style.fontSize: " + elem.style.fontSize);
-    console.log("style.lineHeight: " + elem.style.lineHeight);
-    elem.style.fontSize = "56pt"; // Set CSS font size.
-    // const fontSizeStyle = elem.style.fontSize;
-    // console.log("fontSizeStyle: " + fontSizeStyle);
-    // if (g_fontSize < g_fontSizeMax) {
-    //   g_fontSize = g_fontSize + 1;
-    //   elem.value = g_fontSize.toString();
-    // }
+    /* Get and set the font size and line height if the new font size is smaller than the limit. */
+    const fontSize:SizeParams = parseCssSize(elem.style.fontSize);
+    if (fontSize.sizeNum > 0) {
+      console.log("current style.fontSize: " + fontSize.sizeNum) + fontSize.sizeUnit;
+      let newFontSize: number = fontSize.sizeNum + g_fontSizeStep; // Increment font size by step amount.
+      if (newFontSize <= g_fontSizeMax) {
+        g_fontSize = newFontSize; // Store new font size
+        elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
+        console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
+      }
+
+      /* Get and set the line height to be 125% of the font size. */
+      // const lineHeight:SizeParams = parseCssSize(elem.style.lineHeight);
+      // if (lineHeight.sizeNum > 0) {
+      //   console.log("style.lineHeight: " + lineHeight.sizeNum);
+      //   console.log("style.lineHeight unit: " + lineHeight.sizeUnit);
+      //   let newLineHeight: number = lineHeight.sizeNum + g_lineHeightStep; // Increment line height by step amount.
+      //   if (newLineHeight <= g_lineHeightMax) {
+      //     g_lineHeight = newLineHeight; // Store new font size
+      //     elem.style.lineHeight = newLineHeight + lineHeight.sizeUnit; // Set CSS font size.
+      //   }
+      // }
+    }
   }
+}
+
+function lineHeightBigger(): void {
+  const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
+
 }
 
 
@@ -697,12 +779,12 @@ document.addEventListener('DOMContentLoaded', function() {
   moreLinesBtnButton?.addEventListener("click", moreLinesToDisplay, false);
 
   /* Button - smaller font */
-  const smallerFontBtnButton = document.getElementById("smallerFontBtnBtn");
+  const smallerFontBtnButton = document.getElementById("smallerFontBtn");
   smallerFontBtnButton?.addEventListener("click", fontSmaller, false);
 
   /* Button - larger font */
-  const largerFontBtnButton = document.getElementById("largerFontBtnBtn");
-  largerFontBtnButton?.addEventListener("click", fontLarger, false);
+  const largerFontBtnButton = document.getElementById("largerFontBtn");
+  largerFontBtnButton?.addEventListener("click", fontBigger, false);
 
 });
 
