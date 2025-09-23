@@ -42,13 +42,13 @@
   height: 21em;
   padding: 20px 0px;
   /*font-size: 26pt;*/
-  font-size: 38px; /* When green screen font size is 88px (default) this is 38px to match relative width */
+  /*font-size: 39px; !* When green screen font size is 88px (default) this is 39px to match relative width, about 44% *!*/
   background-color: #cccccc;
 }
 
 .preview-table {
   /*padding: 0px 20px;*/
-  padding: 0px 35px; /* 4% of parent container width */
+  /*padding: 0px 35px; !* 4% of parent container width *!*/
   border-spacing: 0px;
   display: block;
   height: 21em;
@@ -56,8 +56,9 @@
 }
 
 .preview-table td {
-  width: 21em;
-  padding: 0px 10px;
+  width: 780px;
+  /*padding: 0px 10px;*/
+  padding: 0px 35px;
 }
 
 .lyrics-preview-previous {
@@ -258,7 +259,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .textarea-large-in {
-  font-size: 22pt;
+  /*font-size: 22pt;*/
+  /*font-size: 30px; !* When green screen font size is 88px (default), preview is 39px (about 44%), this is 30px (about 34%) *!*/
   /*width: 31em;*/
   padding: 10px 35px; /* 4% of parent container width */
 }

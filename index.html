@@ -30,7 +30,7 @@
   <div class="container-main">
     <div class="container-lyrics-greenscreen" id="lyricsDisplay" style="font-size: 88px; line-height: 110px;"></div>
     <div class="console">
-      <div class="lyrics-preview">
+      <div class="lyrics-preview" id="lyricsPreview" style="font-size: 39px">
         <table class="preview-table" id="previewTable">
           <tbody>
 <!--            <tr onclick="tableRowOnClick(this)"><td></td></tr>-->
@@ -95,7 +95,7 @@
         </div>
 
         <div class="container-lyrics-input">
-            <textarea class="textarea-large-in" onchange="lyricsOnChange(this)" id="lyricsEditor" rows="18"></textarea>
+            <textarea class="textarea-large-in" id="lyricsEditor" rows="18" style="font-size: 30px" onchange="lyricsOnChange(this)"></textarea>
         </div>
       </div>
     </div>

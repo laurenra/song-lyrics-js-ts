@@ -640,6 +640,8 @@ function fontSmaller(): void {
         g_fontSize = newFontSize; // Store new font size
         elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
         console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
+        fontSizePreview(newFontSize, fontSize.sizeUnit);
+        fontSizeEdit(newFontSize, fontSize.sizeUnit);
       }
 
       /* Get and set the line height to be 125% of the font size. */
@@ -654,6 +656,24 @@ function fontSmaller(): void {
       //   }
       // }
     }
+  }
+}
+
+function fontSizePreview(mainFontSz: number, mainFontUnit: string): void {
+  const prvwFontSz = Math.floor(mainFontSz * 0.44);
+  console.log(mainFontSz + "px main font, " + prvwFontSz + "px preview font"); // testing only
+  const prvwElem = document.getElementById("lyricsPreview") as HTMLInputElement;
+  if (prvwElem) {
+    prvwElem.style.fontSize = prvwFontSz + mainFontUnit;
+  }
+}
+
+function fontSizeEdit(mainFontSz: number, mainFontUnit: string): void {
+  const editFontSz = Math.floor(mainFontSz * 0.34);
+  console.log(mainFontSz + "px main font, " + editFontSz + "px edit font"); // testing only
+  const editElem = document.getElementById("lyricsEditor") as HTMLInputElement;
+  if (editElem) {
+    editElem.style.fontSize = editFontSz + mainFontUnit;
   }
 }
 
@@ -691,6 +711,8 @@ function fontBigger(): void {
         g_fontSize = newFontSize; // Store new font size
         elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
         console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
+        fontSizePreview(newFontSize, fontSize.sizeUnit);
+        fontSizeEdit(newFontSize, fontSize.sizeUnit);
       }
 
       /* Get and set the line height to be 125% of the font size. */
