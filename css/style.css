@@ -39,7 +39,8 @@
   /*width: 40%;*/
   width: 870px;
   border-left: 2px solid black;
-  height: 21em;
+  /*height: 21em;*/
+  /*height: 800px;*/
   padding: 20px 0px;
   /*font-size: 26pt;*/
   /*font-size: 39px; !* When green screen font size is 88px (default) this is 39px to match relative width, about 44% *!*/
@@ -51,7 +52,8 @@
   /*padding: 0px 35px; !* 4% of parent container width *!*/
   border-spacing: 0px;
   display: block;
-  height: 21em;
+  /*height: 21em;*/
+  height: 800px;
   overflow-y: scroll;
 }
 
@@ -224,7 +226,7 @@ input[type="file"] {
 }
 
 .button-icon-med {
-  margin: 8px;
+  margin: 6px;
   padding: 0px;
   font-size: 16pt;
   border-radius: 10px;
