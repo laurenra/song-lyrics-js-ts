@@ -34,6 +34,61 @@
   flex-flow: row nowrap;
 }
 
+.container-file-font {
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: row;
+  height: 92px;
+  background-color: white;
+}
+.container-file-select {
+  /*border: 1px solid red;*/
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  /*justify-content: center;*/
+  box-sizing: border-box;
+  /*background-color: buttonface;*/
+  margin: 0em;
+  /*padding-block: 1px;*/
+  /*padding-inline: 6px;*/
+  /*border-width: 2px;*/
+  /*border-style: outset;*/
+  /*border-color: buttonborder;*/
+  /*border-radius: 20px;*/
+  /*border-image: initial;*/
+}
+
+.button-input-file {
+  display: inline-block;
+  border: 2px solid #545454;
+  border-radius: 20px;
+  background-color: #efefef;
+  /*font-family: sans-serif;*/
+  /*font-size: 42px;*/
+  /*font-weight:  bold;*/
+  /*margin: 10px 30px 10px 5px;*/
+  padding: 0px 20px;
+  cursor: pointer;
+  /*color: red;*/
+  /*background-color: lightblue;*/
+}
+
+.filename {
+  font-size: 36px;
+  margin: 5px 32px;
+}
+
+.container-file-select p {
+  margin: 24px 30px;
+  font-family: sans-serif;
+  font-size: 30pt;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 .lyrics-preview {
   /*border: 1px solid red;*/
   /*width: 40%;*/
@@ -122,53 +177,6 @@
   /*width: 51%;*/
   width: 870px;
   background-color: #cccccc;
-}
-
-.container-file-select {
-  /*border: 1px solid red;*/
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  /*justify-content: center;*/
-  box-sizing: border-box;
-  /*background-color: buttonface;*/
-  margin: 0em;
-  /*padding-block: 1px;*/
-  /*padding-inline: 6px;*/
-  /*border-width: 2px;*/
-  /*border-style: outset;*/
-  /*border-color: buttonborder;*/
-  /*border-radius: 20px;*/
-  /*border-image: initial;*/
-}
-
-.button-input-file {
-  display: inline-block;
-  border: 2px solid #545454;
-  border-radius: 20px;
-  background-color: #efefef;
-  font-family: sans-serif;
-  font-size: 32pt;
-  margin: 10px 30px 10px 5px;
-  padding: 10px 26px;
-  cursor: pointer;
-  /*color: red;*/
-  /*background-color: lightblue;*/
-}
-
-.filename {
-  font-size: 24pt;
-  margin: 28px 0px;
-}
-
-.container-file-select p {
-  margin: 24px 30px;
-  font-family: sans-serif;
-  font-size: 30pt;
-}
-
-input[type="file"] {
-  display: none;
 }
 
 .button-med-lrg {
@@ -264,7 +272,7 @@ input[type=number]::-webkit-outer-spin-button {
   /*font-size: 22pt;*/
   /*font-size: 30px; !* When green screen font size is 88px (default), preview is 39px (about 44%), this is 30px (about 34%) *!*/
   /*width: 31em;*/
-  padding: 10px 35px; /* 4% of parent container width */
+  padding: 24px 35px; /* 4% of parent container width */
 }
 
 .text-lyrics {

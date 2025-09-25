@@ -29,6 +29,15 @@
   <!-- Add your site or application content here -->
   <div class="container-main">
     <div class="container-lyrics-greenscreen" id="lyricsDisplay" style="font-size: 88px; line-height: 110px;"></div>
+    <div class="container-file-font">
+      <div class="container-file-select">
+        <label class="button-input-file">
+          <input type="file" id="fileSelected"/>
+            <img src="img/folder_icon-186404.svg" width="56px" height="56px">
+        </label>
+        <div class="filename" id="fileNameChosen">(select file)</div>
+      </div>
+    </div>
     <div class="console">
       <div class="lyrics-preview" id="lyricsPreview" style="font-size: 39px">
         <table class="preview-table" id="previewTable">
@@ -86,16 +95,8 @@
       </div>
 
       <div class="lyrics-editor">
-        <div class="container-file-select">
-          <label class="button-input-file">
-            <input type="file" id="fileSelected"/>
-            FILE
-          </label>
-          <div class="filename" id="fileNameChosen">(no file chosen)</div>
-        </div>
-
         <div class="container-lyrics-input">
-            <textarea class="textarea-large-in" id="lyricsEditor" rows="24" style="font-size: 30px" onchange="lyricsOnChange(this)"></textarea>
+            <textarea class="textarea-large-in" id="lyricsEditor" rows="20" style="font-size: 30px" onchange="lyricsOnChange(this)"></textarea>
         </div>
       </div>
     </div>
