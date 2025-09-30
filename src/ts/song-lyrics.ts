@@ -41,6 +41,8 @@
  */
 
 /* GLOBAL CONSTANTS */
+// import {valueOf} from "ts-loader";
+
 /**
  *  Used to extract (decimal) number and size unit (px, pt, %, em, rem, etc.)
  *  from a CSS size parameter ("18 px", "25%", "1.5em", etc.)
@@ -54,8 +56,8 @@ let g_lyricsArray: string[] = [];
 let g_lyricsArrayLen: number = 0;
 let g_lyricsIndex: number = 0;
 let g_displayLines: number = 2;
-let g_displayLinesMax: number = 20;
-let g_fontSize: number = 88;
+let g_displayLinesMax: number = 8;
+let g_fontSize: number = 88; /* This must match the value set in id="lyricsDisplay"*/
 let g_fontSizeMin: number = 72;
 let g_fontSizeMax: number = 108;
 let g_fontSizeStep: number = 4;
@@ -66,10 +68,17 @@ let g_lineHeightStep: number = 5;
 let g_lyricsToDisplay: string = "";
 let g_previewRowIndex: number = 0;
 let g_fileLocation: string = "";
+const g_fontSizeUnit: string = "px";
+const g_lineSingularText: string = "Line";
+const g_linePluralText: string = "Lines";
 
 interface SizeParams {
   sizeNum: number,
   sizeUnit: string
+}
+
+function initialize(): void {
+  fontSizeShow();
 }
 
 
@@ -84,41 +93,41 @@ function setDefaultsAfterFileLoad(): void {
   g_lyricsIndex = 0;
   g_lyricsToDisplay = "";
   g_previewRowIndex = 0;
-  initLinesToDisplay();
+  // initLinesToDisplay();
 }
 
 
 
 /**
- * Get min, max, and default value for displayLines from HTML <input> element.
+ * Get min, max, and default value for displayLinesValue from HTML <input> element.
  * Stay between 1 and 99 regardless of what's set in the element.
  *
  * out: g_displayLines, g_displayLinesMax
  */
-function initLinesToDisplay(): void {
-  const displayLinesElement = document.getElementById("displayLines") as HTMLInputElement;
-  if (displayLinesElement) {
-    const max: number = parseInt(displayLinesElement.max);
-    if (max > 99) {
-      let _max = 99;
-      displayLinesElement.max = _max.toString(); // reset to 99
-    }
-    g_displayLinesMax = max;
-
-    const min: number = parseInt(displayLinesElement.min);
-    if (min < 1) {
-      let min = 1;
-      displayLinesElement.min = min.toString(); // reset to 1
-    }
-
-    const val: number = parseInt(displayLinesElement.value);
-    if (val < 1 || val > 99) {
-      let val = 1;
-      displayLinesElement.value = val.toString();
-    }
-    g_displayLines = val;
-  }
-}
+// function initLinesToDisplay(): void {
+//   const displayLinesElement = document.getElementById("displayLines") as HTMLInputElement;
+//   if (displayLinesElement) {
+//     const max: number = parseInt(displayLinesElement.max);
+//     if (max > 99) {
+//       let _max = 99;
+//       displayLinesElement.max = _max.toString(); // reset to 99
+//     }
+//     g_displayLinesMax = max;
+//
+//     const min: number = parseInt(displayLinesElement.min);
+//     if (min < 1) {
+//       let min = 1;
+//       displayLinesElement.min = min.toString(); // reset to 1
+//     }
+//
+//     const val: number = parseInt(displayLinesElement.value);
+//     if (val < 1 || val > 99) {
+//       let val = 1;
+//       displayLinesElement.value = val.toString();
+//     }
+//     g_displayLines = val;
+//   }
+// }
 
   /**
    * Get URL query parameters
@@ -542,6 +551,7 @@ function showLyricsButton(): void {
 function showLyrics(): void {
   const lyricsDisplay = document.getElementById("lyricsDisplay");
   if (lyricsDisplay) {
+    console.log("Got lyricsDisplay element...");
     lyricsDisplay.innerHTML = g_lyricsToDisplay;
   }
 }
@@ -586,21 +596,50 @@ function hideLyrics(): void {
 }
 
 function moreLinesToDisplay(): void {
-  const num = document.getElementById("displayLines") as HTMLInputElement;
-  if (num) {
+  const numDiv: HTMLDivElement = document.getElementById("displayLinesValue") as HTMLDivElement;
+  if (numDiv) {
     if (g_displayLines < g_displayLinesMax) {
       g_displayLines = g_displayLines + 1;
-      num.value = g_displayLines.toString();
+      // num.value = g_displayLines.toString();
+      numDiv.innerHTML = g_displayLines.toString();
+
+      const txtDiv: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
+      if (txtDiv) {
+        txtDiv.innerHTML = g_linePluralText;
+      }
     }
   }
 }
 
 function lessLinesToDisplay(): void {
-  const num = document.getElementById("displayLines") as HTMLInputElement;
-  if (num) {
+  const numDiv = document.getElementById("displayLinesValue") as HTMLDivElement;
+  if (numDiv) {
     if (g_displayLines > 1) {
       g_displayLines = g_displayLines - 1;
-      num.value = g_displayLines.toString();
+      // num.value = g_displayLines.toString();
+      // num.innerHTML = g_displayLines.toString();
+      numDiv.textContent = g_displayLines.toString();
+
+      const txtDiv: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
+      if (txtDiv) {
+        if (g_displayLines > 1) {
+          txtDiv.innerHTML = g_linePluralText;
+        }
+        else {
+          txtDiv.innerHTML = g_lineSingularText;
+        }
+      }
+
+      // const txt: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
+      // if (txt) {
+      //   if (g_displayLines = 1) {
+      //     txt.innerHTML = g_lineSingularText;
+      //   }
+      //   else {
+      //     txt.innerHTML = g_linePluralText;
+      //   }
+      // }
+
     }
   }
 }
@@ -628,6 +667,41 @@ function parseCssSize(cssSizeStr: string) : SizeParams {
   }
 }
 
+/**
+ * Show the font size
+ */
+function fontSizeShow():void {
+  const elem = document.getElementById("fontSizeText") as HTMLDivElement;
+  if (elem) {
+    console.log("Font size set to " + g_fontSize + g_fontSizeUnit); // testing only
+    elem.innerHTML = g_fontSize + g_fontSizeUnit;
+  }
+  else {
+    console.log("Could not find element ID=fontSizeText"); // testing only
+  }
+}
+
+function fontSizePreviewPane(mainFontSz: number, mainFontUnit: string): void {
+  // const prvwFontSz = Math.floor(mainFontSz * 0.44);
+  const prvwFontSz = Math.round(mainFontSz * 0.432);
+  console.log(mainFontSz + g_fontSizeUnit +  " main font, " + prvwFontSz + g_fontSizeUnit + " preview font"); // testing only
+  const prvwElem = document.getElementById("lyricsPreview") as HTMLInputElement;
+  if (prvwElem) {
+    prvwElem.style.fontSize = prvwFontSz + mainFontUnit;
+  }
+}
+
+function fontSizeEditPane(mainFontSz: number, mainFontUnit: string): void {
+  // const editFontSz = Math.floor(mainFontSz * 0.34);
+  // const editFontSz = Math.round(mainFontSz * 0.34);
+  const editFontSz = Math.round(mainFontSz * 0.284);
+  console.log(mainFontSz + g_fontSizeUnit + " main font, " + editFontSz + g_fontSizeUnit + " edit font"); // testing only
+  const editElem = document.getElementById("lyricsEditor") as HTMLInputElement;
+  if (editElem) {
+    editElem.style.fontSize = editFontSz + mainFontUnit;
+  }
+}
+
 function fontSmaller(): void {
   const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
   if (elem) {
@@ -640,40 +714,11 @@ function fontSmaller(): void {
         g_fontSize = newFontSize; // Store new font size
         elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
         console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
-        fontSizePreview(newFontSize, fontSize.sizeUnit);
-        fontSizeEdit(newFontSize, fontSize.sizeUnit);
+        fontSizePreviewPane(newFontSize, fontSize.sizeUnit);
+        fontSizeEditPane(newFontSize, fontSize.sizeUnit);
+        fontSizeShow();
       }
-
-      /* Get and set the line height to be 125% of the font size. */
-      // const lineHeight:SizeParams = parseCssSize(elem.style.lineHeight);
-      // if (lineHeight.sizeNum > 0) {
-      //   console.log("style.lineHeight: " + lineHeight.sizeNum);
-      //   console.log("style.lineHeight unit: " + lineHeight.sizeUnit);
-      //   let newLineHeight: number = lineHeight.sizeNum + g_lineHeightStep; // Increment line height by step amount.
-      //   if (newLineHeight <= g_lineHeightMax) {
-      //     g_lineHeight = newLineHeight; // Store new font size
-      //     elem.style.lineHeight = newLineHeight + lineHeight.sizeUnit; // Set CSS font size.
-      //   }
-      // }
     }
-  }
-}
-
-function fontSizePreview(mainFontSz: number, mainFontUnit: string): void {
-  const prvwFontSz = Math.floor(mainFontSz * 0.44);
-  console.log(mainFontSz + "px main font, " + prvwFontSz + "px preview font"); // testing only
-  const prvwElem = document.getElementById("lyricsPreview") as HTMLInputElement;
-  if (prvwElem) {
-    prvwElem.style.fontSize = prvwFontSz + mainFontUnit;
-  }
-}
-
-function fontSizeEdit(mainFontSz: number, mainFontUnit: string): void {
-  const editFontSz = Math.floor(mainFontSz * 0.34);
-  console.log(mainFontSz + "px main font, " + editFontSz + "px edit font"); // testing only
-  const editElem = document.getElementById("lyricsEditor") as HTMLInputElement;
-  if (editElem) {
-    editElem.style.fontSize = editFontSz + mainFontUnit;
   }
 }
 
@@ -711,21 +756,10 @@ function fontBigger(): void {
         g_fontSize = newFontSize; // Store new font size
         elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
         console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
-        fontSizePreview(newFontSize, fontSize.sizeUnit);
-        fontSizeEdit(newFontSize, fontSize.sizeUnit);
+        fontSizePreviewPane(newFontSize, fontSize.sizeUnit);
+        fontSizeEditPane(newFontSize, fontSize.sizeUnit);
+        fontSizeShow();
       }
-
-      /* Get and set the line height to be 125% of the font size. */
-      // const lineHeight:SizeParams = parseCssSize(elem.style.lineHeight);
-      // if (lineHeight.sizeNum > 0) {
-      //   console.log("style.lineHeight: " + lineHeight.sizeNum);
-      //   console.log("style.lineHeight unit: " + lineHeight.sizeUnit);
-      //   let newLineHeight: number = lineHeight.sizeNum + g_lineHeightStep; // Increment line height by step amount.
-      //   if (newLineHeight <= g_lineHeightMax) {
-      //     g_lineHeight = newLineHeight; // Store new font size
-      //     elem.style.lineHeight = newLineHeight + lineHeight.sizeUnit; // Set CSS font size.
-      //   }
-      // }
     }
   }
 }
@@ -742,10 +776,6 @@ function lineHeightBigger(): void {
 
 console.log("Starting code..."); // testing only
 
-// USE
-// const myLyrics = new Lyrics();
-// myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
-hideLyricsButton(); // Initialize to not display lyrics.
 
 // const td = document.getElementById("previewTable")?.getElementsByTagName("td");
 // if (td) {
@@ -756,6 +786,14 @@ hideLyricsButton(); // Initialize to not display lyrics.
 // Add event listeners after the DOM is fully loaded. It won't be able to find
 // elements and assign listeners until the DOM is loaded.
 document.addEventListener('DOMContentLoaded', function() {
+
+  initialize();
+
+// USE
+// const myLyrics = new Lyrics();
+// myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
+  hideLyricsButton(); // Initialize to not display lyrics.
+
   const button = document.getElementById('myButton');
 
   /**

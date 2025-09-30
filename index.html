@@ -29,74 +29,68 @@
   <!-- Add your site or application content here -->
   <div class="container-main">
     <div class="container-lyrics-greenscreen" id="lyricsDisplay" style="font-size: 88px; line-height: 110px;"></div>
-    <div class="container-file-font">
+    <div class="controls-file-font">
       <div class="container-file-select">
         <label class="button-input-file">
           <input type="file" id="fileSelected"/>
-            <img src="img/folder_icon-186404.svg" width="56px" height="56px">
+            <img src="img/folder_icon-186404.svg" class="input-icon-med">
         </label>
         <div class="filename" id="fileNameChosen">(select file)</div>
       </div>
+      <div class="controls-font-size">
+        <button class="button-font-size" id="smallerFontBtn" style="font-size: 42px">A</button>
+        <button class="button-font-size" id="largerFontBtn" style="font-size: 60px">A</button>
+      </div>
+      <div class="fontSizeContainer">
+        <p id="fontSizeText">00 px</p>
+      </div>
+      <div class="controls-lines">
+        <button class="button-icon-med" id="lessLinesBtn">
+          <img src="img/menu_list_icon-2703071.svg">
+        </button>
+        <button class="button-icon-med" id="moreLinesBtn">
+          <img src="img/lines_list_price_icon-2738303.svg">
+        </button>
+        <div class="lines-amount" id="displayLinesValue">2</div>
+        <div class="lines-text" id="displayLinesText">Lines</div>
+<!--        <input class="input-number-large" id="displayLines" type="number" value="2" min="1" max="8"/>-->
+<!--        <label class="label-large">Lines</label>-->
+      </div>
     </div>
     <div class="console">
-      <div class="lyrics-preview" id="lyricsPreview" style="font-size: 39px">
+      <div class="lyrics-preview" id="lyricsPreview" style="font-size: 38px">
         <table class="preview-table" id="previewTable">
           <tbody>
-<!--            <tr onclick="tableRowOnClick(this)"><td></td></tr>-->
-            <tr><td></td></tr>
+          <!--            <tr onclick="tableRowOnClick(this)"><td></td></tr>-->
+          <tr><td></td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="controls">
-<!--        <button class="button-icon-lrg" onclick="showLyricsButton()" id="showBtn">-->
+        <!--        <button class="button-icon-lrg" onclick="showLyricsButton()" id="showBtn">-->
         <button class="button-icon-lrg" id="showBtn">
           <img src="img/see_watch_view_eye_icon-103177.svg" width="100" height="100">
         </button>
-<!--        <button class="button-icon-lrg" onclick="hideLyricsButton()" id="hideBtn" style="display: none">-->
+        <!--        <button class="button-icon-lrg" onclick="hideLyricsButton()" id="hideBtn" style="display: none">-->
         <button class="button-icon-lrg" id="hideBtn" style="display: none">
           <img src="img/disable_eye_inactive_see_show_icon-3844443.svg" width="100" height="100">
         </button>
-<!--        <button class="button-icon-lrg" id="prevLinesBtn" onclick="prevLyricsLines()">-->
+        <!--        <button class="button-icon-lrg" id="prevLinesBtn" onclick="prevLyricsLines()">-->
         <button class="button-icon-lrg" id="prevLinesBtn">
           <img src="img/arrow_up_icon-186407.svg" width="100" height="100">
         </button>
-<!--        <button class="button-icon-lrg" id="nextLinesBtn" onclick="nextLyricsLines()">-->
+        <!--        <button class="button-icon-lrg" id="nextLinesBtn" onclick="nextLyricsLines()">-->
         <button class="button-icon-lrg" id="nextLinesBtn">
           <img src="img/arrow_down_icon-186411.svg" width="100" height="100">
         </button>
-<!--        <button class="button-large" onclick="initLyricsToPreview()" id="startBtn" style="display: none">Start</button>-->
+        <!--        <button class="button-large" onclick="initLyricsToPreview()" id="startBtn" style="display: none">Start</button>-->
         <button class="button-large" id="startBtn" style="display: none">Start</button>
-
-        <div class="controls-lines">
-          <div class="controls-lines-buttons">
-<!--            <button class="button-icon-med" id="lessLinesBtn" onclick="lessLinesToDisplay()">-->
-            <button class="button-icon-med" id="lessLinesBtn">
-              <img src="img/square_minus_icon_8664827.svg" width="72" height="72">
-            </button>
-<!--            <button class="button-icon-med" id="moreLinesBtn" onclick="moreLinesToDisplay()">-->
-            <button class="button-icon-med" id="moreLinesBtn">
-              <img src="img/square_plus_icon_8664849.svg" width="72" height="72">
-            </button>
-          </div>
-          <input class="input-number-large" id="displayLines" type="number" value="2" min="1" max="20"/>
-          <label class="label-large">Lines</label>
-          <div class="controls-font-size-buttons">
-<!--            <button class="button-icon-med" id="smallerFontBtn" onclick="fontSmaller()">-->
-            <button class="button-icon-med" id="smallerFontBtn">
-              <img src="img/square_minus_icon_8664827.svg" width="72" height="72">
-            </button>
-<!--            <button class="button-icon-med" id="largerFontBtn" onclick="fontLarger()">-->
-            <button class="button-icon-med" id="largerFontBtn">
-              <img src="img/square_plus_icon_8664849.svg" width="72" height="72">
-            </button>
-          </div>
-        </div>
       </div>
 
       <div class="lyrics-editor">
         <div class="container-lyrics-input">
-            <textarea class="textarea-large-in" id="lyricsEditor" rows="20" style="font-size: 30px" onchange="lyricsOnChange(this)"></textarea>
+          <textarea class="textarea-large-in" id="lyricsEditor" rows="15" style="font-size: 25px" onchange="lyricsOnChange(this)"></textarea>
         </div>
       </div>
     </div>

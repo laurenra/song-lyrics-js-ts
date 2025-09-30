@@ -20,7 +20,6 @@
 .container-lyrics-greenscreen {
   /*border: 1px solid red;*/
   width: 1776px;
-  /*width: 1880px;*/
   padding: 20px 72px;  /* 4% of parent container width */
   background-color: green;
   color: white;
@@ -34,29 +33,23 @@
   flex-flow: row nowrap;
 }
 
-.container-file-font {
+.controls-file-font {
   border: 1px solid blue;
   display: flex;
   flex-direction: row;
-  height: 92px;
+  height: 96px;
   background-color: white;
 }
+
 .container-file-select {
   /*border: 1px solid red;*/
-  padding: 16px;
+  width: 1130px;
+  padding: 10px 10px 10px 20px;
   display: flex;
   flex-direction: row;
-  /*justify-content: center;*/
+  align-items: center;
   box-sizing: border-box;
-  /*background-color: buttonface;*/
-  margin: 0em;
-  /*padding-block: 1px;*/
-  /*padding-inline: 6px;*/
-  /*border-width: 2px;*/
-  /*border-style: outset;*/
-  /*border-color: buttonborder;*/
-  /*border-radius: 20px;*/
-  /*border-image: initial;*/
+  margin: 0px;
 }
 
 .button-input-file {
@@ -64,14 +57,13 @@
   border: 2px solid #545454;
   border-radius: 20px;
   background-color: #efefef;
-  /*font-family: sans-serif;*/
-  /*font-size: 42px;*/
-  /*font-weight:  bold;*/
-  /*margin: 10px 30px 10px 5px;*/
-  padding: 0px 20px;
+  padding: 0px 10px;
   cursor: pointer;
-  /*color: red;*/
-  /*background-color: lightblue;*/
+}
+
+.input-icon-med {
+  width: 72px;
+  height: 72px;
 }
 
 .filename {
@@ -89,6 +81,63 @@ input[type="file"] {
   display: none;
 }
 
+.controls-font-size {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.button-font-size {
+  width: 72px;
+  height: 72px;
+  margin: 0px 0px 0px 20px;
+  padding: 0px;
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.fontSizeContainer {
+  width: 180px;
+  text-align: right;
+}
+
+#fontSizeText {
+  /*border: 1px solid blue;*/
+  font-size: 60px;
+  margin: 0px;
+  padding: 5px;
+}
+
+.controls-lines {
+  /*border: 1px solid red;*/
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.lines-amount {
+  font-size: 60px;
+  margin-left: 20px;
+}
+
+.lines-text {
+  font-size: 60px;
+  margin-left: 10px;
+}
+
+.input-number-large {
+  font-size: 60px;
+  width: 50px;
+  margin: 10px 34px;
+  padding: 0px 5px 0px 5px;
+  text-align: right;
+}
+
+
+
 .lyrics-preview {
   /*border: 1px solid red;*/
   /*width: 40%;*/
@@ -96,7 +145,7 @@ input[type="file"] {
   border-left: 2px solid black;
   /*height: 21em;*/
   /*height: 800px;*/
-  padding: 20px 0px;
+  padding: 20px 0px 0px 0px;
   /*font-size: 26pt;*/
   /*font-size: 39px; !* When green screen font size is 88px (default) this is 39px to match relative width, about 44% *!*/
   background-color: #cccccc;
@@ -118,26 +167,6 @@ input[type="file"] {
   padding: 0px 35px;
 }
 
-.lyrics-preview-previous {
-  padding: 0px 20px;
-  height: 2.8em;
-  /*background-color: #cccccc;*/
-}
-
-.lyrics-preview-showing {
-  margin: 0px 10px;
-  padding: 0px 10px;
-  height: 2.8em;
-  background-color: #ffffff;
-}
-
-.lyrics-preview-next {
-  padding: 0px 20px;
-  height: 14em;
-  /*background-color: #cccccc;*/
-  overflow: scroll;
-}
-
 .controls {
   /*width: 9%;*/
   width: 180px;
@@ -153,17 +182,6 @@ input[type="file"] {
 /*.controls button {*/
 /*  margin-right: 1em;*/
 /*}*/
-
-.controls-lines {
-  /*border: 1px solid red;*/
-}
-
-.controls-lines-buttons {
-  display: flex;
-  flex-flow: row nowrap;
-
-  padding: 20px 0px 0px 5px;
-}
 
 .container-buttons {
   /*border: 1px solid blue;*/
@@ -234,12 +252,14 @@ input[type="file"] {
 }
 
 .button-icon-med {
-  margin: 6px;
-  padding: 0px;
+  width: 72px;
+  height: 72px;
+  margin: 0px 0px 0px 20px;
+  padding: 10px;
   font-size: 16pt;
+  border: 2px solid black;
   border-radius: 10px;
   cursor: pointer;
-  border: none;
   /*color: red;*/
   /*background-color: lightblue;*/
 }
@@ -248,14 +268,6 @@ input[type="file"] {
   font-family: sans-serif;
   font-size: 48px;
   margin: 34px;
-}
-
-.input-number-large {
-  font-size: 56pt;
-  width: 100px;
-  margin: 10px 34px;
-  padding: 0px 5px 0px 5px;
-  text-align: right;
 }
 
 input[type="number"] {
@@ -272,10 +284,14 @@ input[type=number]::-webkit-outer-spin-button {
   /*font-size: 22pt;*/
   /*font-size: 30px; !* When green screen font size is 88px (default), preview is 39px (about 44%), this is 30px (about 34%) *!*/
   /*width: 31em;*/
-  padding: 24px 35px; /* 4% of parent container width */
+  /*line-height: 1.83em; !* match line height of preview window, even though font is smaller (29px vs. 38px) *!*/
+  line-height: 2.13em; /* match line height of preview window, even though font is smaller (25px vs. 38px) */
+  padding: 0px 35px; /* 4% of parent container width */
+  margin: 20px 0px;
 }
 
 .text-lyrics {
+
   font-family: Georgia, serif;
   font-size: 72pt;
 }
