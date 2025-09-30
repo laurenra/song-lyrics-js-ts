@@ -34,6 +34,10 @@
  * the page load (see the end of this file), so it reads the lyrics text in
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
  *
+ * TODO: Modify all _Lyrics size test files with the right widths for mono and proportional fonts
+ * TODO: Modify number of lines in edit area (and preview area) for each font size
+ * TODO: Get line display to work for 1 to 8 lines (not just 2 lines)
+ *
  * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
  * TODO: what happens if someone enters number out of range? Does it reset to max or min? Or do I have to do that?
@@ -338,11 +342,31 @@ function tableRowOnClick(event: Event): void {
  *
  * @param inputText
  */
-function lyricsOnChange(textarea: HTMLTextAreaElement): void {
-  // const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
-  if (textarea.value) {
+// function lyricsOnChange(textarea: HTMLTextAreaElement): void {
+//   // const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
+//   if (textarea.value) {
+//     setDefaultsAfterFileLoad();
+//     const lyricsText = textarea.value;
+//     if (lyricsText) {
+//       if (lyricsText?.length > 0) {
+//         g_lyricsText = lyricsText;
+//         g_lyricsArray = g_lyricsText.split("\n");
+//         g_lyricsArrayLen = g_lyricsArray.length;
+//         copyLyricsToPreview();
+//       }
+//     }
+//     hideLyricsButton();
+//   }
+//   console.info("lyrics changed: " + textarea.value); // testing only
+// }
+
+function lyricsOnChange(): void {
+  const lyrics = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
+  // if (textarea.value) {
+  if (lyrics.value) {
     setDefaultsAfterFileLoad();
-    const lyricsText = textarea.value;
+    // const lyricsText = textarea.value;
+    const lyricsText = lyrics.value;
     if (lyricsText) {
       if (lyricsText?.length > 0) {
         g_lyricsText = lyricsText;
@@ -353,7 +377,8 @@ function lyricsOnChange(textarea: HTMLTextAreaElement): void {
     }
     hideLyricsButton();
   }
-  console.info("lyrics changed: " + textarea.value); // testing only
+  // console.info("lyrics changed: " + textarea.value); // testing only
+  console.info("lyrics changed: " + lyrics.value); // testing only
 }
 
 /**
@@ -845,6 +870,11 @@ document.addEventListener('DOMContentLoaded', function() {
   /* Button - larger font */
   const largerFontBtnButton = document.getElementById("largerFontBtn");
   largerFontBtnButton?.addEventListener("click", fontBigger, false);
+
+  const lyricsEditorChange = document.getElementById("lyricsEditor");
+  if (lyricsEditorChange) {
+    lyricsEditorChange.addEventListener("change", lyricsOnChange, false);
+  }
 
 });
 
