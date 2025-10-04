@@ -20,6 +20,7 @@
 .container-lyrics-greenscreen {
   /*border: 1px solid red;*/
   width: 1776px;
+  height: 220px;
   padding: 20px 72px;  /* 4% of parent container width */
   background-color: green;
   color: white;
@@ -157,8 +158,11 @@ input[type="file"] {
   border-spacing: 0px;
   display: block;
   /*height: 21em;*/
-  height: 800px;
+  /*height: 800px;*/
+  /*height: 714px;*/
+  /*height: 100px; !* Shorter than shortest lyricsEditor window which automatically adjusts to lyricsEditor height *!*/
   overflow-y: scroll;
+  border: 1px solid black;
 }
 
 .preview-table td {

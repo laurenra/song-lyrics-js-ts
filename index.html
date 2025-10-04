@@ -28,7 +28,7 @@
 <body>
   <!-- Add your site or application content here -->
   <div class="container-main">
-    <div class="container-lyrics-greenscreen" id="lyricsDisplay" style="font-size: 88px; line-height: 110px;"></div>
+    <div class="container-lyrics-greenscreen" id="lyricsDisplay" style="font-size: 88px; line-height: 110px"></div>
     <div class="controls-file-font">
       <div class="container-file-select">
         <label class="button-input-file">
@@ -38,8 +38,8 @@
         <div class="filename" id="fileNameChosen">(select file)</div>
       </div>
       <div class="controls-font-size">
-        <button class="button-font-size" id="smallerFontBtn" style="font-size: 42px">A</button>
-        <button class="button-font-size" id="largerFontBtn" style="font-size: 60px">A</button>
+        <button class="button-font-size" id="smallerFontBtn" style="font-size: 42px;">A</button>
+        <button class="button-font-size" id="largerFontBtn" style="font-size: 60px;">A</button>
       </div>
       <div class="fontSizeContainer">
         <p id="fontSizeText">00 px</p>
@@ -58,8 +58,8 @@
       </div>
     </div>
     <div class="console">
-      <div class="lyrics-preview" id="lyricsPreview" style="font-size: 38px">
-        <table class="preview-table" id="previewTable">
+      <div class="lyrics-preview" id="lyricsPreview" style="font-size: 38px;">
+        <table class="preview-table" id="previewTable" style="height: 695px;">
           <tbody>
           <!--            <tr onclick="tableRowOnClick(this)"><td></td></tr>-->
           <tr><td></td></tr>
@@ -72,8 +72,8 @@
         <button class="button-icon-lrg" id="showBtn">
           <img src="img/see_watch_view_eye_icon-103177.svg" width="100" height="100">
         </button>
-        <!--        <button class="button-icon-lrg" onclick="hideLyricsButton()" id="hideBtn" style="display: none">-->
-        <button class="button-icon-lrg" id="hideBtn" style="display: none">
+        <!--        <button class="button-icon-lrg" onclick="hideLyricsButton()" id="hideBtn" style="display: none;">-->
+        <button class="button-icon-lrg" id="hideBtn" style="display: none;">
           <img src="img/disable_eye_inactive_see_show_icon-3844443.svg" width="100" height="100">
         </button>
         <!--        <button class="button-icon-lrg" id="prevLinesBtn" onclick="prevLyricsLines()">-->
@@ -84,13 +84,13 @@
         <button class="button-icon-lrg" id="nextLinesBtn">
           <img src="img/arrow_down_icon-186411.svg" width="100" height="100">
         </button>
-        <!--        <button class="button-large" onclick="initLyricsToPreview()" id="startBtn" style="display: none">Start</button>-->
-        <button class="button-large" id="startBtn" style="display: none">Start</button>
+        <!--        <button class="button-large" onclick="initLyricsToPreview()" id="startBtn" style="display: none;">Start</button>-->
+        <button class="button-large" id="startBtn" style="display: none;">Start</button>
       </div>
 
       <div class="lyrics-editor">
         <div class="container-lyrics-input">
-          <textarea class="textarea-large-in" id="lyricsEditor" rows="15" style="font-size: 25px" onchange="lyricsOnChange(this)"></textarea>
+          <textarea class="textarea-large-in" id="lyricsEditor" rows="13" style="font-size: 25px;" onchange="lyricsOnChange(this)"></textarea>
         </div>
       </div>
     </div>

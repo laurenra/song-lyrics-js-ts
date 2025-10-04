@@ -35,23 +35,34 @@
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
  *
  * TODO: Modify all _Lyrics size test files with the right widths for mono and proportional fonts
- * TODO: Modify number of lines in edit area (and preview area) for each font size
  * TODO: Get line display to work for 1 to 8 lines (not just 2 lines)
+ * TODO: Add ability to save edited files.
+ * TODO: Automatically set font size based on longest line of lyrics loaded from a file or copied into edit area. "javascript to find lines of text that have wrapped"
+ * TODO: Add button to automatically format text pasted into edit area. Remove blank lines. Add blank lines after verse numbers. Set font size.
  *
  * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
- * TODO: what happens if someone enters number out of range? Does it reset to max or min? Or do I have to do that?
- * TODO: Up down arrow keys move to previous and next lines
  */
 
 /* GLOBAL CONSTANTS */
-// import {valueOf} from "ts-loader";
-
-/**
- *  Used to extract (decimal) number and size unit (px, pt, %, em, rem, etc.)
- *  from a CSS size parameter ("18 px", "25%", "1.5em", etc.)
- */
+/*  Used to extract (decimal) number and size unit (px, pt, %, em, rem, etc.) */
+/*  from a CSS size parameter ("18 px", "25%", "1.5em", etc.)                 */
 const g_cssSizeRegEx: RegExp = /(\d*\.?\d+)\s*([a-z%]+)/;
+
+/* GLOBAL DEFAULTS */
+const DISPLAY_FONT_SIZE_DEFAULT: number = 88; /* Displayed lyrics font size is 88px */
+const DISPLAY_FONT_SIZE_MIN: number = 72;
+const DISPLAY_FONT_SIZE_MAX: number = 108;
+const DISPLAY_FONT_SIZE_STEP: number = 4; /* Change font size in 4 pixel steps */
+const PREVIEW_FONT_RATIO: number = 0.432; /* Ratio of preview font size (proportional) to display font size */
+const PREVIEW_TABLE_HEIGHT: number = 695; /* Preview table height is 695px */
+const EDIT_FONT_RATIO: number = 0.284; /* Ratio of edit font size (fixed) to display font size */
+const DISPLAY_LINE_HEIGHT: number = 110; /* Displayed lyrics line height is 110px */
+const HTML_LINE_HEIGHT_RATIO: number = 1.4 /* Ratio of line height to font size */
+const FONT_SIZE_UNIT: string = "px";
+const SINGLE_LINE_TEXT: string = "Line";
+const PLURAL_LINE_TEXT: string = "Lines";
+
 
 /* GLOBAL VARIABLES */
 let g_isShowLyrics: boolean = false;
@@ -61,30 +72,31 @@ let g_lyricsArrayLen: number = 0;
 let g_lyricsIndex: number = 0;
 let g_displayLines: number = 2;
 let g_displayLinesMax: number = 8;
-let g_fontSize: number = 88; /* This must match the value set in id="lyricsDisplay"*/
-let g_fontSizeMin: number = 72;
-let g_fontSizeMax: number = 108;
-let g_fontSizeStep: number = 4;
-let g_lineHeight: number = 110;
-let g_lineHeightMin: number = 90;
-let g_lineHeightMax: number = 135;
-let g_lineHeightStep: number = 5;
+let g_displayFontSize: number = DISPLAY_FONT_SIZE_DEFAULT;
 let g_lyricsToDisplay: string = "";
 let g_previewRowIndex: number = 0;
 let g_fileLocation: string = "";
-const g_fontSizeUnit: string = "px";
-const g_lineSingularText: string = "Line";
-const g_linePluralText: string = "Lines";
 
 interface SizeParams {
   sizeNum: number,
   sizeUnit: string
 }
 
+/**
+ * Initialize element style values for lyrics display area, preview area, and edit area
+ */
 function initialize(): void {
-  fontSizeShow();
-}
+  /* Set default display line height */
+  (document.getElementById("lyricsDisplay") as HTMLDivElement).style.lineHeight =
+      (DISPLAY_LINE_HEIGHT + FONT_SIZE_UNIT) as string;
 
+  /* Set default preview table height */
+  (document.getElementById("previewTable") as HTMLTableElement).style.height =
+      (PREVIEW_TABLE_HEIGHT + FONT_SIZE_UNIT) as string;
+
+  /* Set default display font size, preview font size, edit font size, number of edit lines, etc. */
+  setDisplayFontSize(DISPLAY_FONT_SIZE_DEFAULT, FONT_SIZE_UNIT);
+}
 
 /**
  * After loading a file, initialize values of global state variables.
@@ -630,7 +642,7 @@ function moreLinesToDisplay(): void {
 
       const txtDiv: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
       if (txtDiv) {
-        txtDiv.innerHTML = g_linePluralText;
+        txtDiv.innerHTML = PLURAL_LINE_TEXT;
       }
     }
   }
@@ -648,20 +660,20 @@ function lessLinesToDisplay(): void {
       const txtDiv: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
       if (txtDiv) {
         if (g_displayLines > 1) {
-          txtDiv.innerHTML = g_linePluralText;
+          txtDiv.innerHTML = PLURAL_LINE_TEXT;
         }
         else {
-          txtDiv.innerHTML = g_lineSingularText;
+          txtDiv.innerHTML = SINGLE_LINE_TEXT;
         }
       }
 
       // const txt: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
       // if (txt) {
       //   if (g_displayLines = 1) {
-      //     txt.innerHTML = g_lineSingularText;
+      //     txt.innerHTML = SINGLE_LINE_TEXT;
       //   }
       //   else {
-      //     txt.innerHTML = g_linePluralText;
+      //     txt.innerHTML = PLURAL_LINE_TEXT;
       //   }
       // }
 
@@ -693,58 +705,53 @@ function parseCssSize(cssSizeStr: string) : SizeParams {
 }
 
 /**
- * Show the font size
+ * Show the Display font size
  */
-function fontSizeShow():void {
-  const elem = document.getElementById("fontSizeText") as HTMLDivElement;
-  if (elem) {
-    console.log("Font size set to " + g_fontSize + g_fontSizeUnit); // testing only
-    elem.innerHTML = g_fontSize + g_fontSizeUnit;
-  }
-  else {
-    console.log("Could not find element ID=fontSizeText"); // testing only
-  }
+function showDisplayFontSize():void {
+  (document.getElementById("fontSizeText") as HTMLDivElement).textContent = (g_displayFontSize + FONT_SIZE_UNIT) as string;
 }
 
-function fontSizePreviewPane(mainFontSz: number, mainFontUnit: string): void {
-  // const prvwFontSz = Math.floor(mainFontSz * 0.44);
-  const prvwFontSz = Math.round(mainFontSz * 0.432);
-  console.log(mainFontSz + g_fontSizeUnit +  " main font, " + prvwFontSz + g_fontSizeUnit + " preview font"); // testing only
-  const prvwElem = document.getElementById("lyricsPreview") as HTMLInputElement;
-  if (prvwElem) {
-    prvwElem.style.fontSize = prvwFontSz + mainFontUnit;
-  }
+function setPreviewPaneFontSize(mainFontSz: number, mainFontUnit: string): void {
+  const prvwFontSz:number = Math.round(mainFontSz * PREVIEW_FONT_RATIO);
+  (document.getElementById("lyricsPreview") as HTMLTableElement).style.fontSize = (prvwFontSz + mainFontUnit) as string;
+  console.log("(Display font) " + mainFontSz + FONT_SIZE_UNIT + " x " + PREVIEW_FONT_RATIO +
+      " = " + prvwFontSz + FONT_SIZE_UNIT + " (preview font)"); // testing only
 }
 
-function fontSizeEditPane(mainFontSz: number, mainFontUnit: string): void {
-  // const editFontSz = Math.floor(mainFontSz * 0.34);
-  // const editFontSz = Math.round(mainFontSz * 0.34);
-  const editFontSz = Math.round(mainFontSz * 0.284);
-  console.log(mainFontSz + g_fontSizeUnit + " main font, " + editFontSz + g_fontSizeUnit + " edit font"); // testing only
-  const editElem = document.getElementById("lyricsEditor") as HTMLInputElement;
+function setEditPaneFontSize(mainFontSz: number, mainFontUnit: string): void {
+  const editFontSz:number = Math.round(mainFontSz * EDIT_FONT_RATIO);
+  (document.getElementById("lyricsEditor") as HTMLTextAreaElement).style.fontSize = (editFontSz + mainFontUnit) as string;
+  console.log("(Display font) " + mainFontSz + FONT_SIZE_UNIT + " x " + EDIT_FONT_RATIO +
+      " = " + editFontSz + FONT_SIZE_UNIT + " (edit font)"); // testing only
+}
+
+function setEditPaneRows(mainFontSz: number): void {
+  const editElem: HTMLTextAreaElement = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
+  // const dsplyFontSz: string = document.getElementById("lyricsDisplay")?.style.fontSize ?? '';
+  // console.log("lyricsDisplay font size: " + dsplyFontSz); // testing only
   if (editElem) {
-    editElem.style.fontSize = editFontSz + mainFontUnit;
-  }
-}
-
-function fontSmaller(): void {
-  const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
-  if (elem) {
-    /* Get and set the font size and line height if the new font size is larger than the limit. */
-    const fontSize:SizeParams = parseCssSize(elem.style.fontSize);
-    if (fontSize.sizeNum > 0) {
-      console.log("current style.fontSize: " + fontSize.sizeNum) + fontSize.sizeUnit;
-      let newFontSize: number = fontSize.sizeNum - g_fontSizeStep; // Increment font size by step amount.
-      if (newFontSize >= g_fontSizeMin) {
-        g_fontSize = newFontSize; // Store new font size
-        elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
-        console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
-        fontSizePreviewPane(newFontSize, fontSize.sizeUnit);
-        fontSizeEditPane(newFontSize, fontSize.sizeUnit);
-        fontSizeShow();
-      }
+    const prvwElem:HTMLDivElement = document.getElementById("lyricsPreview") as HTMLDivElement;
+    if (prvwElem) {
+      const fontSize:SizeParams = parseCssSize(prvwElem.style.fontSize);
+      const prvwHeight = (document.getElementById("previewTable") as HTMLTableElement).style.height;
+      console.log("Preview font size: " + fontSize.sizeNum + fontSize.sizeUnit + ", Preview height: " + prvwHeight); // testing only
+      editElem.rows = Math.round(PREVIEW_TABLE_HEIGHT / (mainFontSz * PREVIEW_FONT_RATIO * HTML_LINE_HEIGHT_RATIO));
     }
   }
+}
+
+/**
+ * Set Display font size, adjust Preview font size, Edit font size, and adjust
+ * number of lines to display in Edit window.
+ * @param fontSize
+ * @param sizeUnit
+ */
+function setDisplayFontSize(fontSize: number, sizeUnit: string): void {
+  (document.getElementById("lyricsDisplay") as HTMLDivElement).style.fontSize = (fontSize + sizeUnit) as string;
+  setPreviewPaneFontSize(fontSize, sizeUnit);
+  setEditPaneFontSize(fontSize, sizeUnit);
+  setEditPaneRows(fontSize);
+  showDisplayFontSize();
 }
 
 /**
@@ -770,30 +777,24 @@ function fontSmaller(): void {
  * by 5px for every 4px the font size increases (5/4 = 125%).
  */
 function fontBigger(): void {
-  const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
-  if (elem) {
-    /* Get and set the font size and line height if the new font size is smaller than the limit. */
-    const fontSize:SizeParams = parseCssSize(elem.style.fontSize);
-    if (fontSize.sizeNum > 0) {
-      console.log("current style.fontSize: " + fontSize.sizeNum) + fontSize.sizeUnit;
-      let newFontSize: number = fontSize.sizeNum + g_fontSizeStep; // Increment font size by step amount.
-      if (newFontSize <= g_fontSizeMax) {
-        g_fontSize = newFontSize; // Store new font size
-        elem.style.fontSize = newFontSize + fontSize.sizeUnit; // Set CSS font size.
-        console.log("new style.fontSize: " + newFontSize + fontSize.sizeUnit) + fontSize.sizeUnit;
-        fontSizePreviewPane(newFontSize, fontSize.sizeUnit);
-        fontSizeEditPane(newFontSize, fontSize.sizeUnit);
-        fontSizeShow();
-      }
+    const newFontSize: number = g_displayFontSize + DISPLAY_FONT_SIZE_STEP; // Increment font size by step amount.
+    if (newFontSize <= DISPLAY_FONT_SIZE_MAX) {
+      g_displayFontSize = newFontSize; // Store new font size
+      console.log("New Display font size: " + newFontSize + FONT_SIZE_UNIT);
+      setDisplayFontSize(newFontSize, FONT_SIZE_UNIT);
+    }
+}
+
+function fontSmaller(): void {
+  if (g_displayFontSize > 0) {
+    const newFontSize: number = g_displayFontSize - DISPLAY_FONT_SIZE_STEP; // Decrement font size by step amount.
+    if (newFontSize >= DISPLAY_FONT_SIZE_MIN) {
+      g_displayFontSize = newFontSize; // Save new font size
+      console.log("New Display font size: " + newFontSize + FONT_SIZE_UNIT);
+      setDisplayFontSize(newFontSize, FONT_SIZE_UNIT);
     }
   }
 }
-
-function lineHeightBigger(): void {
-  const elem = document.getElementById("lyricsDisplay") as HTMLInputElement;
-
-}
-
 
 /**
  * Begin Program
@@ -801,37 +802,13 @@ function lineHeightBigger(): void {
 
 console.log("Starting code..."); // testing only
 
-
-// const td = document.getElementById("previewTable")?.getElementsByTagName("td");
-// if (td) {
-//   // td[0].className = "td-white";
-//   td[2].style.backgroundColor = "white";
-// }
-
-// Add event listeners after the DOM is fully loaded. It won't be able to find
-// elements and assign listeners until the DOM is loaded.
+/* Add event listeners after the DOM is fully loaded. */
 document.addEventListener('DOMContentLoaded', function() {
 
   initialize();
+  hideLyricsButton(); // Don't display lyrics initially
 
-// USE
-// const myLyrics = new Lyrics();
-// myLyrics.hideLyricsButton(); // Initialize to not display lyrics.
-  hideLyricsButton(); // Initialize to not display lyrics.
-
-  const button = document.getElementById('myButton');
-
-  /**
-   * Add event listener to handle lyrics added or edited in the text area. I
-   * think this could also be done by setting the onChange (or onInput) method
-   * in the element itself (in the index.html).
-   * - the change (element onChange) event is triggered when focus leaves the
-   * text area.
-   * - the input (element onInput) event is triggered when the text area gets
-   * input, like when a key is pressed and a character is added. It triggers
-   * on each keystroke.
-   */
-  /* Button - FILE select */
+  /* Button - select file */
   const inputFileElement = document.getElementById("fileSelected");
   inputFileElement?.addEventListener("change", handleFileInputEvent, false);
 
