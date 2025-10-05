@@ -2,8 +2,8 @@
 12345 7890 23456 8901 34567890 23456 8901
 
 
-92px font, 41 monospaced chars per line
-92px font, 49 proportional chars per line
+92px font, 41 numbers per line
+92px font, 49 characters per line
 
 
 00000 0001 00000 0020 00000003 00000 0040
@@ -30,7 +30,7 @@ Loud from the mountaintops echoes are ringin;
 Wastes rise in verdure and mingle in song.
 
 
-Hark! from all lands, from the isles of the ocea;
+Hark! from all lands, from the isles of the ocean
 Praise to Jehovah ascending on high.
 Fallen the engines of war and commotion;
 Shouts of salvation are rending the sky.

@@ -34,12 +34,11 @@
  * the page load (see the end of this file), so it reads the lyrics text in
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
  *
- * TODO: Modify all _Lyrics size test files with the right widths for mono and proportional fonts
- * TODO: Get line display to work for 1 to 8 lines (not just 2 lines)
  * TODO: Add ability to save edited files.
  * TODO: Automatically set font size based on longest line of lyrics loaded from a file or copied into edit area. "javascript to find lines of text that have wrapped"
  * TODO: Add button to automatically format text pasted into edit area. Remove blank lines. Add blank lines after verse numbers. Set font size.
  *
+ * TODO: Get line display to work for 1 to 8 lines (not just 2 lines)
  * TODO: Fix edit text with odd numbered lines.
  * TODO: Fix displaying 3 lines (or 4 or 1), when it loads from file, it cuts off the last rows instead of padding with blank lines
  */
@@ -56,7 +55,6 @@ const DISPLAY_FONT_SIZE_MAX: number = 108;
 const DISPLAY_FONT_SIZE_STEP: number = 4; /* Change font size in 4 pixel steps */
 const PREVIEW_FONT_RATIO: number = 0.432; /* Ratio of preview font size (proportional) to display font size */
 const PREVIEW_TABLE_HEIGHT: number = 695; /* Preview table height is 695px */
-const EDIT_FONT_RATIO: number = 0.284; /* Ratio of edit font size (fixed) to display font size */
 const DISPLAY_LINE_HEIGHT: number = 110; /* Displayed lyrics line height is 110px */
 const HTML_LINE_HEIGHT_RATIO: number = 1.4 /* Ratio of line height to font size */
 const FONT_SIZE_UNIT: string = "px";
@@ -719,23 +717,23 @@ function setPreviewPaneFontSize(mainFontSz: number, mainFontUnit: string): void 
 }
 
 function setEditPaneFontSize(mainFontSz: number, mainFontUnit: string): void {
-  const editFontSz:number = Math.round(mainFontSz * EDIT_FONT_RATIO);
+  const editFontSz:number = Math.round(mainFontSz * PREVIEW_FONT_RATIO);
   (document.getElementById("lyricsEditor") as HTMLTextAreaElement).style.fontSize = (editFontSz + mainFontUnit) as string;
-  console.log("(Display font) " + mainFontSz + FONT_SIZE_UNIT + " x " + EDIT_FONT_RATIO +
+  console.log("(Display font) " + mainFontSz + FONT_SIZE_UNIT + " x " + PREVIEW_FONT_RATIO +
       " = " + editFontSz + FONT_SIZE_UNIT + " (edit font)"); // testing only
 }
 
 function setEditPaneRows(mainFontSz: number): void {
   const editElem: HTMLTextAreaElement = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
-  // const dsplyFontSz: string = document.getElementById("lyricsDisplay")?.style.fontSize ?? '';
-  // console.log("lyricsDisplay font size: " + dsplyFontSz); // testing only
   if (editElem) {
     const prvwElem:HTMLDivElement = document.getElementById("lyricsPreview") as HTMLDivElement;
     if (prvwElem) {
       const fontSize:SizeParams = parseCssSize(prvwElem.style.fontSize);
       const prvwHeight = (document.getElementById("previewTable") as HTMLTableElement).style.height;
-      console.log("Preview font size: " + fontSize.sizeNum + fontSize.sizeUnit + ", Preview height: " + prvwHeight); // testing only
+      console.log("Edit Pane: preview font size: " + fontSize.sizeNum + fontSize.sizeUnit + ", Preview height: " + prvwHeight); // testing only
       editElem.rows = Math.round(PREVIEW_TABLE_HEIGHT / (mainFontSz * PREVIEW_FONT_RATIO * HTML_LINE_HEIGHT_RATIO));
+      console.log("Edit Pane: preview table height: " + PREVIEW_TABLE_HEIGHT + ", preview font ratio: " +
+          PREVIEW_FONT_RATIO + ", html line height ratio: " + HTML_LINE_HEIGHT_RATIO + " = " + editElem.rows); // testing only
     }
   }
 }

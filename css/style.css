@@ -285,20 +285,16 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .textarea-large-in {
+  font-family: 'Times New Roman', serif;
   /*font-size: 22pt;*/
   /*font-size: 30px; !* When green screen font size is 88px (default), preview is 39px (about 44%), this is 30px (about 34%) *!*/
   /*width: 31em;*/
-  /*line-height: 1.83em; !* match line height of preview window, even though font is smaller (29px vs. 38px) *!*/
-  line-height: 2.13em; /* match line height of preview window, even though font is smaller (25px vs. 38px) */
+  line-height: 1.4em; /* match line height of preview window, even though font is smaller (29px vs. 38px) */
+  /*line-height: 2.13em; !* match line height of preview window, even though font is smaller (25px vs. 38px) *!*/
   padding: 0px 35px; /* 4% of parent container width */
   margin: 20px 0px;
 }
 
-.text-lyrics {
-
-  font-family: Georgia, serif;
-  font-size: 72pt;
-}
 
 /* ==========================================================================
    Base styles: opinionated defaults
@@ -306,6 +302,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 html {
   color: #222;
+  font-family: 'Times New Roman', serif;
   font-size: 1em;
   line-height: 1.4;
 }
