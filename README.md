@@ -5,8 +5,9 @@ Broadcast Studio (OBS) to overlay on a video or image.
 
 ## Usage
 
-1. Download song-lyrics-0.9.1.zip
-2. After unzipping, open **index.html** in a browser
+1. Go to latest release under **Releases** at the right.
+2. Download the [song-lyrics-(version).zip](https://github.com/laurenra/song-lyrics-js-ts/releases/download/v0.9.1/song-lyrics-0.9.1.zip) file.
+3. Unzip the file and open **index.html** in a browser
 
 ### Controls
 
