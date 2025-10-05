@@ -1,6 +1,8 @@
 # IDE
 .idea
 *.iml
+*.iml
+song-lyrics*.zip
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
