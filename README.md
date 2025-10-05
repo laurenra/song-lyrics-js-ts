@@ -5,27 +5,22 @@ Broadcast Studio (OBS) to overlay on a video or image.
 
 ## Usage
 
-### In a Browser
-Open **index.html** in a browser. Copy lyrics into the **Song Lyrics** text area. 
-Click on **Next Line** button to advance to the next lines of lyrics to display.
+1. Download song-lyrics-0.9.1.zip
+2. After unzipping, open **index.html** in a browser
 
-You only need these files to run this:
+### Controls
 
-```shell
-index.html
-css/style.css
-js/song-lyrics-js-ts.js
-favicon.ico
-icon.png
-icon.svg
-img/arrow_down_icon-186411.svg
-img/arrow_up_icon-186407.svg
-img/disable_eye_inactive_see_show_icon-3844443.svg
-img/see_watch_view_eye_icon-103177.svg
-img/square_minus_icon_8664827.svg
-img/square_plus_icon_8664849.svg
-site.webmanifest
-```
+1. [Open File](img-readme/controls-1-open-file.jpg)
+2. [Show](img-readme/controls-2-lyrics-show.jpg) / [Hide](img-readme/controls-2-lyrics-hide.jpg) Lyrics (displayed at the top)
+3. [Next / Previous](img-readme/controls-3-next-prev-lyrics.jpg), show next/previous lyric lines
+4. [Text Size](img-readme/controls-4-text-size.jpg), increase or decrease text size
+
+![Overview of controls](img-readme/controls-0-overview.jpg)
+
+Lyrics in the edit window on the right can be edited. Click on the left 
+preview window to show changes. 
+
+
 
 ### In OBS
 The main purpose of this application is to display lyrics overlayed on, for 
@@ -94,8 +89,8 @@ the blank lines.
 
 ## Customize and Build project
 
-If you make changes to the **src/ts/song-lyrics-js-ts.ts** TypeScript file, 
-they must be compiled into the **js/song-lyrics-js-ts.js** JavaScript file, 
+If you make changes to the **src/ts/song-lyrics.ts** TypeScript file, 
+they must be compiled into the **js/song-lyrics.js** JavaScript file, 
 which is the code that **index.html** uses. To be able to compile, you'll need 
 [Node.js and NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) 
 installed first to run the following in the project root directory to install 
@@ -105,8 +100,8 @@ the dependencies.
 npm install
 ```
 
-Then compile the modified **song-lyrics-js-ts.ts** TypeScript file into the 
-JavaScript file, **js/song-lyrics-js-ts.ts** that's used by index.html.
+Then compile the modified **song-lyrics.ts** TypeScript file into the 
+JavaScript file, **dist/js/song-lyrics.js** that's used by index.html.
 
 ```sh
 npm run build

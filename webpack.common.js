@@ -2,8 +2,6 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    // app: './js/song-lyrics-js-ts.js',
-    // app: './src/ts/main.ts',
     app: './src/ts/song-lyrics.ts',
   },
   output: {
