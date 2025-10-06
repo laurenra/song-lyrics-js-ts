@@ -25,7 +25,7 @@ preview window to show changes.
 The main purpose of this application is to display lyrics overlayed on, for 
 example, a live video feed in OBS.
 
-[Lyrics overlay example in OBS (image)](img-readme/obs-lyrics-example.jpg)
+![Lyrics overlay example in OBS (image)](img-readme/obs-lyrics-example.jpg)
 
 Set it up in OBS like this.
 
