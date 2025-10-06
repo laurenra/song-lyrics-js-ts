@@ -36,16 +36,12 @@ Set it up in OBS like this.
 4. Set **Width** to 1920 and **Height** to 1080
 5. **OK** to save
 
-[Browser source in OBS (image)](img-readme/lyrics-overlay-browser-source.jpg)
-
 ### Add Chroma Key filter to Browser source
 1. Click on **Filters**
 2. Add an **Effect** Filter
 3. Select **Chroma Key** and name it
 4. Accept the defaults (default **Key Color Type** is **Green**)
 5. **Close** to save
-
-[Chroma Key filter in OBS (image)](img-readme/lyrics-overlay-filter-chroma-key.jpg)
 
 The background color of the lyrics display area at the top is CSS Green, 
 #008000, which works great with the default Key Color Type of Green in the 
@@ -75,16 +71,12 @@ currently version 2.3.2 (as of June 19, 2023).
    3. **Shadow blur size:** 3
    4. **shadow color** #ff000000 (black)
 
-[Drop shadow shader filter in OBS (image)](img-readme/lyrics-overlay-filter-drop-shadow-shader.jpg)
-
 ### Interact with the Browser source to display next lyrics
 Select the Interact button to open a dialog that shows the browser page with 
 the Next, Prev, and Select File buttons. You can only select the next or 
 previous lyrics in this dialog. If you want the lyrics to disappear at the 
 end, add a couple blank lines so the Next button will eventually advance to 
 the blank lines.
-
-[Interact with Browser source in OBS (image)](img-readme/lyrics-overlay-browser-interact.jpg)
 
 ## Customize and Build project
 
