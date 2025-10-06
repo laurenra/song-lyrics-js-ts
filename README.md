@@ -29,7 +29,7 @@ example, a live video feed in OBS.
 
 Set it up in OBS like this.
 
-#### Add Browser source
+### Add Browser source
 1. Add a **Browser** source to your scene and name it
 2. Set as **Local file**
 3. Browse to **index.html** and select it
@@ -38,7 +38,7 @@ Set it up in OBS like this.
 
 [Browser source in OBS (image)](img-readme/lyrics-overlay-browser-source.jpg)
 
-#### Add Chroma Key filter to Browser source
+### Add Chroma Key filter to Browser source
 1. Click on **Filters**
 2. Add an **Effect** Filter
 3. Select **Chroma Key** and name it
@@ -51,7 +51,7 @@ The background color of the lyrics display area at the top is CSS Green,
 #008000, which works great with the default Key Color Type of Green in the 
 Chroma Key effect filter.
 
-#### Modify Browser source overlay
+### Modify Browser source overlay
 Place the browser source overlay where you want on the screen, usually at the 
 bottom. It should fit perfectly in an HD video frame (1920x1080). Trim the 
 lower part to see only the lyrics with the green background, which should 
@@ -59,7 +59,7 @@ appear as white text floating over your video. Press **Alt** while you use the
 mouse to drag the bottom handle up to hide everything below the lyrics 
 display area.
 
-#### Add a drop shadow and transparent color overlay
+### Add a drop shadow and transparent color overlay
 If you want a drop shadow, install the popular 
 [obs-shaderfilter](https://obsproject.com/forum/resources/obs-shaderfilter.1736/), 
 currently version 2.3.2 (as of June 19, 2023).
@@ -77,7 +77,7 @@ currently version 2.3.2 (as of June 19, 2023).
 
 [Drop shadow shader filter in OBS (image)](img-readme/lyrics-overlay-filter-drop-shadow-shader.jpg)
 
-#### Interact with the Browser source to display next lyrics
+### Interact with the Browser source to display next lyrics
 Select the Interact button to open a dialog that shows the browser page with 
 the Next, Prev, and Select File buttons. You can only select the next or 
 previous lyrics in this dialog. If you want the lyrics to disappear at the 
@@ -114,6 +114,17 @@ example [FatIcons](https://www.iconfinder.com/iconsets/faticons) and
 [Flat UI Icons](https://www.iconfinder.com/iconsets/flat-ui-icons-24-px) and 
 [Jumpicon](https://www.iconfinder.com/search/icons?family=jumpicon-glyph). and 
 [Font Awesome Regular](https://www.iconfinder.com/search/icons?family=font-awesome-regular) icons.
+
+### Create downloadable package of /dist directory for a release version
+
+Zip everything in the /dist directory and its subdirectories into a file named
+'song-lyrics-{release version}.zip' and upload to GitHub when you create a
+[release version](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository),
+for example:
+
+```shell
+zip -r song-lyrics-1.5.2.zip dist
+```
 
 ## Project Setup
 
