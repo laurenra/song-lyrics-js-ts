@@ -3,9 +3,9 @@
 Display song lyrics on a green screen to be used as a Browser source in Open 
 Broadcast Studio (OBS) to overlay on a video or image.
 
-## Usage
+## How to use
 
-1. Go to latest release under **Releases** at the right.
+1. Go to latest release in GitHub under **Releases** at the right.
 2. Download the [song-lyrics-(version).zip](https://github.com/laurenra/song-lyrics-js-ts/releases/download/v0.9.1/song-lyrics-0.9.1.zip) file.
 3. Unzip the file and open **index.html** in a browser
 
@@ -20,8 +20,6 @@ Broadcast Studio (OBS) to overlay on a video or image.
 
 Lyrics in the edit window on the right can be edited. Click on the left 
 preview window to show changes. 
-
-
 
 ### In OBS
 The main purpose of this application is to display lyrics overlayed on, for 

@@ -32,6 +32,7 @@ module.exports = merge(common, {
         { from: 'icon.svg', to: 'icon.svg' },
         { from: 'robots.txt', to: 'robots.txt' },
         { from: '404.html', to: '404.html' },
+        { from: 'lyrics/Amazing Grace.txt', to: 'lyrics/Amazing Grace.txt'}
       ],
     }),
   ]
