@@ -19,8 +19,8 @@
 
 .container-lyrics-greenscreen {
   /*border: 1px solid red;*/
-  width: 1776px;
-  height: 220px;
+  /*width: 1776px;*/
+  /*height: 220px;*/
   padding: 20px 72px;  /* 4% of parent container width */
   background-color: green;
   color: white;

@@ -35,8 +35,9 @@
  * <textarea id=lyricsEditor> and populates the variables in the Lyrics object.
  *
  * TODO: Add ability to save edited files.
- * TODO: Automatically set font size based on longest line of lyrics loaded from a file or copied into edit area. "javascript to find lines of text that have wrapped"
+ * TODO: Add button or checkbox to automatically set the largest font size for the lyrics? Currently doing it automatically every time.
  * TODO: Add button to automatically format text pasted into edit area. Remove blank lines. Add blank lines after verse numbers. Set font size.
+ * TODO: Add verses numbers.
  *
  * TODO: Get line display to work for 1 to 8 lines (not just 2 lines)
  * TODO: Fix edit text with odd numbered lines.
@@ -46,9 +47,11 @@
 /* GLOBAL CONSTANTS */
 /*  Used to extract (decimal) number and size unit (px, pt, %, em, rem, etc.) */
 /*  from a CSS size parameter ("18 px", "25%", "1.5em", etc.)                 */
-const g_cssSizeRegEx: RegExp = /(\d*\.?\d+)\s*([a-z%]+)/;
+const CSS_SIZE_REGEX: RegExp = /(\d*\.?\d+)\s*([a-z%]+)/;
 
 /* GLOBAL DEFAULTS */
+const DISPLAY_AREA_WIDTH: number = 1776; /* Default width of display area id=lyricsDisplay */
+const FONT_FAMILY: string = "Times New Roman"; /* Default font for Display, Preview, and Edit areas */
 const DISPLAY_FONT_SIZE_DEFAULT: number = 88; /* Displayed lyrics font size is 88px */
 const DISPLAY_FONT_SIZE_MIN: number = 72;
 const DISPLAY_FONT_SIZE_MAX: number = 108;
@@ -56,7 +59,7 @@ const DISPLAY_FONT_SIZE_STEP: number = 4; /* Change font size in 4 pixel steps *
 const PREVIEW_FONT_RATIO: number = 0.432; /* Ratio of preview font size (proportional) to display font size */
 const PREVIEW_TABLE_HEIGHT: number = 695; /* Preview table height is 695px */
 const DISPLAY_LINE_HEIGHT: number = 110; /* Displayed lyrics line height is 110px */
-const HTML_LINE_HEIGHT_RATIO: number = 1.4 /* Ratio of line height to font size */
+const HTML_LINE_HEIGHT_RATIO: number = 1.4; /* Ratio of line height to font size */
 const FONT_SIZE_UNIT: string = "px";
 const SINGLE_LINE_TEXT: string = "Line";
 const PLURAL_LINE_TEXT: string = "Lines";
@@ -64,11 +67,11 @@ const PLURAL_LINE_TEXT: string = "Lines";
 
 /* GLOBAL VARIABLES */
 let g_isShowLyrics: boolean = false;
-let g_lyricsText: string = "";
-let g_lyricsArray: string[] = [];
+let g_lyricsText: string = ""; // Raw lyrics from file with line breaks
+let g_lyricsArray: string[] = []; // Each line of lyrics is copied to a string element in this array
 let g_lyricsArrayLen: number = 0;
-let g_lyricsIndex: number = 0;
-let g_displayLines: number = 2;
+let g_lyricsIndex: number = 0; // Current cursor position in lyrics array
+let g_displayLines: number = 2; // Number of lines to copy to the display area
 let g_displayLinesMax: number = 8;
 let g_displayFontSize: number = DISPLAY_FONT_SIZE_DEFAULT;
 let g_lyricsToDisplay: string = "";
@@ -110,42 +113,9 @@ function setDefaultsAfterFileLoad(): void {
   // initLinesToDisplay();
 }
 
-
-
 /**
- * Get min, max, and default value for displayLinesValue from HTML <input> element.
- * Stay between 1 and 99 regardless of what's set in the element.
- *
- * out: g_displayLines, g_displayLinesMax
+ * Get URL Query parameters
  */
-// function initLinesToDisplay(): void {
-//   const displayLinesElement = document.getElementById("displayLines") as HTMLInputElement;
-//   if (displayLinesElement) {
-//     const max: number = parseInt(displayLinesElement.max);
-//     if (max > 99) {
-//       let _max = 99;
-//       displayLinesElement.max = _max.toString(); // reset to 99
-//     }
-//     g_displayLinesMax = max;
-//
-//     const min: number = parseInt(displayLinesElement.min);
-//     if (min < 1) {
-//       let min = 1;
-//       displayLinesElement.min = min.toString(); // reset to 1
-//     }
-//
-//     const val: number = parseInt(displayLinesElement.value);
-//     if (val < 1 || val > 99) {
-//       let val = 1;
-//       displayLinesElement.value = val.toString();
-//     }
-//     g_displayLines = val;
-//   }
-// }
-
-  /**
-   * Get URL query parameters
-   */
 function getUrlQueryParams(): void {
   const urlParams = new URLSearchParams(window.location.search);
   const fileParam = urlParams.get('file');
@@ -172,6 +142,8 @@ function initLyricsToPreview(): void {
   if (lyrics) {
     setDefaultsAfterFileLoad();
     const lyricsText = lyrics.value;
+    // checkLyricsTextSize(lyricsText);
+    // testing only. Move this to handleFileInputEvent? Or provide a button to autosize?
     if (lyricsText) {
       if (lyricsText?.length > 0) {
         g_lyricsText = lyricsText;
@@ -229,7 +201,7 @@ function copyLyricsToPreview(): void {
         // newtr.addEventListener("click", tableRowOnClick.bind(this));
         newtr.addEventListener("click", tableRowOnClick);
 
-        console.info("loop " + i + ": g_lyricsArrayLen = " + g_lyricsArrayLen); // testing only
+        // console.info("loop " + i + ": g_lyricsArrayLen = " + g_lyricsArrayLen);
 
         newtd.innerHTML = lyricsToCopy;
         newtr.appendChild(newtd);
@@ -275,6 +247,16 @@ function handleFileInputEvent(event: Event): void {
       const reader = new FileReader();
       reader.onload = function() {
         const fileContent = reader.result as string;
+
+        /* Before copying content to lyricsEditor, try to find the largest font that will display the longest lyric line without wrapping to the next line */
+        const font :string = g_displayFontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY;
+        const longestLine: string = getLongestLyricLine(fileContent, font);
+        console.log("longest lyric line is " + measureLyricsLineWidth(longestLine, font) + "px: " + longestLine); // testing only
+        const largestFont: number = findLargestUsableFont(longestLine);
+        /* Set the largest font that will work */
+        g_displayFontSize = largestFont;
+        setDisplayFontSize(largestFont, FONT_SIZE_UNIT);
+
         // Copy file contents to lyrics editor textarea
         const lyricsInArea = document.getElementById("lyricsEditor") as HTMLTextAreaElement;
         if (lyricsInArea) {
@@ -507,6 +489,7 @@ function getLyricsToDisplay(lyricsArray: string[], lyricsIndex: number, lyricsAr
     for (let i = 0; i < displayLines; i++) {
       // If display pointer is not beyond the last line of lyrics, append newline.
       if (displayPointer < lyricsArrayLen) {
+        // measureLyricsLineWidth(lyricsArray[lyricsIndex + i], g_displayFontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY);
         lyricsToDisplay = lyricsToDisplay + lyricsArray[lyricsIndex + i] + "<br>";
       }
       // If display pointer is beyond the last line of lyrics, add empty lines.
@@ -665,16 +648,6 @@ function lessLinesToDisplay(): void {
         }
       }
 
-      // const txt: HTMLDivElement = document.getElementById("displayLinesText") as HTMLDivElement;
-      // if (txt) {
-      //   if (g_displayLines = 1) {
-      //     txt.innerHTML = SINGLE_LINE_TEXT;
-      //   }
-      //   else {
-      //     txt.innerHTML = PLURAL_LINE_TEXT;
-      //   }
-      // }
-
     }
   }
 }
@@ -691,7 +664,7 @@ function lessLinesToDisplay(): void {
 function parseCssSize(cssSizeStr: string) : SizeParams {
   let sizeNum: number = 0;
   let sizeUnit: string = "";
-  const match: RegExpMatchArray | null = cssSizeStr.match(g_cssSizeRegEx);
+  const match: RegExpMatchArray | null = cssSizeStr.match(CSS_SIZE_REGEX);
   if (match) {
     sizeNum = parseFloat(match[1]);
     sizeUnit = match[2];
@@ -712,15 +685,11 @@ function showDisplayFontSize():void {
 function setPreviewPaneFontSize(mainFontSz: number, mainFontUnit: string): void {
   const prvwFontSz:number = Math.round(mainFontSz * PREVIEW_FONT_RATIO);
   (document.getElementById("lyricsPreview") as HTMLTableElement).style.fontSize = (prvwFontSz + mainFontUnit) as string;
-  console.log("(Display font) " + mainFontSz + FONT_SIZE_UNIT + " x " + PREVIEW_FONT_RATIO +
-      " = " + prvwFontSz + FONT_SIZE_UNIT + " (preview font)"); // testing only
 }
 
 function setEditPaneFontSize(mainFontSz: number, mainFontUnit: string): void {
   const editFontSz:number = Math.round(mainFontSz * PREVIEW_FONT_RATIO);
   (document.getElementById("lyricsEditor") as HTMLTextAreaElement).style.fontSize = (editFontSz + mainFontUnit) as string;
-  console.log("(Display font) " + mainFontSz + FONT_SIZE_UNIT + " x " + PREVIEW_FONT_RATIO +
-      " = " + editFontSz + FONT_SIZE_UNIT + " (edit font)"); // testing only
 }
 
 function setEditPaneRows(mainFontSz: number): void {
@@ -732,8 +701,7 @@ function setEditPaneRows(mainFontSz: number): void {
       const prvwHeight = (document.getElementById("previewTable") as HTMLTableElement).style.height;
       console.log("Edit Pane: preview font size: " + fontSize.sizeNum + fontSize.sizeUnit + ", Preview height: " + prvwHeight); // testing only
       editElem.rows = Math.round(PREVIEW_TABLE_HEIGHT / (mainFontSz * PREVIEW_FONT_RATIO * HTML_LINE_HEIGHT_RATIO));
-      console.log("Edit Pane: preview table height: " + PREVIEW_TABLE_HEIGHT + ", preview font ratio: " +
-          PREVIEW_FONT_RATIO + ", html line height ratio: " + HTML_LINE_HEIGHT_RATIO + " = " + editElem.rows); // testing only
+      console.log("Edit Pane: preview table height: " + PREVIEW_TABLE_HEIGHT + ", preview font ratio: " + PREVIEW_FONT_RATIO + ", html line height ratio: " + HTML_LINE_HEIGHT_RATIO + " = " + editElem.rows); // testing only
     }
   }
 }
@@ -778,7 +746,6 @@ function fontBigger(): void {
     const newFontSize: number = g_displayFontSize + DISPLAY_FONT_SIZE_STEP; // Increment font size by step amount.
     if (newFontSize <= DISPLAY_FONT_SIZE_MAX) {
       g_displayFontSize = newFontSize; // Store new font size
-      console.log("New Display font size: " + newFontSize + FONT_SIZE_UNIT);
       setDisplayFontSize(newFontSize, FONT_SIZE_UNIT);
     }
 }
@@ -788,11 +755,133 @@ function fontSmaller(): void {
     const newFontSize: number = g_displayFontSize - DISPLAY_FONT_SIZE_STEP; // Decrement font size by step amount.
     if (newFontSize >= DISPLAY_FONT_SIZE_MIN) {
       g_displayFontSize = newFontSize; // Save new font size
-      console.log("New Display font size: " + newFontSize + FONT_SIZE_UNIT);
       setDisplayFontSize(newFontSize, FONT_SIZE_UNIT);
     }
   }
 }
+
+/**
+ * Measure width of a line of lyrics and return the size in CSS pixels.
+ *
+ * @param lyricLine
+ * return width of line in CSS pixels
+ */
+function measureLyricsLineWidth(lyricLine: string, font: string): number {
+  let textWidth: number = 0;
+  const testCanvas:HTMLCanvasElement = document.createElement('canvas');
+  const testContext = testCanvas.getContext('2d');
+  if (testContext) {
+    testContext.font = font;
+    const textMetrics = testContext.measureText(lyricLine);
+    textWidth = Math.round(textMetrics.width);
+    // console.log("(font: " + font + ", lyrics width: " + textWidth + "px) " + lyricLine);
+    testCanvas.remove(); // clean up
+  }
+  return textWidth;
+}
+
+/**
+ * Find the longest line of lyrics and return it.
+ *
+ * This will be used to try different font sizes to find the largest one that
+ * will display the longest lyric line in the display area without wrapping to
+ * the next line.
+ *
+ * @param lyrics: Lyrics text with each line delineated with a newline "\n"
+ * @param font: Font size and family, for example "72px Times New Roman"
+ *
+ * return: (string) longest lyric line
+ */
+function getLongestLyricLine(lyrics: string, font: string): string {
+  let longestLine: string = "";
+  let longestLineWidth: number = 0;
+  const lyricsArray: string[] = lyrics.split("\n");
+  const lyricsArrayLen: number = lyricsArray.length;
+  for (let i: number = 0; i < lyricsArrayLen; i++) {
+    const lyricsWidth: number = measureLyricsLineWidth(lyricsArray[i], font);
+    if (lyricsWidth > longestLineWidth) {
+      longestLineWidth = lyricsWidth;
+      longestLine = lyricsArray[i];
+    }
+  }
+  return longestLine;
+}
+
+/**
+ * Determine the largest font and return it.
+ *
+ * Try font sizes from smallest to largest to find the largest one that will
+ * display the input lyric line in the display area without wrapping to the
+ * next line.
+ *
+ * It actually starts below the smallest font size to check if the smallest
+ * font size is the largest possible one that doesn't wrap. If it loops
+ * through all the way to the largest font size, then it sets that one as
+ * the largest possible one to use.
+ *
+ * @param lyrics: line of lyrics
+ *
+ * return: (number) size of largest font
+ */
+function findLargestUsableFont(lyrics: string): number {
+  console.log("begin findLargestUsableFont..."); // testing only
+  let lineWidth: number = 0;
+  let largestFontSize: number = DISPLAY_FONT_SIZE_MIN; // set to smallest font size in range
+  let prevFontSize: number = 0;
+  let isLargestFontInRange: boolean = false;
+  let isTooLong: boolean = false;
+  let font: string = "";
+  /* Try each font size from smallest to largest */
+  for (let fontSize = DISPLAY_FONT_SIZE_MIN; fontSize <= DISPLAY_FONT_SIZE_MAX; fontSize = fontSize + DISPLAY_FONT_SIZE_STEP) {
+    font = fontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY;
+    lineWidth = measureLyricsLineWidth(lyrics, font);
+    if (lineWidth < DISPLAY_AREA_WIDTH) {
+      /* Longest line will fit in display area at this font size. */
+      largestFontSize = fontSize;
+      isTooLong = false;
+    }
+    else {
+      /* Longest line is too long for display area at this font size. */
+      if (prevFontSize == 0) {
+        /* Font size is the smallest in the allowable range. */
+        largestFontSize = fontSize;
+      }
+      else {
+        largestFontSize = prevFontSize;
+      }
+      isTooLong = true;
+      break;
+    }
+    prevFontSize = fontSize;
+  }
+  if (isTooLong && prevFontSize == 0) {
+    console.log("WARNING: longest lyric line is too long for the smallest font, " +
+        largestFontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY + ". (" + lyrics + ")");
+    alert("WARNING: longest lyric line is too long for the smallest font, " +
+        largestFontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY + ".\n\n" +
+        "Edit the lyrics file to shorten the following line:\n\n" + lyrics);
+  }
+  else {
+    console.log(largestFontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY + " is largest font for longest lyric line: " + lyrics); // testing only
+  }
+  return largestFontSize;
+}
+
+function testForLoop() {
+  console.log("Do some stuff 1");
+  let myOne: number = 1;
+  console.log("Do some stuff 2");
+  let myTwo: string = "2";
+  console.log("Do some stuff 3");
+  let myThree: number = 3;
+  let myvar: number = 0
+  for (let i=0; i<3; i++) {
+    myvar = i;
+    console.log("Use myOne: " + myOne);
+    console.log("show me i: " + i + " and myvar: " + myvar);
+  }
+}
+
 
 /**
  * Begin Program
@@ -852,15 +941,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 });
-
-// Add event listeners for up and down keys to show previous and next lyrics.
-// Doesn't work because it scrolls the page or textarea elements up or down.
-// document.addEventListener('keyup', myLyrics.prevLyricsRow);
-// document.addEventListener('keydown', myLyrics.nextLyricsRow);
-
-
-
-// Add event listener to handle file input from "fileSelected" input element.
 
 /**
  * Test getting file name from URL search params. It currently does nothing.

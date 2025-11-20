@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016", // target JavaScript version
+    "target": "es2022", // target JavaScript version
 //    "module": "system", // use TypeScript import/export but compile to one JavaScript .js file
 //    "module": "amd", // use TypeScript import/export but compile to one JavaScript .js file
     "module": "none", // use TypeScript import/export but compile to one JavaScript .js file
@@ -11,7 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": false, // retain class names
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "include": [
     "src/ts/**/*" // compile all TypeScript files under src/ts
