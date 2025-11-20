@@ -835,7 +835,7 @@ function findLargestUsableFont(lyrics: string): number {
   for (let fontSize = DISPLAY_FONT_SIZE_MIN; fontSize <= DISPLAY_FONT_SIZE_MAX; fontSize = fontSize + DISPLAY_FONT_SIZE_STEP) {
     font = fontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY;
     lineWidth = measureLyricsLineWidth(lyrics, font);
-    if (lineWidth < DISPLAY_AREA_WIDTH) {
+    if (lineWidth <= DISPLAY_AREA_WIDTH) {
       /* Longest line will fit in display area at this font size. */
       largestFontSize = fontSize;
       isTooLong = false;
