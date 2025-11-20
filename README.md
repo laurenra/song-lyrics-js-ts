@@ -104,6 +104,8 @@ npm run build
 Changes to **index.html** and **css/style.css** take effect immediately. You don't 
 need to compile anything.
 
+For other build options, see **Project Setup** below.
+
 For different SVG icons, try [IconFinder.com](https://www.iconfinder.com/); for 
 example [FatIcons](https://www.iconfinder.com/iconsets/faticons) and 
 [Flat UI Icons](https://www.iconfinder.com/iconsets/flat-ui-icons-24-px) and 
@@ -127,14 +129,25 @@ zip -r song-lyrics-1.5.2.zip dist
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
 ### Compile and Minify for Production
+Uses Webpack to create `/dist` directory and copy files there. The `/dist` directory 
+has all files needed to run this in a browser.
 
 ```sh
 npm run build
+```
+### Compile to debug TypeScript in a browser 
+Only updates the files in `/dist/js` to create a debug version of the .js file and 
+a *.js.map file to map the TypeScript to the generated JavaScript so the browser 
+debugger steps through the code correctly.
+
+```sh
+npm run build-ts
+```
+
+### Verbose debug compile to see compile process steps
+Same as `run build-ts` above with verbose message output during compile.
+
+```sh
+npm run build-ts-debug
 ```
