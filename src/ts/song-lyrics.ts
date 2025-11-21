@@ -867,6 +867,18 @@ function findLargestUsableFont(lyrics: string): number {
   return largestFontSize;
 }
 
+function autoFontSize() :void {
+  /* Before copying content to lyricsEditor, try to find the largest font that will display the longest lyric line without wrapping to the next line */
+  const font :string = g_displayFontSize + FONT_SIZE_UNIT + " " + FONT_FAMILY;
+  const longestLine: string = getLongestLyricLine(g_lyricsText, font);
+  console.log("longest lyric line is " + measureLyricsLineWidth(longestLine, font) + "px: " + longestLine); // testing only
+  const largestFont: number = findLargestUsableFont(longestLine);
+  /* Set the largest font that will work */
+  g_displayFontSize = largestFont;
+  setDisplayFontSize(largestFont, FONT_SIZE_UNIT);
+
+}
+
 function testForLoop() {
   console.log("Do some stuff 1");
   let myOne: number = 1;
@@ -914,6 +926,10 @@ document.addEventListener('DOMContentLoaded', function() {
   /* Button - move to next lines of lyrics */
   const nextLinesBtnButton = document.getElementById("nextLinesBtn");
   nextLinesBtnButton?.addEventListener("click", nextLyricsLines, false);
+
+  /* Button - move to next lines of lyrics */
+  const autoFontSizeBtnButton = document.getElementById("autoFontBtn");
+  autoFontSizeBtnButton?.addEventListener("click", autoFontSize, false);
 
   /* invisible Button - Start (copies lyrics from Editor to Preview area) */
   const startBtnButton = document.getElementById("startBtn");
